@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konteh.BackOffice.Api", "Konteh.BackOffice.Api\Konteh.BackOffice.Api.csproj", "{1C1FB680-4944-4B19-92BF-7FCCE7B5F39A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konteh.FrontOffice.Api", "Konteh.FrontOffice.Api\Konteh.FrontOffice.Api.csproj", "{05DD0A32-E87E-401A-8338-EAF4376D0DB0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C1FB680-4944-4B19-92BF-7FCCE7B5F39A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C1FB680-4944-4B19-92BF-7FCCE7B5F39A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C1FB680-4944-4B19-92BF-7FCCE7B5F39A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C1FB680-4944-4B19-92BF-7FCCE7B5F39A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05DD0A32-E87E-401A-8338-EAF4376D0DB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05DD0A32-E87E-401A-8338-EAF4376D0DB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05DD0A32-E87E-401A-8338-EAF4376D0DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05DD0A32-E87E-401A-8338-EAF4376D0DB0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA3D9330-0557-4F9A-A4B5-662EA2563CBF}
+	EndGlobalSection
+EndGlobal

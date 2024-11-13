@@ -1,0 +1,6 @@
+@Konteh.FrontOffice.Api_HostAddress = http://localhost:5287
+
+GET {{Konteh.FrontOffice.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

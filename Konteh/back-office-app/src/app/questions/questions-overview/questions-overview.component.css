@@ -1,0 +1,94 @@
+
+.mat-elevation-z8 {
+    margin: 20px auto;  
+    padding: 20px;
+    width: 90%; 
+    max-width: 1200px; 
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  
+  
+ 
+  .mat-header-cell {
+    font-weight: bold;
+    background-color: #f5f5f5;
+    text-align: center;
+    padding: 16px;
+    font-size: 14px;
+  }
+  
+ 
+  .mat-cell {
+    padding: 12px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+
+  mat-paginator {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+ 
+  .mat-table {
+    margin-bottom: 20px;
+  }
+  
+ 
+  .mat-row {
+    transition: background-color 0.2s ease;
+  }
+  
+  .mat-row:hover {
+    background-color: #f1f1f1;
+  }
+  
+  
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  li {
+    padding: 4px 0;
+    font-size: 13px;
+    color: #555;
+  }
+  
+  li:before {
+    content: "• ";
+    color: #00796b;
+    font-weight: bold;
+  }
+  
+  
+  th.mat-header-cell {
+    font-weight: bold;
+    background-color: #009688;
+    color: white;
+  }
+  
+
+  .mat-paginator-range-label {
+    font-size: 14px;
+  }
+  
+  .mat-paginator-page-size {
+    font-size: 14px;
+  }
+
+ 
+.selected {
+    background-color: rgba(0, 0, 255, 0.1); /* Svetlo plava pozadina */
+    border-left: 5px solid #2196F3;  /* Plavi levi okvir */
+    cursor: pointer; /* Cursor koji pokazuje da je red klikabilan */
+  }
+  
+  

@@ -20,5 +20,25 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             var response = await _mediator.Send(new GetAllQuestions.Query());
             return Ok(response);
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var command = new DeleteQuestion.Command { Id = id };
+            try
+            {
+
+                await _mediator.Send(command);
+
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(new { message = ex.Message });
+            }
+        }
     }
 }
+

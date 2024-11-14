@@ -4,14 +4,25 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { QuestionsOverviewComponent } from './questions/questions-overview/questions-overview.component';
+import { QuestionsModule } from './questions/questions.module';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+   
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    QuestionsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
+
   ],
   providers: [
     provideAnimationsAsync()

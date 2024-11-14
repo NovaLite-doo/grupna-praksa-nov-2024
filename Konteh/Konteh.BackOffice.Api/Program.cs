@@ -17,12 +17,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        builder =>
+        {
+            builder.AllowAnyOrigin()  // Dozvoljava bilo koji origin
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 app.UseOpenApi();
 app.UseSwaggerUi();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 

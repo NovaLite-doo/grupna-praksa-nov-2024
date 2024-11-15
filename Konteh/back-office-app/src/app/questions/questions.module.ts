@@ -7,6 +7,9 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { HttpClientModule } from '@angular/common/http';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-confirm-dialog.component';
 
 
 const routes: Routes = [
@@ -18,7 +21,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    QuestionsOverviewComponent  
+    QuestionsOverviewComponent,
+    DeleteConfirmDialogComponent  
   ],
   imports: [
     CommonModule,  
@@ -28,6 +32,10 @@ const routes: Routes = [
     MatSortModule, 
     HttpClientModule, 
     MatMenuModule,
+    MatIconModule,
+    MatDialogModule,
+  
+    
    
   ]
 })

@@ -1,43 +1,38 @@
 <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource"  class="mat-table">
-      
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef >ID</th>
-        <td mat-cell *matCellDef="let question" [matMenuTriggerFor]="menu" (click)="onRowClick(question)">
-          {{ question.id }}
-        </td>
-      </ng-container>
-  
-      
-      <ng-container matColumnDef="text">
-        <th mat-header-cell *matHeaderCellDef>Text</th>
-        <td mat-cell *matCellDef="let question" [matMenuTriggerFor]="menu" (click)="onRowClick(question)">
-          {{ question.text }}
-        </td>
-      </ng-container>
-  
+  <table mat-table [dataSource]="dataSource" class="mat-table">
     
-      <ng-container matColumnDef="answers">
-        <th mat-header-cell *matHeaderCellDef>Answers</th>
-        <td mat-cell *matCellDef="let question" [matMenuTriggerFor]="menu" (click)="onRowClick(question)">
-          <ul>
-            <li *ngFor="let answer of question.answers">{{ answer.text }}</li>
-          </ul>
-        </td>
-      </ng-container>
-  
-    
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  
    
-    <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
-  </div>
-  
-  
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="onEdit(selectedQuestion!)">Edit</button>
-    <button mat-menu-item (click)="onDelete(selectedQuestion!)">Delete</button>
-  </mat-menu>
-  
+
+    <ng-container matColumnDef="text">
+      <th mat-header-cell *matHeaderCellDef> Text </th>
+      <td mat-cell *matCellDef="let question">
+        {{ question.text }}
+      </td>
+    </ng-container>
+
+   
+
+    
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let question">
+       
+        <button mat-icon-button [matMenuTriggerFor]="menu" (click)="onRowClick(question)">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+ 
+  <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+</div>
+
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="onEdit(selectedQuestion!)">Edit</button>
+  <button mat-menu-item (click)="onDelete(selectedQuestion!)">Delete</button>
+</mat-menu>

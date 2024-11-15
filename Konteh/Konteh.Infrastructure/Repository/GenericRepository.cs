@@ -15,7 +15,7 @@ namespace Konteh.Infrastructure.Repository
 
         public void Create(T entity) => _dbSet.Add(entity);
 
-        public void Delete(T entity) => _dbSet.Remove(entity);
+        public virtual void Delete(T entity) => _dbSet.Remove(entity);
 
         public async Task<T?> Get(int id) => await _dbSet.FindAsync(id);
 

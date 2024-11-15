@@ -5,6 +5,9 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Question, QuestionsService } from '../../services/questions.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
+import { QuestionsClient } from '../../api/api-reference';
 
 @Component({
   selector: 'app-questions-overview',
@@ -13,33 +16,31 @@ import { Question, QuestionsService } from '../../services/questions.service';
 })
 export class QuestionsOverviewComponent {
 
-  displayedColumns: string[] = ['id', 'text', 'answers'];
+  displayedColumns: string[] = [ 'text', 'actions'];
   dataSource = new MatTableDataSource<Question>([]);
   selectedQuestion: Question | null = null; 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
  
 
-  constructor(private questionsService: QuestionsService) {}
+  constructor(private questionsClient: QuestionsClient,   private dialog: MatDialog ) {}
 
   ngOnInit(): void {
-  
-    this.questionsService.getQuestions().subscribe(
+    this.questionsClient.getAll().subscribe(
       (data) => {
-       
-        this.dataSource.data = data;
+        // Assert the type of data to 'Question[]'
+        this.dataSource.data = data as Question[];
         
-      
         if (this.paginator) {
           this.dataSource.paginator = this.paginator;
         }
-       
       },
       (error) => {
-        console.error('Greška prilikom učitavanja pitanja: ', error);
+        console.error('Error loading questions: ', error);
       }
     );
   }
+  
 
   onRowClick(question: Question): void {
    
@@ -53,18 +54,29 @@ export class QuestionsOverviewComponent {
   }
 
   onDelete(question: Question): void {
-    if (confirm(`Are you sure you want to delete this question: "${question.text}"?`)) {
-      this.questionsService.deleteQuestion(question.id).subscribe(
-        () => {
-      
-          this.dataSource.data = this.dataSource.data.filter(q => q.id !== question.id);
-        },
-        (error: HttpErrorResponse) => {  
-          console.error('Error while deleting the question: ', error);
-          alert('An error occurred while deleting the question.');
-        }
-      );
-    }
+    const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+      data: { questionText: question.text }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        
+        this.deleteQuestion(question);
+      }
+    });
+  }
+
+  deleteQuestion(question: Question): void {
+    this.questionsClient.delete(question.id).subscribe(
+      () => {
+        // Remove from the table
+        this.dataSource.data = this.dataSource.data.filter(q => q.id !== question.id);
+      },
+      (error) => {
+        console.error('Error while deleting the question: ', error);
+        alert('An error occurred while deleting the question.');
+      }
+    );
   }
 
 

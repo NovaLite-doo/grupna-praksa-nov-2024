@@ -28,9 +28,9 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             {
 
                 var question = await _questionRepository.Get(request.Id);
-                if (question == null)
+                if (question == null || question.IsDeleted)
                 {
-                    throw new Exception("Question not found.");
+                    throw new Exception("Question not found or already deleted.");
                 }
 
                 _questionRepository.Delete(question);

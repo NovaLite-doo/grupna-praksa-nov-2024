@@ -10,5 +10,7 @@ namespace Konteh.Domain
         public QuestionCategory Category { get; set; }
         public QuestionType Type { get; set; }
 
+        public bool IsDeleted { get; set; } = false;
+
     }
 }

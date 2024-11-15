@@ -9,8 +9,9 @@ import { AuthenticationResult } from '@azure/msal-browser';
   styleUrl: './navigation-bar.component.css'
 })
 export class NavigationBarComponent {
+  apiResponse: string = '';
 
-  constructor(private authService: MsalService, private http: HttpClient) {
+  constructor(private authService: MsalService, private httpClient: HttpClient) {
 
   }
 
@@ -30,15 +31,43 @@ export class NavigationBarComponent {
   }
 
   login() {
-    //this.authService.loginRedirect();
-
-    this.authService.loginPopup()
-      .subscribe((response: AuthenticationResult) => {
+    const loginRequest = {
+      scopes: ['api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.read', 'api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.write']
+    };
+  
+    this.authService.loginPopup(loginRequest).subscribe(
+      (response: AuthenticationResult) => {
         this.authService.instance.setActiveAccount(response.account);
-      });
+        console.log('User logged in successfully');
+      },
+      (error) => {
+        console.error('Login error: ', error);
+      }
+    );
   }
+  
 
   logout() {
     this.authService.logout()
   }
+
+  testApiRequest() {
+    if (!this.isLoggedIn()) {
+      console.log('User is not logged in');
+      return;
+    }
+  
+    this.authService.acquireTokenSilent({
+      scopes: ['api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.read']
+    }).subscribe({
+      next: (tokenResponse) => {
+        const token = tokenResponse.accessToken;
+        console.log('Access token: ', token); 
+      },
+      error: (err) => {
+        console.error('Error acquiring token: ', err);
+      }
+    });
+  }
+  
 }

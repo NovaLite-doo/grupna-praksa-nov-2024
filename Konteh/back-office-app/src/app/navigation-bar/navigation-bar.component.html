@@ -5,5 +5,6 @@
 </div>
 <div>
     <a [routerLink]="['/restricted-page']" routerLinkActive="true" *ngIf="isLoggedIn()">[RESTRICTED-PAGE]</a>
+    <button (click)="testApiRequest()">Test</button>
 </div>
 

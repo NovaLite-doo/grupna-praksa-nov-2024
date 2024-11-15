@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { InteractionType, IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
-import { MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService } from '@azure/msal-angular';
+import { MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MsalBroadcastService  } from '@azure/msal-angular';
 import { PublicPageComponent } from './public-page/public-page.component';
 import { RestrictedPageComponent } from './restricted-page/restricted-page.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -47,6 +47,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   imports: [
     BrowserModule,
     AppRoutingModule,
+    MsalModule, 
     HttpClientModule
   ],
   providers: [
@@ -62,7 +63,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
       provide: MSAL_INTERCEPTOR_CONFIG,
       useFactory: MSALInterceptorConfigFactory
     },
-    MsalService
+    MsalService,
+    MsalBroadcastService  
   ],
   bootstrap: [AppComponent]
 })

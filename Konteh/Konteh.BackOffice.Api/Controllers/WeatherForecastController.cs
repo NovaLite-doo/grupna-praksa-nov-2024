@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
+using System.ComponentModel.DataAnnotations;
 
 namespace Konteh.BackOffice.Api.Controllers
 {
@@ -19,6 +22,8 @@ namespace Konteh.BackOffice.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes:Read")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

@@ -2,3 +2,45 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.page-title {
+    font-family: Roboto, Arial;
+    font-size: 3rem;
+    color: black;
+
+    width: 100%;
+    line-height: 3rem;
+
+    text-align: center;
+    vertical-align: center;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    gap: 1rem;
+
+    padding-block: 1rem;
+
+    background-color: white;
+
+    border: black 1px solid;
+    border-radius: 0.5rem;
+}
+
+.form-section-title {
+    font-family: Roboto, Arial;
+    font-size: 1.5rem;
+    color: black;
+    border-bottom: black 1px solid;
+
+    width: calc(100% - 2rem);
+
+    padding-bottom: 0.5rem;
+    margin-inline: 1rem;
+
+    text-align: left;
+}

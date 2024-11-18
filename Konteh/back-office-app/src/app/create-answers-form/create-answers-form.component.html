@@ -1,0 +1,30 @@
+<div class="form-section" [formGroup]="parent">
+    <div class="form-section-title">Answers ({{ answers.length }})</div>
+
+    <ng-container formArrayName="answers">
+        <div *ngFor="let answer of answers.controls; let index = index" class="answer-form">
+            <div [formGroupName]="index">
+                <div class="answer-form-top">
+                    <mat-label class="label-margin-left">Answer {{ index + 1 }}</mat-label>
+                    <button mat-icon-button (click)="removeAnswer(index)" class="remove-answer-btn">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+                
+                <mat-form-field appearance="outline" class="answer-text">
+                    <mat-label>Text</mat-label>
+                    <input matInput formControlName="text" placeholder="Enter question text">
+                </mat-form-field>
+    
+                <mat-checkbox formControlName="isCorrect" labelPosition="before" class="answer-is-correct">Is correct:</mat-checkbox>
+    
+                <div class="black-hr"></div>
+            </div>
+        </div>
+    </ng-container>
+
+    <button mat-button type="button" (click)="addAnswer()"  class="add-answer-btn">
+        <mat-icon>add</mat-icon>
+        Add answer
+    </button>
+</div>

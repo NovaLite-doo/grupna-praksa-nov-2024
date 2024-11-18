@@ -20,5 +20,34 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             var response = await _mediator.Send(new GetAllQuestions.Query());
             return Ok(response);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Unit>> Create(CreateQuestion.QuestionRequest request)
+        {
+            try
+            {
+                await _mediator.Send(request);
+
+                return Created();
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<Unit>> Edit(EditQuestion.QuestionRequest request)
+        {
+            try
+            {
+                await _mediator.Send(request);
+                return Ok();
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

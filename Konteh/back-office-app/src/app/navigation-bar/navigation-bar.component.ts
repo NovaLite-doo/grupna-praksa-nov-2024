@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
 import { AuthenticationResult } from '@azure/msal-browser';
+import { WeatherForecastClient } from '../api/api-reference';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -9,9 +9,8 @@ import { AuthenticationResult } from '@azure/msal-browser';
   styleUrl: './navigation-bar.component.css'
 })
 export class NavigationBarComponent {
-  apiResponse: string = '';
 
-  constructor(private authService: MsalService, private httpClient: HttpClient) {
+  constructor(private authService: MsalService, private weatherForecestClient: WeatherForecastClient) {
 
   }
 
@@ -23,7 +22,6 @@ export class NavigationBarComponent {
         }
       })
     });
-
   }
 
   isLoggedIn(): boolean {
@@ -46,28 +44,18 @@ export class NavigationBarComponent {
     );
   }
   
-
   logout() {
     this.authService.logout()
   }
 
-  testApiRequest() {
-    if (!this.isLoggedIn()) {
-      console.log('User is not logged in');
-      return;
-    }
-  
-    this.authService.acquireTokenSilent({
-      scopes: ['api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.read']
-    }).subscribe({
-      next: (tokenResponse) => {
-        const token = tokenResponse.accessToken;
-        console.log('Access token: ', token); 
+  test() {
+    this.weatherForecestClient.get().subscribe(
+      (data) => {
+        
       },
-      error: (err) => {
-        console.error('Error acquiring token: ', err);
+      (error) => {
+        console.log('Error loading weather forecast');
       }
-    });
+    )
   }
-  
 }

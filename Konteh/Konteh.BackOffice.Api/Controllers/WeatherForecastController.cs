@@ -20,10 +20,9 @@ namespace Konteh.BackOffice.Api.Controllers
         {
             _logger = logger;
         }
-
-        [HttpGet]
+        
         [Authorize]
-        [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes:Read")]
+        [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

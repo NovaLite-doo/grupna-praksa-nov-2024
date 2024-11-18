@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -10,8 +9,10 @@ import { MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalInterceptor, MsalIntercepto
 import { PublicPageComponent } from './public-page/public-page.component';
 import { RestrictedPageComponent } from './restricted-page/restricted-page.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
-
 
 
 export function MSALInstanceFactory(): IPublicClientApplication {
@@ -26,7 +27,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set('http://localhost:7285/', [
+  protectedResourceMap.set('https://localhost:7285', [
     'api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.read',
     'api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.write'
   ]);
@@ -48,7 +49,10 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     BrowserModule,
     AppRoutingModule,
     MsalModule, 
-    HttpClientModule
+    HttpClientModule,
+    MatToolbarModule,  
+    MatButtonModule,  
+    MatIconModule, 
   ],
   providers: [
     provideAnimationsAsync(),

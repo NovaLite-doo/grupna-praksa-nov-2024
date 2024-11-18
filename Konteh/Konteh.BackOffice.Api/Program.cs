@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
 
-// Add services to the container.
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         .AddMicrosoftIdentityWebApi(builder.Configuration, "AzureAd");
 
@@ -27,39 +27,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        Type = SecuritySchemeType.OAuth2,
-        Flows = new OpenApiOAuthFlows
-        {
-            AuthorizationCode = new OpenApiOAuthFlow
-            {
-                AuthorizationUrl = new Uri("https://login.microsoftonline.com/common/oauth2/v2.0/authorize"),
-                TokenUrl = new Uri("https://login.microsoftonline.com/common/oauth2/v2.0/token"),
-                Scopes = new Dictionary<string, string>
-                {
-                    { "user.read", "Read user information" }
-                }
-            }
-        }
-    });
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        builder =>
         {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "oauth2"
-                }
-            },
-            new List<string> { "user.read" }
-        }
-    });
+            builder.AllowAnyOrigin()  
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
 });
 
 
@@ -69,13 +48,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UseOpenApi();
-//app.UseSwaggerUi();
-app.UseSwaggerUI(c =>
-{
-    c.OAuthClientId(builder.Configuration["AzureAd:dbf7f51e-d046-435b-88ee-c4f9ee872967"]);
-    c.OAuthAppName("Konteh API");
-    c.OAuthUsePkce(); 
-});
+app.UseSwaggerUi();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

@@ -13,14 +13,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
+import { environment } from '../enviroments/enviroment';
 
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
-      clientId: '4e1ff54b-bf34-4f45-83ce-e50fc32967cd',
-      authority: 'https://login.microsoftonline.com/common',
-      redirectUri: 'http://localhost:4200'
+      clientId: environment.msalConfig.clientId,  
+      authority: environment.msalConfig.authority,  
+      redirectUri: environment.msalConfig.redirectUri
     }
   });
 }

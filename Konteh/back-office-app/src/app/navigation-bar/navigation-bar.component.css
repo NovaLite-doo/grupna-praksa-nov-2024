@@ -5,7 +5,7 @@ mat-toolbar {
   }
   
   .spacer {
-    flex: 1; /* Ovaj razmak pomaže u poravnanju dugmadi sa desne strane */
+    flex: 1; 
   }
   
   a.mat-button {
@@ -20,7 +20,6 @@ mat-toolbar {
     margin-left: 10px;
   }
   
-  /* Stil za aktivne linkove */
   a.router-link-active {
     font-weight: bold;
     color: #2196f3;
@@ -29,4 +28,3 @@ mat-toolbar {
   mat-icon {
     font-size: 24px;
   }
-  

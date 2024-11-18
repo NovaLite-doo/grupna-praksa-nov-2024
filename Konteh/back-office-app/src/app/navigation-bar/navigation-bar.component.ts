@@ -29,17 +29,12 @@ export class NavigationBarComponent {
   }
 
   login() {
-    const loginRequest = {
-      scopes: ['api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.read', 'api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.write']
-    };
-  
-    this.authService.loginPopup(loginRequest).subscribe(
+    this.authService.loginPopup().subscribe(
       (response: AuthenticationResult) => {
         this.authService.instance.setActiveAccount(response.account);
-        console.log('User logged in successfully');
       },
       (error) => {
-        console.error('Login error: ', error);
+        
       }
     );
   }

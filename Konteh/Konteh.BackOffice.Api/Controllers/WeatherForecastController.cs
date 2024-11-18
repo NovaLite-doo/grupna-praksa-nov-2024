@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
 using System.ComponentModel.DataAnnotations;
 
 namespace Konteh.BackOffice.Api.Controllers

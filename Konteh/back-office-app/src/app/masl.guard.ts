@@ -17,7 +17,6 @@ export class MaslGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     if (this.authService.instance.getActiveAccount() == null) {
-      console.log('not logged in!')
       return false;
     }
 

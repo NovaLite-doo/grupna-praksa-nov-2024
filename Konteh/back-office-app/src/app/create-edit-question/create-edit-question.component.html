@@ -1,0 +1,16 @@
+<div class="create-edit-question">
+    <p class="page-title">
+        {{ id ? 'Edit question' : 'Create question' }}
+    </p>
+
+    <form [formGroup]="questionForm" class="create-edit-question-form" (ngSubmit)="onSubmit()">
+        <div class="question-form">
+            <app-question-form [questionForm]="questionForm"></app-question-form>
+        </div>
+
+        <button type="submit" class="create-edit-question-btn">
+            {{ id ? 'Save changes' : 'Create question' }}
+        </button>
+    </form>
+
+</div>

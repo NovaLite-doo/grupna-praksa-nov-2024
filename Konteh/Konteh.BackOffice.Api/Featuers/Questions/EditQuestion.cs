@@ -36,6 +36,11 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             {
                 var question = await _questionRepository.Get(request.Id);
 
+                if (question == null)
+                {
+                    throw new KeyNotFoundException($"Question with Id {request.Id} not found.");
+                }
+
                 var updatedQuestion = new Question()
                 {
                     Text = request.Text,
@@ -44,6 +49,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                 };
                 var answers = request.Answers.Select(x => new Answer
                 {
+                    Id = x.Id ?? -1,
                     Text = x.Text,
                     IsCorrect = x.IsCorrect
                 });

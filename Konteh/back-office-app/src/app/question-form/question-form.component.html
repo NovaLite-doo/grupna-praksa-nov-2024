@@ -11,17 +11,18 @@
     <mat-form-field appearance="outline">
         <mat-label class="no-margin">Category</mat-label>
         <mat-select formControlName="category" placeholder="- Select a category -">
-            <mat-option value="0">OOP</mat-option>
-            <mat-option value="1">GIT</mat-option>
-            <mat-option value="2">SQL</mat-option>
+            <mat-option *ngFor="let category of categoryKeys" [value]="getCategoryValue(category)">
+                {{ category }}
+            </mat-option>
         </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
         <mat-label>Type</mat-label>
         <mat-select formControlName="type" placeholder="- Select a type -">
-            <mat-option value="0">1 choice</mat-option>
-            <mat-option value="1">Multiple choices</mat-option>
+            <mat-option *ngFor="let type of typeKeys; let i = index" [value]="getTypeValue(type)">
+                {{ type }}
+            </mat-option>
         </mat-select>
     </mat-form-field>
 </div>

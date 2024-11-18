@@ -63,6 +63,10 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             {
                 return BadRequest(e.Message);
             }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
     }
 }

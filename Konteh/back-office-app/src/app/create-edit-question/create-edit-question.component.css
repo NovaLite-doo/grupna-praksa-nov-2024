@@ -1,4 +1,4 @@
-.create-question {
+.create-edit-question {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,7 +10,7 @@
     background-color: #f5df4d;
 }
 
-.create-question-form{  
+.create-edit-question-form{  
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -21,7 +21,7 @@
     max-width: 70%;
 }
 
-.create-question-btn {
+.create-edit-question-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,11 +41,11 @@
     cursor: pointer;
 }
 
-.create-question-btn:hover {
+.create-edit-question-btn:hover {
     background-color: rgba(20, 20, 20, 1);
 }
 
-.create-question-btn:active {
+.create-edit-question-btn:active {
     background-color: rgba(30, 30, 30, 1);
 }
 

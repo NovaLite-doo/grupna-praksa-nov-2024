@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import { QuestionsClient } from '../api/api-reference';
+import { CreateQuestionAnswerRequest, CreateQuestionQuestionRequest, QuestionCategory, QuestionsClient, QuestionType } from '../api/api-reference';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CreateAnswersFormComponent } from '../create-answers-form/create-answers-form.component';
 
@@ -26,31 +26,29 @@ export class CreateQuestionComponent {
   }
 
   onSubmit(): void {
-    // if (this.createQuestionForm.valid) {
-    //   console.log('bbbbbbbbbbbbbbbbbb');
-    //   const questionData = this.createQuestionForm.value;
+    if (this.createQuestionForm.valid) {
+      const questionData = this.createQuestionForm.value;
 
-    //   const request: CreateQuestionQuestionRequest = new CreateQuestionQuestionRequest();
-    //   request.text = questionData.text!;
-    //   request.category = QuestionCategory.GIT;
-    //   request.type = QuestionType.Checkbox;
+      const request: CreateQuestionQuestionRequest = new CreateQuestionQuestionRequest();
+      request.text = questionData.text!;
+      request.category = QuestionCategory.GIT;
+      request.type = QuestionType.Checkbox;
 
-    //   request.answers = questionData.answers!.map((answer: { text: string, isCorrect: boolean }) => {
-    //     return new CreateQuestionAnswerRequest({
-    //       text: answer.text,
-    //       isCorrect: answer.isCorrect
-    //     });
-    //   });
-    //   console.log('aaaaaaaaaaaaaa');
+      request.answers = questionData.answers!.map((answer: { text: string, isCorrect: boolean }) => {
+        return new CreateQuestionAnswerRequest({
+          text: answer.text,
+          isCorrect: answer.isCorrect
+        });
+      });
 
-    //   this.questionsClient.create(request)
-    //     .subscribe(response => {
-    //       console.log('Question created successfully', response);
-    //     }, (error: HttpErrorResponse) => {
-    //       console.error('Error creating question', error);
-    //     });
-    // } else {
-    //   console.log('Form is not valid');
-    // }
+      this.questionsClient.create(request)
+        .subscribe(response => {
+          console.log('Question created successfully', response);
+        }, (error: HttpErrorResponse) => {
+          console.error('Error creating question', error);
+        });
+    } else {
+      console.log('Form is not valid');
+    }
   }
 }

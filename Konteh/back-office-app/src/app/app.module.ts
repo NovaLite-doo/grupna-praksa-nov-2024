@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { CreateQuestionComponent } from './create-question/create-question.component';
 import { CreateAnswersFormComponent } from './create-answers-form/create-answers-form.component';
+import { DeleteDialog } from './delete-dialog/delete-dialog.component';
 
 import { MatFormFieldModule } from '@angular/material/form-field'; 
 import { MatInputModule } from '@angular/material/input';
@@ -21,7 +22,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   declarations: [
     AppComponent,
     CreateQuestionComponent,
-    CreateAnswersFormComponent
+    CreateAnswersFormComponent,
+    DeleteDialog
   ],
   imports: [
     BrowserModule,

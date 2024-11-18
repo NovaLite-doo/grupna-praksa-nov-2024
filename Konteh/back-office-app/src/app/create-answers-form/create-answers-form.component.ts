@@ -1,5 +1,7 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { Component, Input } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { DeleteDialog } from '../delete-dialog/delete-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-create-answers-form',
@@ -9,7 +11,7 @@ import { AbstractControl, FormArray, FormControl, FormGroup, UntypedFormGroup, V
 export class CreateAnswersFormComponent {
   @Input() answers: FormArray<FormGroup> = new FormArray<FormGroup>([]);
 
-  constructor() {}
+  constructor(public dialog: MatDialog) {}
 
   get parent(): FormGroup {
     return this.answers.parent as FormGroup
@@ -25,5 +27,21 @@ export class CreateAnswersFormComponent {
 
   removeAnswer(index: number) {
     this.answers?.removeAt(index);
+  }
+
+  confirmRemoval(index: number) {
+    this.dialog
+      .open(DeleteDialog, {
+        data: {
+          title: "Answer deletion",
+          message: "Confirm answer deletion?"
+        }
+      })
+      .afterClosed()
+      .subscribe((confirmation: Boolean) => {
+        if(confirmation) {
+          this.removeAnswer(index);
+        }
+      });
   }
 }

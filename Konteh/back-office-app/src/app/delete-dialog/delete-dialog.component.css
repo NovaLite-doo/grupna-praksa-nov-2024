@@ -1,0 +1,27 @@
+.dialog-box {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+.dialog-title {
+    font-family: Roboto, Arial;
+    font-size: 3rem;
+    color: black;
+
+    width: 100%;
+    line-height: 3rem;
+
+    text-align: center;
+    vertical-align: center;
+}
+
+.dialog-message {
+    font-family: Roboto, Arial;
+    font-size: 1.5rem;
+    color: black;
+}
+
+.button-gap {
+    margin-left: 1rem;
+}

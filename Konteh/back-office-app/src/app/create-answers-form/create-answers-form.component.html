@@ -6,7 +6,7 @@
             <div [formGroupName]="index">
                 <div class="answer-form-top">
                     <mat-label class="label-margin-left">Answer {{ index + 1 }}</mat-label>
-                    <button mat-icon-button (click)="removeAnswer(index)" class="remove-answer-btn">
+                    <button mat-icon-button (click)="confirmRemoval(index)" class="remove-answer-btn">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </div>
@@ -23,7 +23,7 @@
         </div>
     </ng-container>
 
-    <button mat-button type="button" (click)="addAnswer()"  class="add-answer-btn">
+    <button mat-button type="button" (click)="addAnswer()" class="add-answer-btn">
         <mat-icon>add</mat-icon>
         Add answer
     </button>

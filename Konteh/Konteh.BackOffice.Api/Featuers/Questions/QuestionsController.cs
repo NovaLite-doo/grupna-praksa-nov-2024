@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Azure.Core;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Konteh.BackOffice.Api.Featuers.Questions
@@ -19,6 +20,20 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
         {
             var response = await _mediator.Send(new GetAllQuestions.Query());
             return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GetQuestionById.Response>> GetQuestionById(int id)
+        {
+            try
+            {
+                var response = await _mediator.Send(new GetQuestionById.Query { Id = id });
+                return Ok(response);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpPost]

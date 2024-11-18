@@ -17,7 +17,7 @@ namespace Konteh.Infrastructure.Repository
 
         public void Delete(T entity) => _dbSet.Remove(entity);
 
-        public async Task<T?> Get(int id) => await _dbSet.FindAsync(id);
+        public virtual async Task<T?> Get(int id) => await _dbSet.FindAsync(id);
 
         public virtual async Task<IList<T>> GetAll() => await _dbSet.ToListAsync();
 

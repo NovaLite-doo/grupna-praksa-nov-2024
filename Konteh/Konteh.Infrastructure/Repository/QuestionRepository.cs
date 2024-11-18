@@ -10,5 +10,6 @@ namespace Konteh.Infrastructure.Repository
         }
 
         public override async Task<IList<Question>> GetAll() => await _dbSet.Include(x => x.Answers).ToListAsync();
+        public override async Task<Question?> Get(int id) => await _dbSet.Include(x => x.Answers).FirstOrDefaultAsync(q => q.Id == id);
     }
 }

@@ -14,10 +14,15 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             _mediator = mediator;
         }
 
+
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetAllQuestions.Response>>> GetAll()
+        public async Task<ActionResult<GetAllQuestions.PagedResponse>> GetAll([FromQuery] GetAllQuestions.Query request)
         {
-            var response = await _mediator.Send(new GetAllQuestions.Query());
+
+            var response = await _mediator.Send(request);
+
+
             return Ok(response);
         }
 
@@ -38,6 +43,24 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
                 return NotFound(new { message = ex.Message });
             }
+        }
+
+
+        [HttpGet("search")]
+        public async Task<ActionResult<SearchQuestions.PagedResponse>> Search([FromQuery] SearchQuestions.Query request, CancellationToken cancellationToken)
+        {
+
+            var response = await _mediator.Send(request, cancellationToken);
+
+
+            return Ok(response);
+        }
+
+        [HttpGet("categories")]
+        public async Task<ActionResult<GetCategories.Response>> GetCategories()
+        {
+            var response = await _mediator.Send(new GetCategories.Query());
+            return Ok(response);
         }
     }
 }

@@ -16,8 +16,10 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IQuestionsClient {
-    getAll(): Observable<GetAllQuestionsResponse[]>;
+    getAll(pageNumber: number | undefined, pageSize: number | undefined): Observable<GetAllQuestionsPagedResponse>;
     delete(id: number): Observable<FileResponse>;
+    search(searchText: string | undefined, pageNumber: number | undefined, pageSize: number | undefined, category: QuestionCategory | null | undefined): Observable<SearchQuestionsPagedResponse>;
+    getCategories(): Observable<GetCategoriesResponse>;
 }
 
 @Injectable({
@@ -33,8 +35,16 @@ export class QuestionsClient implements IQuestionsClient {
         this.baseUrl = baseUrl ?? "https://localhost:7285";
     }
 
-    getAll(): Observable<GetAllQuestionsResponse[]> {
-        let url_ = this.baseUrl + "/questions";
+    getAll(pageNumber: number | undefined, pageSize: number | undefined): Observable<GetAllQuestionsPagedResponse> {
+        let url_ = this.baseUrl + "/questions?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -52,14 +62,14 @@ export class QuestionsClient implements IQuestionsClient {
                 try {
                     return this.processGetAll(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<GetAllQuestionsResponse[]>;
+                    return _observableThrow(e) as any as Observable<GetAllQuestionsPagedResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<GetAllQuestionsResponse[]>;
+                return _observableThrow(response_) as any as Observable<GetAllQuestionsPagedResponse>;
         }));
     }
 
-    protected processGetAll(response: HttpResponseBase): Observable<GetAllQuestionsResponse[]> {
+    protected processGetAll(response: HttpResponseBase): Observable<GetAllQuestionsPagedResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -70,14 +80,7 @@ export class QuestionsClient implements IQuestionsClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(GetAllQuestionsResponse.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = GetAllQuestionsPagedResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -135,6 +138,116 @@ export class QuestionsClient implements IQuestionsClient {
                 fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
             }
             return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    search(searchText: string | undefined, pageNumber: number | undefined, pageSize: number | undefined, category: QuestionCategory | null | undefined): Observable<SearchQuestionsPagedResponse> {
+        let url_ = this.baseUrl + "/questions/search?";
+        if (searchText === null)
+            throw new Error("The parameter 'searchText' cannot be null.");
+        else if (searchText !== undefined)
+            url_ += "SearchText=" + encodeURIComponent("" + searchText) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (category !== undefined && category !== null)
+            url_ += "Category=" + encodeURIComponent("" + category) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearch(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearch(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SearchQuestionsPagedResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SearchQuestionsPagedResponse>;
+        }));
+    }
+
+    protected processSearch(response: HttpResponseBase): Observable<SearchQuestionsPagedResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchQuestionsPagedResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getCategories(): Observable<GetCategoriesResponse> {
+        let url_ = this.baseUrl + "/questions/categories";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCategories(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCategories(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetCategoriesResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetCategoriesResponse>;
+        }));
+    }
+
+    protected processGetCategories(response: HttpResponseBase): Observable<GetCategoriesResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetCategoriesResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -215,6 +328,54 @@ export class WeatherForecastClient implements IWeatherForecastClient {
         }
         return _observableOf(null as any);
     }
+}
+
+export class GetAllQuestionsPagedResponse implements IGetAllQuestionsPagedResponse {
+    questions?: GetAllQuestionsResponse[];
+    totalCount?: number;
+
+    constructor(data?: IGetAllQuestionsPagedResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["questions"])) {
+                this.questions = [] as any;
+                for (let item of _data["questions"])
+                    this.questions!.push(GetAllQuestionsResponse.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): GetAllQuestionsPagedResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAllQuestionsPagedResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.questions)) {
+            data["questions"] = [];
+            for (let item of this.questions)
+                data["questions"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount;
+        return data;
+    }
+}
+
+export interface IGetAllQuestionsPagedResponse {
+    questions?: GetAllQuestionsResponse[];
+    totalCount?: number;
 }
 
 export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
@@ -307,6 +468,188 @@ export class GetAllQuestionsAnswerResponse implements IGetAllQuestionsAnswerResp
 export interface IGetAllQuestionsAnswerResponse {
     id?: number;
     text?: string;
+}
+
+export class SearchQuestionsPagedResponse implements ISearchQuestionsPagedResponse {
+    questions?: SearchQuestionsResponse[];
+    pageCount?: number;
+
+    constructor(data?: ISearchQuestionsPagedResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["questions"])) {
+                this.questions = [] as any;
+                for (let item of _data["questions"])
+                    this.questions!.push(SearchQuestionsResponse.fromJS(item));
+            }
+            this.pageCount = _data["pageCount"];
+        }
+    }
+
+    static fromJS(data: any): SearchQuestionsPagedResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchQuestionsPagedResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.questions)) {
+            data["questions"] = [];
+            for (let item of this.questions)
+                data["questions"].push(item.toJSON());
+        }
+        data["pageCount"] = this.pageCount;
+        return data;
+    }
+}
+
+export interface ISearchQuestionsPagedResponse {
+    questions?: SearchQuestionsResponse[];
+    pageCount?: number;
+}
+
+export class SearchQuestionsResponse implements ISearchQuestionsResponse {
+    id?: number;
+    text?: string;
+    category?: QuestionCategory | undefined;
+
+    constructor(data?: ISearchQuestionsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.category = _data["category"];
+        }
+    }
+
+    static fromJS(data: any): SearchQuestionsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchQuestionsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["category"] = this.category;
+        return data;
+    }
+}
+
+export interface ISearchQuestionsResponse {
+    id?: number;
+    text?: string;
+    category?: QuestionCategory | undefined;
+}
+
+export enum QuestionCategory {
+    OOP = 0,
+    GIT = 1,
+    SQL = 2,
+}
+
+export class GetCategoriesResponse implements IGetCategoriesResponse {
+    categories?: GetCategoriesCategoryResponse[];
+
+    constructor(data?: IGetCategoriesResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(GetCategoriesCategoryResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetCategoriesResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetCategoriesResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IGetCategoriesResponse {
+    categories?: GetCategoriesCategoryResponse[];
+}
+
+export class GetCategoriesCategoryResponse implements IGetCategoriesCategoryResponse {
+    id?: number;
+    name?: string;
+
+    constructor(data?: IGetCategoriesCategoryResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): GetCategoriesCategoryResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetCategoriesCategoryResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IGetCategoriesCategoryResponse {
+    id?: number;
+    name?: string;
 }
 
 export class WeatherForecast implements IWeatherForecast {

@@ -86,9 +86,92 @@
 
  
 .selected {
-    background-color: rgba(0, 0, 255, 0.1); /* Svetlo plava pozadina */
-    border-left: 5px solid #2196F3;  /* Plavi levi okvir */
-    cursor: pointer; /* Cursor koji pokazuje da je red klikabilan */
+    background-color: rgba(179, 179, 255, 0.1); 
+    border-left: 5px solid #3e4347;  
+    cursor: pointer; 
   }
+
+  .filters {
+    display: flex;
+    justify-content:center ;
+    margin-bottom: 20px;
+  }
+  
+  mat-form-field {
+    font-size: 12px; 
+    width: 200px; 
+    height: auto; 
+    margin-bottom: 40px;
+    margin-right: 20px;
+    margin-top: 20px;
+    padding: 0;
+    border: none; 
+    background-color: transparent; 
+ 
+  }
+  
+  mat-form-field mat-label {
+    font-weight: bold;
+    font-size: 12px; 
+  }
+  
+  
+  input[matInput] {
+    font-size: 13px; 
+    padding: 4px 8px; 
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 80%;
+    background-color: white;
+    height: 30px; 
+  }
+  
+  
+  input[matInput]:focus {
+    border-color: #414352;
+    outline: none;
+  }
+  
+
+  mat-select {
+    font-size: 11px; 
+    padding: 4px 8px; 
+    height: 30px; 
+  }
+  
+  .mat-select-value {
+    font-size: 14px;
+    color: #b9b9b9;
+  }
+  
+  .mat-table {
+    width: 100%;
+  }
+  
+  .mat-table .mat-header-cell {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  
+  .mat-table .mat-cell {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .mat-elevation-z8 {
+    margin-top: 20px;
+  }
+  
+ 
+  mat-icon {
+    font-size: 20px;
+  }
+  
+  button[mat-icon-button] {
+    margin: 0;
+  }
+  
+
+ 
   
   

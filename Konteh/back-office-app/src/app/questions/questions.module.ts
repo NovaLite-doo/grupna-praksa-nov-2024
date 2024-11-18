@@ -10,6 +10,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-confirm-dialog.component';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
 
 
 const routes: Routes = [
@@ -34,8 +39,10 @@ const routes: Routes = [
     MatMenuModule,
     MatIconModule,
     MatDialogModule,
-  
-    
+    MatSelectModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule
    
   ]
 })

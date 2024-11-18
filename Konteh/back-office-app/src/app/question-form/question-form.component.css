@@ -1,0 +1,8 @@
+mat-form-field, .label-margin-left {
+    padding-inline: 1rem;
+}
+
+.answers-form {
+    width: 100%;
+    margin-top: 1rem;
+}

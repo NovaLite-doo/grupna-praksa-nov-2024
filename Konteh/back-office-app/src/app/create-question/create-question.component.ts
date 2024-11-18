@@ -1,8 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { CreateQuestionAnswerRequest, CreateQuestionQuestionRequest, QuestionCategory, QuestionsClient, QuestionType } from '../api/api-reference';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CreateAnswersFormComponent } from '../create-answers-form/create-answers-form.component';
 
 @Component({
   selector: 'app-create-question',
@@ -10,9 +9,7 @@ import { CreateAnswersFormComponent } from '../create-answers-form/create-answer
   styleUrls: ['./create-question.component.css']
 })
 export class CreateQuestionComponent {
-  @ViewChild(CreateAnswersFormComponent) createAnswersFormComponent: CreateAnswersFormComponent | undefined;
-
-  createQuestionForm = new FormGroup({
+  questionForm = new FormGroup({
     text: new FormControl('', [Validators.required]),
     category: new FormControl('', [Validators.required]), 
     type: new FormControl('', [Validators.required]),
@@ -22,12 +19,12 @@ export class CreateQuestionComponent {
   constructor(private questionsClient: QuestionsClient) {}
 
   get answers(): FormArray {
-    return this.createQuestionForm.get('answers') as FormArray;
+    return this.questionForm.get('answers') as FormArray;
   }
 
   onSubmit(): void {
-    if (this.createQuestionForm.valid) {
-      const questionData = this.createQuestionForm.value;
+    if (this.questionForm.valid) {
+      const questionData = this.questionForm.value;
 
       const request: CreateQuestionQuestionRequest = new CreateQuestionQuestionRequest();
       request.text = questionData.text!;

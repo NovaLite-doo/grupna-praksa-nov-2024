@@ -49,10 +49,6 @@
     background-color: rgba(30, 30, 30, 1);
 }
 
-mat-form-field, .label-margin-left {
-    padding-inline: 1rem;
-}
-
-.answers-form {
+.question-form {
     width: 100%;
 }

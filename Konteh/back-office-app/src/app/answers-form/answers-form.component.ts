@@ -1,20 +1,20 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DeleteDialog } from '../delete-dialog/delete-dialog.component';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-create-answers-form',
-  templateUrl: './create-answers-form.component.html',
-  styleUrl: './create-answers-form.component.css'
+  selector: 'app-answers-form',
+  templateUrl: './answers-form.component.html',
+  styleUrl: './answers-form.component.css'
 })
-export class CreateAnswersFormComponent {
-  @Input() answers: FormArray<FormGroup> = new FormArray<FormGroup>([]);
+export class AnswersFormComponent {
+  @Input() answersForm: FormArray<FormGroup> = new FormArray<FormGroup>([]);
 
   constructor(public dialog: MatDialog) {}
 
   get parent(): FormGroup {
-    return this.answers.parent as FormGroup
+    return this.answersForm.parent as FormGroup
   }
 
   addAnswer() {
@@ -22,16 +22,16 @@ export class CreateAnswersFormComponent {
       text: new FormControl('', [Validators.required]),
       isCorrect: new FormControl(false)
     });
-    this.answers?.push(answerFormGroup);
+    this.answersForm?.push(answerFormGroup);
   }
 
   removeAnswer(index: number) {
-    this.answers?.removeAt(index);
+    this.answersForm?.removeAt(index);
   }
 
   confirmRemoval(index: number) {
     this.dialog
-      .open(DeleteDialog, {
+      .open(ConfirmationDialogComponent, {
         data: {
           title: "Answer deletion",
           message: "Confirm answer deletion?"

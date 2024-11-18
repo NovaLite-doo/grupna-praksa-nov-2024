@@ -2,13 +2,13 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-delete-dialog',
-  templateUrl: './delete-dialog.component.html',
-  styleUrl: './delete-dialog.component.css'
+  selector: 'app-confirmation-dialog',
+  templateUrl: './confirmation-dialog.component.html',
+  styleUrl: './confirmation-dialog.component.css'
 })
-export class DeleteDialog {
+export class ConfirmationDialogComponent {
   constructor(
-    public dialog: MatDialogRef<DeleteDialog>,
+    public dialog: MatDialogRef<ConfirmationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
     close(): void {

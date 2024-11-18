@@ -1,37 +1,9 @@
 <div class="create-question">
     <p class="page-title">Create question</p>
 
-    <form [formGroup]="createQuestionForm" class="create-question-form" (ngSubmit)="onSubmit()">
-        <div class="form-section">
-            <div class="form-section-title">Question</div>
-
-            <mat-label class="label-margin-left">Question</mat-label>
-
-            <mat-form-field appearance="outline">
-                <mat-label>Text</mat-label>
-                <input matInput formControlName="text" placeholder="Enter question text">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-                <mat-label class="no-margin">Category</mat-label>
-                <mat-select formControlName="category" placeholder="- Select a category -">
-                    <mat-option value="0">OOP</mat-option>
-                    <mat-option value="1">GIT</mat-option>
-                    <mat-option value="2">SQL</mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-                <mat-label>Type</mat-label>
-                <mat-select formControlName="type" placeholder="- Select a type -">
-                    <mat-option value="0">1 choice</mat-option>
-                    <mat-option value="1">Multiple choices</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-
-        <div class="answers-form">
-            <app-create-answers-form [answers]="answers"></app-create-answers-form>
+    <form [formGroup]="questionForm" class="create-question-form" (ngSubmit)="onSubmit()">
+        <div class="question-form">
+            <app-question-form [questionForm]="questionForm"></app-question-form>
         </div>
 
         <button type="submit" class="create-question-btn">Create question</button>

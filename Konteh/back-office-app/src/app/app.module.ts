@@ -8,8 +8,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { CreateQuestionComponent } from './create-question/create-question.component';
-import { CreateAnswersFormComponent } from './create-answers-form/create-answers-form.component';
-import { DeleteDialog } from './delete-dialog/delete-dialog.component';
 
 import { MatFormFieldModule } from '@angular/material/form-field'; 
 import { MatInputModule } from '@angular/material/input';
@@ -17,13 +15,19 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { QuestionFormComponent } from './question-form/question-form.component';
+import { AnswersFormComponent } from './answers-form/answers-form.component';
+import { EditQuestionComponent } from './edit-question/edit-question.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateQuestionComponent,
-    CreateAnswersFormComponent,
-    DeleteDialog
+    QuestionFormComponent,
+    AnswersFormComponent,
+    EditQuestionComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,

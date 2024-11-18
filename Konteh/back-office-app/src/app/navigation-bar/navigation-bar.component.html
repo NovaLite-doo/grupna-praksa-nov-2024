@@ -1,0 +1,18 @@
+<mat-toolbar color="primary">
+  <span>NovaLite</span>
+
+  <div class="spacer"></div> 
+
+  <button mat-button (click)="login()" *ngIf="!isLoggedIn()">Sign in</button>
+  <button mat-button (click)="logout()" *ngIf="isLoggedIn()">Sign out</button>
+
+  <div *ngIf="isLoggedIn()">
+    <a mat-button [routerLink]="['/restricted-page']" routerLinkActive="active">[RESTRICTED-PAGE]</a>
+  </div>
+
+  <div>
+    <a mat-button [routerLink]="['/public-page']" routerLinkActive="active">[PUBLIC-PAGE]</a>
+  </div>
+
+  <button (click)="test()" *ngIf="isLoggedIn()">test</button>
+</mat-toolbar> 

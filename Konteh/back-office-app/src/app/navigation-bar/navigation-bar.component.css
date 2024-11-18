@@ -1,0 +1,30 @@
+mat-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .spacer {
+    flex: 1; 
+  }
+  
+  a.mat-button {
+    margin-left: 10px;
+  }
+  
+  button.mat-button {
+    margin-left: 10px;
+  }
+  
+  button.mat-icon-button {
+    margin-left: 10px;
+  }
+  
+  a.router-link-active {
+    font-weight: bold;
+    color: #2196f3;
+  }
+  
+  mat-icon {
+    font-size: 24px;
+  }

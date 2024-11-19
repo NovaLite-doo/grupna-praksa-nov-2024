@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { QuestionCategory, QuestionType } from '../api/api-reference';
 
 @Component({
@@ -13,8 +13,8 @@ export class QuestionFormComponent {
 
   @Input() questionForm: FormGroup = new FormGroup([]);
 
-  get answers(): FormArray {
-    return this.questionForm.get('answers') as FormArray;
+  get answers(): FormArray<FormGroup> {
+    return this.questionForm.get('answers') as FormArray<FormGroup>;
   }
 
   get typeKeys() {
@@ -33,5 +33,14 @@ export class QuestionFormComponent {
 
   getTypeValue(type: string): number {
     return this.questionTypes[type as keyof typeof this.questionTypes];
+  }
+
+  addAnswer() {
+    const answerFormGroup = new FormGroup({
+      id: new FormControl(),
+      text: new FormControl('', [Validators.required]),
+      isCorrect: new FormControl(false)
+    });
+    this.answers.push(answerFormGroup);
   }
 }

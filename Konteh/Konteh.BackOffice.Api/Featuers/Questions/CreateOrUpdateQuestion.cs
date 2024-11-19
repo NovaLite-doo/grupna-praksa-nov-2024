@@ -1,31 +1,24 @@
-﻿using Konteh.Domain;
-using Konteh.Domain.Enumeration;
+﻿using Konteh.Domain.Enumeration;
+using Konteh.Domain;
 using Konteh.Infrastructure.Repository;
 using MediatR;
 
 namespace Konteh.BackOffice.Api.Featuers.Questions
 {
-    public class EditQuestion
+    public class CreateOrUpdateQuestion
     {
         public class QuestionRequest : IRequest<Unit>
         {
-            public int Id { get; set; }
+            public int? Id { get; set; }
             public string Text { get; set; } = string.Empty;
             public QuestionCategory Category { get; set; }
             public QuestionType Type { get; set; }
             public IEnumerable<AnswerRequest> Answers { get; set; } = [];
-            public IEnumerable<NewAnswerRequest> NewAnswers { get; set; } = [];
         }
 
         public class AnswerRequest
         {
-            public int Id { get; set; }
-            public string Text { get; set; } = string.Empty;
-            public bool IsCorrect { get; set; }
-        }
-
-        public class NewAnswerRequest
-        {
+            public int? Id { get; set; }
             public string Text { get; set; } = string.Empty;
             public bool IsCorrect { get; set; }
         }
@@ -41,7 +34,41 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
             public async Task<Unit> Handle(QuestionRequest request, CancellationToken cancellationToken)
             {
-                var question = await _questionRepository.Get(request.Id);
+                if (request.Id == null) 
+                {
+                    Create(request, cancellationToken);
+                } 
+                else
+                {
+                    await Edit(request, cancellationToken);
+                }
+
+                await _questionRepository.SaveChanges();
+
+                return Unit.Value;
+            }
+
+            private void Create(QuestionRequest request, CancellationToken cancellationToken)
+            {
+                var question = new Question()
+                {
+                    Text = request.Text,
+                    Category = request.Category,
+                    Type = request.Type
+                };
+                var answers = request.Answers.Select(x => new Answer
+                {
+                    Text = x.Text,
+                    IsCorrect = x.IsCorrect
+                }).ToList();
+                question.Answers = answers;
+
+                _questionRepository.Create(question);
+            }
+
+            private async Task Edit(QuestionRequest request, CancellationToken cancellationToken)
+            {
+                var question = await _questionRepository.Get(request.Id ?? -1);
 
                 if (question == null)
                 {
@@ -56,23 +83,19 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                 };
                 var updatedAnswers = request.Answers.Where(x => x.Id != null).Select(x => new Answer
                 {
-                    Id = x.Id,
+                    Id = x.Id ?? -1,
                     Text = x.Text,
                     IsCorrect = x.IsCorrect
-                });
-                updatedQuestion.AddAnswers(updatedAnswers);
+                }).ToList();
+                updatedQuestion.Answers = updatedAnswers;
 
-                var newAnswers = request.NewAnswers.Select(x => new Answer
+                var newAnswers = request.Answers.Where(x => x.Id == null).Select(x => new Answer
                 {
                     Text = x.Text,
                     IsCorrect = x.IsCorrect
                 });
 
                 question.Edit(updatedQuestion, newAnswers);
-
-                await _questionRepository.SaveChanges();
-
-                return Unit.Value;
             }
         }
     }

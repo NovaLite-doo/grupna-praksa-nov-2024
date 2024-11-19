@@ -16,15 +16,20 @@ const routes: Routes = [
     path: 'public-page', 
     component: PublicPageComponent,  
   },
-  { 
-    path: 'create-question', 
-    component: CreateEditQuestionComponent,
-    canActivate: [MaslGuard]
-  },
-  { 
-    path: 'edit-question/:id', 
-    component: CreateEditQuestionComponent,
-    canActivate: [MaslGuard]
+  {
+    path: 'questions',
+    children: [
+      {
+        path: 'add',
+        component: CreateEditQuestionComponent,
+        canActivate: [MaslGuard],
+      },
+      {
+        path: ':id',
+        component: CreateEditQuestionComponent,
+        canActivate: [MaslGuard], 
+      }
+    ]
   }
 ]
 

@@ -22,9 +22,9 @@ import { NavigationBarComponent } from './navigation-bar/navigation-bar.componen
 import { PublicPageComponent } from './public-page/public-page.component';
 import { RestrictedPageComponent } from './restricted-page/restricted-page.component';
 import { QuestionFormComponent } from './question-form/question-form.component';
-import { AnswersFormComponent } from './answers-form/answers-form.component';
-import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
 import { CreateEditQuestionComponent } from './create-edit-question/create-edit-question.component';
+import { AnswerFormComponent } from './answer-form/answer-form.component';
 
 
 export function MSALInstanceFactory(): IPublicClientApplication {
@@ -54,12 +54,12 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   declarations: [
     AppComponent,
     QuestionFormComponent,
-    AnswersFormComponent,
     ConfirmationDialogComponent,
     CreateEditQuestionComponent,
     NavigationBarComponent,
     PublicPageComponent,
-    RestrictedPageComponent
+    RestrictedPageComponent,
+    AnswerFormComponent
   ],
   imports: [
     BrowserModule,

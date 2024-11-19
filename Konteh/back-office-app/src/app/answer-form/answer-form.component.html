@@ -1,0 +1,19 @@
+<div class="answer-form" [formGroup]="answerForm">
+    <div>
+        <div class="answer-form-top">
+            <mat-label class="label-margin-left">Answer {{ index + 1 }}</mat-label>
+            <button mat-icon-button type="button" (click)="confirmRemoval()" class="remove-answer-btn">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+        
+        <mat-form-field appearance="outline" class="answer-text">
+            <mat-label>Text</mat-label>
+            <input matInput formControlName="text" placeholder="Enter question text">
+        </mat-form-field>
+
+        <mat-checkbox formControlName="isCorrect" labelPosition="before" class="answer-is-correct">Is correct:</mat-checkbox>
+
+        <div class="black-hr"></div>
+    </div>
+</div>

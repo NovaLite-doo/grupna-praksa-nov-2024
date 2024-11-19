@@ -36,23 +36,8 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             }
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Unit>> Create(CreateQuestion.QuestionRequest request)
-        {
-            try
-            {
-                await _mediator.Send(request);
-
-                return Created();
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
         [HttpPut]
-        public async Task<ActionResult<Unit>> Edit(EditQuestion.QuestionRequest request)
+        public async Task<IActionResult> CreateOrUpdate(CreateOrUpdateQuestion.QuestionRequest request)
         {
             try
             {

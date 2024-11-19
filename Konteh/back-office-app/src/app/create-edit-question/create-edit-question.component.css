@@ -49,6 +49,10 @@
     background-color: rgba(30, 30, 30, 1);
 }
 
+.create-edit-question-btn-icon {
+    margin-right: 0.5rem;
+}
+
 .question-form {
     width: 100%;
 }

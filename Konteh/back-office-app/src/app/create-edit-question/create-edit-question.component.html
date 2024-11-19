@@ -1,6 +1,6 @@
 <div class="create-edit-question">
     <p class="page-title">
-        {{ id ? 'Edit question' : 'Create question' }}
+        {{ id ? 'Edit question' : 'Add question' }}
     </p>
 
     <form [formGroup]="questionForm" class="create-edit-question-form" (ngSubmit)="onSubmit()">
@@ -9,7 +9,10 @@
         </div>
 
         <button type="submit" class="create-edit-question-btn">
-            {{ id ? 'Save changes' : 'Create question' }}
+            <mat-icon class="create-edit-question-btn-icon">
+                {{ id ? 'edit' : 'add' }}
+            </mat-icon> 
+            {{ id ? 'Save' : 'Add' }}
         </button>
     </form>
 

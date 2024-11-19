@@ -22,7 +22,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
         }
 
         [HttpGet("generate-candidate-test")]
-        public async Task<ActionResult<IEnumerable<GetRandomQuestions.Response>>> GenerateCandidateTest()
+        public async Task<ActionResult<GetRandomQuestions.Response>> GenerateCandidateTest()
         {
             var response = await _mediator.Send(new GetRandomQuestions.Query());
 

@@ -2,9 +2,9 @@
 using Konteh.Infrastructure.Repository;
 using MediatR;
 
-namespace Konteh.BackOffice.Api.Featuers.Questions
+namespace Konteh.FrontOffice.Api.Features.Exams
 {
-    public static class GetRandomQuestions
+    public static class GetExam
     {
         public class Query : IRequest<Response>;
         public class Response
@@ -45,9 +45,9 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                 foreach (var categoryGroup in groupedByCategory)
                 {
                     var randomQuestions = categoryGroup
-                        .OrderBy(x => random.Next()) 
-                        .Take(2) 
-                        .ToList();      
+                        .OrderBy(x => random.Next())
+                        .Take(2)
+                        .ToList();
 
                     foreach (var question in randomQuestions)
                     {
@@ -59,7 +59,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
                         examQuestions.Add(examQuestion);
                     }
- 
+
                 }
 
                 var examQuestionResponses = examQuestions.Select(eq => new ExamQuestionResponse
@@ -77,5 +77,6 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                 return response;
             }
         }
+
     }
 }

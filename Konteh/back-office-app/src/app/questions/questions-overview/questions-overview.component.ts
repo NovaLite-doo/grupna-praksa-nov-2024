@@ -5,6 +5,7 @@ import { Question } from '../../services/questions.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import {  GetCategoriesCategoryResponse,  QuestionsClient } from '../../api/api-reference';
+import { debounceTime, distinctUntilChanged, Subject, Subscription, switchMap } from 'rxjs';
 
 
 
@@ -27,17 +28,70 @@ export class QuestionsOverviewComponent {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   
- 
+  private searchSubject: Subject<string> = new Subject<string>();
+  private searchSubscription: Subscription | null = null;
 
   
   constructor(private questionsClient: QuestionsClient,   private dialog: MatDialog ) {}
 
   
-
   ngOnInit(): void {
-    this.loadCategories();
-    this.loadQuestions(this.pageNumber, this.pageSize);
+  this.loadCategories();
+  this.loadQuestions(this.pageNumber, this.pageSize);
+
+  this.searchSubscription = this.searchSubject.pipe(
+    debounceTime(500),
+    distinctUntilChanged(),
+    switchMap((searchText) => {
+      const categoryId = this.selectedCategory ? this.selectedCategory.id : undefined;
+      if (!searchText.trim()) {
+        return this.questionsClient.getAll(this.pageNumber, this.pageSize);  
+      } else {
+        return this.questionsClient.search(searchText, this.pageNumber, this.pageSize, categoryId);
+      }
+    })
+  ).subscribe(
+    (response) => {
+
+
+      const questions = (response.questions ?? [])
+        .filter(q => q.id !== undefined)
+        .map(q => ({
+          id: q.id ?? 0,
+          text: q.text ?? '',
+          answers: []
+        }));
+
+     
+      if ('totalCount' in response) {
+        
+        this.totalCount = response.totalCount ?? 0;
+      } else if ('pageCount' in response) {
+        
+        this.totalCount = response.pageCount ?? 0;
+      } else {
+        
+        this.totalCount = 0;
+      }
+
+      this.dataSource.data = questions;
+
+      if (this.paginator) {
+        this.paginator.length = this.totalCount;
+      }
+    },
+    
+  );
+}
+
   
+  
+
+  ngOnDestroy(): void {
+   
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
   
   loadQuestions(pageNumber: number, pageSize: number): void {
@@ -64,9 +118,7 @@ export class QuestionsOverviewComponent {
           this.paginator.length = this.totalCount;
         }
       },
-      (error) => {
-        console.error('Error loading questions:', error);
-      }
+      
     );
   }
 
@@ -76,10 +128,7 @@ export class QuestionsOverviewComponent {
        
         this.categories = response.categories ?? []; 
       },
-      (error) => {
-        console.error('Error loading categories:', error);
-        alert('An error occurred while loading categories.');
-      }
+      
     );
   }
   
@@ -115,19 +164,14 @@ export class QuestionsOverviewComponent {
        
         this.dataSource.data = this.dataSource.data.filter(q => q.id !== question.id);
       },
-      (error) => {
-        console.error('Error while deleting the question: ', error);
-        alert('An error occurred while deleting the question.');
-      }
+      
     );
   }
 
   searchQuestions(pageNumber: number, pageSize: number): void {
     
     let search = this.searchText !== '' ? this.searchText : undefined;
-  
-    
-    let categoryId = this.selectedCategory && this.selectedCategory.id !== 0 ? this.selectedCategory.id : undefined;
+    const categoryId = this.selectedCategory ? this.selectedCategory.id : undefined;
   
    
     this.questionsClient.search(search, pageNumber, pageSize, categoryId).subscribe(
@@ -147,34 +191,31 @@ export class QuestionsOverviewComponent {
           this.paginator.length = this.totalCount;
         }
       },
-      (error) => {
-        console.error('Error loading questions:', error);
-      }
+      
     );
   }
   
   
+  onSearchChange(): void {
+   
+    if (this.searchText.trim() === '') {
+      this.searchSubject.next('');  
+      this.loadQuestions(this.pageNumber, this.pageSize);
+    } else {
+      this.searchSubject.next(this.searchText);  
+    }
+  }
 
   onPageChange(event: any): void {
     this.pageNumber = event.pageIndex + 1;  
     this.pageSize = event.pageSize;  
+
     if (this.searchText || this.selectedCategory) {
       this.searchQuestions(this.pageNumber, this.pageSize);  
     } else {
       this.loadQuestions(this.pageNumber, this.pageSize); 
     }
   }
-
-  onSearchChange(): void {
-    
-    if (!this.searchText) {
-      this.loadQuestions(this.pageNumber, this.pageSize);
-    } else {
-    
-      this.searchQuestions(this.pageNumber, this.pageSize);
-    }
-  }
-  
 
   onCategoryChange(): void {
     this.pageNumber = 1; 

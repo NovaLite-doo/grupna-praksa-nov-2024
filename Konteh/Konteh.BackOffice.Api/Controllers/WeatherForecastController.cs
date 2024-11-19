@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Konteh.BackOffice.Api.Controllers
 {
@@ -17,7 +19,8 @@ namespace Konteh.BackOffice.Api.Controllers
         {
             _logger = logger;
         }
-
+        
+        [Authorize]
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {

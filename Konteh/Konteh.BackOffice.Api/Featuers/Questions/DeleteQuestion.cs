@@ -21,9 +21,6 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                 _questionRepository = questionRepository;
             }
 
-
-
-
             public async Task Handle(Command request, CancellationToken cancellationToken)
             {
 

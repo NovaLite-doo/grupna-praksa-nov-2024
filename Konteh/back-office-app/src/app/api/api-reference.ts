@@ -381,6 +381,7 @@ export interface IGetAllQuestionsPagedResponse {
 export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
     id?: number;
     text?: string;
+    category?: QuestionCategory;
     answers?: GetAllQuestionsAnswerResponse[];
 
     constructor(data?: IGetAllQuestionsResponse) {
@@ -396,6 +397,7 @@ export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
         if (_data) {
             this.id = _data["id"];
             this.text = _data["text"];
+            this.category = _data["category"];
             if (Array.isArray(_data["answers"])) {
                 this.answers = [] as any;
                 for (let item of _data["answers"])
@@ -415,6 +417,7 @@ export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["text"] = this.text;
+        data["category"] = this.category;
         if (Array.isArray(this.answers)) {
             data["answers"] = [];
             for (let item of this.answers)
@@ -427,7 +430,14 @@ export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
 export interface IGetAllQuestionsResponse {
     id?: number;
     text?: string;
+    category?: QuestionCategory;
     answers?: GetAllQuestionsAnswerResponse[];
+}
+
+export enum QuestionCategory {
+    OOP = 0,
+    GIT = 1,
+    SQL = 2,
 }
 
 export class GetAllQuestionsAnswerResponse implements IGetAllQuestionsAnswerResponse {
@@ -560,12 +570,6 @@ export interface ISearchQuestionsResponse {
     id?: number;
     text?: string;
     category?: QuestionCategory | undefined;
-}
-
-export enum QuestionCategory {
-    OOP = 0,
-    GIT = 1,
-    SQL = 2,
 }
 
 export class GetCategoriesResponse implements IGetCategoriesResponse {

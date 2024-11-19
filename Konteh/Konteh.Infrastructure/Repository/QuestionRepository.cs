@@ -10,12 +10,11 @@ namespace Konteh.Infrastructure.Repository
         {
         }
 
-        public override async Task<IList<Question>> GetAll()
+        public override async Task<IEnumerable<Question>> GetAll()
         {
             return await _dbSet
                 .Where(q => !q.IsDeleted)
-                .Include(x => x.Answers)
-                .ToListAsync();
+                .Include(x => x.Answers).ToListAsync();
         }
 
         public override void Delete(Question entity)

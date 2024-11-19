@@ -4,8 +4,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Question } from '../../services/questions.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-import {  GetCategoriesCategoryResponse,  QuestionsClient } from '../../api/api-reference';
+
 import { debounceTime, distinctUntilChanged, Subject, Subscription, switchMap } from 'rxjs';
+import { GetCategoriesCategoryResponse, QuestionsClient } from '../../api/api-reference';
 
 
 
@@ -36,56 +37,37 @@ export class QuestionsOverviewComponent {
 
   
   ngOnInit(): void {
-  this.loadCategories();
-  this.loadQuestions(this.pageNumber, this.pageSize);
-
-  this.searchSubscription = this.searchSubject.pipe(
-    debounceTime(500),
-    distinctUntilChanged(),
-    switchMap((searchText) => {
-      const categoryId = this.selectedCategory ? this.selectedCategory.id : undefined;
-      if (!searchText.trim()) {
-        return this.questionsClient.getAll(this.pageNumber, this.pageSize);  
-      } else {
-        return this.questionsClient.search(searchText, this.pageNumber, this.pageSize, categoryId);
-      }
-    })
-  ).subscribe(
-    (response) => {
-
-
-      const questions = (response.questions ?? [])
-        .filter(q => q.id !== undefined)
-        .map(q => ({
-          id: q.id ?? 0,
-          text: q.text ?? '',
-          answers: []
-        }));
-
-     
-      if ('totalCount' in response) {
+    this.loadCategories();
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap((searchText) => {
+        const categoryId = this.selectedCategory ? this.selectedCategory.id : undefined;
         
-        this.totalCount = response.totalCount ?? 0;
-      } else if ('pageCount' in response) {
-        
+       
+        return this.questionsClient.search(searchText.trim() || undefined, this.pageNumber, this.pageSize, categoryId);
+      })
+    ).subscribe(
+      (response) => {
+        const questions = (response.questions ?? [])
+          .filter(q => q.id !== undefined)
+          .map(q => ({
+            id: q.id ?? 0,
+            text: q.text ?? '',
+            answers: []
+          }));
+
         this.totalCount = response.pageCount ?? 0;
-      } else {
-        
-        this.totalCount = 0;
+
+        this.dataSource.data = questions;
+
+        if (this.paginator) {
+          this.paginator.length = this.totalCount;
+        }
       }
-
-      this.dataSource.data = questions;
-
-      if (this.paginator) {
-        this.paginator.length = this.totalCount;
-      }
-    },
-    
-  );
-}
-
-  
-  
+    );
+    this.searchSubject.next(''); 
+  }
 
   ngOnDestroy(): void {
    
@@ -95,7 +77,9 @@ export class QuestionsOverviewComponent {
   }
   
   loadQuestions(pageNumber: number, pageSize: number): void {
-    this.questionsClient.getAll(pageNumber, pageSize).subscribe(
+    const categoryId = this.selectedCategory ? this.selectedCategory.id : undefined;
+    let search = this.searchText !== '' ? this.searchText : undefined;
+    this.questionsClient.search(search, this.pageNumber, this.pageSize, categoryId).subscribe(
       (response) => {
        
         const questions = (response.questions ?? [])
@@ -103,15 +87,12 @@ export class QuestionsOverviewComponent {
           .map(q => ({
             id: q.id ?? 0,
             text: q.text ?? '', 
-            answers: (q.answers ?? []).map(a => ({
-              id: a.id ?? 0, 
-              text: a.text ?? '' 
-            })) 
+            answers: []
           }));
 
         
         this.dataSource.data = questions;
-        this.totalCount = response.totalCount ?? 0;
+        this.totalCount = response.pageCount ?? 0;
 
        
         if (this.paginator) {
@@ -169,32 +150,28 @@ export class QuestionsOverviewComponent {
   }
 
   searchQuestions(pageNumber: number, pageSize: number): void {
-    
-    let search = this.searchText !== '' ? this.searchText : undefined;
+    let search = this.searchText.trim() || null; 
     const categoryId = this.selectedCategory ? this.selectedCategory.id : undefined;
-  
-   
-    this.questionsClient.search(search, pageNumber, pageSize, categoryId).subscribe(
+
+    this.questionsClient.search(search!, pageNumber, pageSize, categoryId).subscribe(
       (response) => {
         const questions = (response.questions ?? [])
           .filter(q => q.id !== undefined)
           .map(q => ({
             id: q.id ?? 0,
             text: q.text ?? '',
-            answers: [] 
+            answers: []
           }));
-  
+
         this.dataSource.data = questions;
         this.totalCount = response.pageCount ?? 0;
-  
+
         if (this.paginator) {
           this.paginator.length = this.totalCount;
         }
-      },
-      
+      }
     );
   }
-  
   
   onSearchChange(): void {
    

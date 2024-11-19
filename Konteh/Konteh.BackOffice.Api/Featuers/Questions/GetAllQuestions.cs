@@ -1,4 +1,5 @@
 ﻿using Konteh.Domain;
+using Konteh.Domain.Enumeration;
 using Konteh.Infrastructure.Repository;
 using MediatR;
 
@@ -22,6 +23,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
         {
             public int Id { get; set; }
             public string Text { get; set; } = string.Empty;
+            public QuestionCategory Category { get; set; }
             public IEnumerable<AnswerResponse> Answers { get; set; } = [];
         }
         public class AnswerResponse
@@ -45,23 +47,24 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                 var allQuestions = await _questionRepository.GetAll();
 
 
-                var totalCount = allQuestions.Count;
-
+                var totalCount = allQuestions.Count();
 
                 var questions = allQuestions
-                    .Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize)
-                    .Select(x => new Response
-                    {
-                        Id = x.Id,
-                        Text = x.Text,
-                        Answers = x.Answers.Select(a => new AnswerResponse
-                        {
-                            Id = a.Id,
-                            Text = a.Text
-                        })
-                    })
-                    .ToList();
+                                .Skip((request.PageNumber - 1) * request.PageSize)
+                                .Take(request.PageSize)
+                                .Select(x => new Response
+                                {
+                                    Id = x.Id,
+                                    Text = x.Text,
+                                    Category = x.Category,
+                                    Answers = x.Answers.Select(a => new AnswerResponse
+                                    {
+                                        Id = a.Id,
+                                        Text = a.Text
+                                    }).ToList()
+                                })
+                                .ToList();
+
 
                 return new PagedResponse
                 {

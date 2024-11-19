@@ -19,7 +19,7 @@ namespace Konteh.Infrastructure.Repository
 
         public async Task<T?> Get(int id) => await _dbSet.FindAsync(id);
 
-        public virtual async Task<IList<T>> GetAll() => await _dbSet.ToListAsync();
+        public virtual async Task<IEnumerable<T>> GetAll() => await _dbSet.ToListAsync();
 
         public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
 

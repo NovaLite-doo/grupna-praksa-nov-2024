@@ -57,77 +57,73 @@ export class CreateEditQuestionComponent {
   }
 
   onSubmit(): void {
-    if(this.id) {
-      this.editQuestion();
+    if(this.questionForm.valid) {
+      if(this.id) {
+        this.editQuestion();
+      } else {
+        this.createQuestion();
+      }
     } else {
-      this.createQuestion();
+      console.log('Form is not valid');
     }
   }
 
   createQuestion(): void {
-    if (this.questionForm.valid) {
-      const questionData = this.questionForm.value;
+    const questionData = this.questionForm.value;
 
-      const request: CreateQuestionQuestionRequest = new CreateQuestionQuestionRequest();
-      request.text = questionData.text!;
-      request.category = questionData.category ? questionData.category : QuestionCategory.GIT;
-      request.type = questionData.type ? questionData.type : QuestionType.Checkbox;
+    const request: CreateQuestionQuestionRequest = new CreateQuestionQuestionRequest();
+    request.text = questionData.text!;
+    request.category = questionData.category ? questionData.category : QuestionCategory.GIT;
+    request.type = questionData.type ? questionData.type : QuestionType.Checkbox;
 
-      request.answers = questionData.answers!.map((answer: { text: string, isCorrect: boolean }) => {
-        return new CreateQuestionAnswerRequest({
-          text: answer.text,
-          isCorrect: answer.isCorrect
-        });
+    request.answers = questionData.answers!.map((answer: { text: string, isCorrect: boolean }) => {
+      return new CreateQuestionAnswerRequest({
+        text: answer.text,
+        isCorrect: answer.isCorrect
       });
+    });
 
-      this.questionsClient.create(request)
-        .subscribe(response => {
-          console.log('Question created successfully', response);
-        }, (error: HttpErrorResponse) => {
-          console.error('Error creating question', error);
-        });
-    } else {
-      console.log('Form is not valid');
-    }
+    this.questionsClient.create(request)
+      .subscribe(response => {
+        console.log('Question created successfully', response);
+      }, (error: HttpErrorResponse) => {
+        console.error('Error creating question', error);
+    });
   }
 
   editQuestion() {
-    if (this.questionForm.valid) {
-      const questionData = this.questionForm.value;
+    const questionData = this.questionForm.value;
 
-      const request: EditQuestionQuestionRequest = new EditQuestionQuestionRequest();
-      request.id = this.id!;
-      request.text = questionData.text!;
-      request.category = questionData.category ? questionData.category : QuestionCategory.OOP;
-      request.type = questionData.type ? questionData.type : QuestionType.Radiobutton;
+    const request: EditQuestionQuestionRequest = new EditQuestionQuestionRequest();
+    request.id = this.id!;
+    request.text = questionData.text!;
+    request.category = questionData.category ? questionData.category : QuestionCategory.OOP;
+    request.type = questionData.type ? questionData.type : QuestionType.Radiobutton;
 
-      request.answers = questionData.answers!
-        .filter((answer: { id: number | null, text: string, isCorrect: boolean }) => answer.id !== null)
-        .map((answer: { id: number, text: string, isCorrect: boolean }) => {
-          return new EditQuestionAnswerRequest({
-            id: answer.id,
-            text: answer.text,
-            isCorrect: answer.isCorrect
-          });
-      });
-
-      request.newAnswers = questionData.answers!
-        .filter((answer: { id: number | null, text: string, isCorrect: boolean }) => answer.id === null)
-        .map((answer: { text: string, isCorrect: boolean }) => {
-          return new EditQuestionNewAnswerRequest({
-            text: answer.text,
-            isCorrect: answer.isCorrect
-          });
-      });
-
-      this.questionsClient.edit(request)
-        .subscribe(response => {
-          console.log('Question edited successfully', response);
-        }, (error: HttpErrorResponse) => {
-          console.error('Error edited question', error);
+    request.answers = questionData.answers!
+      .filter((answer: { id: number | null, text: string, isCorrect: boolean }) => answer.id !== null)
+      .map((answer: { id: number, text: string, isCorrect: boolean }) => {
+        return new EditQuestionAnswerRequest({
+          id: answer.id,
+          text: answer.text,
+          isCorrect: answer.isCorrect
         });
-    } else {
-      console.log('Form is not valid');
-    }
+    });
+
+    request.newAnswers = questionData.answers!
+      .filter((answer: { id: number | null, text: string, isCorrect: boolean }) => answer.id === null)
+      .map((answer: { text: string, isCorrect: boolean }) => {
+        return new EditQuestionNewAnswerRequest({
+          text: answer.text,
+          isCorrect: answer.isCorrect
+        });
+    });
+
+    this.questionsClient.edit(request)
+      .subscribe(response => {
+        console.log('Question edited successfully', response);
+      }, (error: HttpErrorResponse) => {
+        console.error('Error edited question', error);
+    });
   }
 }

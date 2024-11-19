@@ -54,6 +54,8 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
         [HttpPut]
         public async Task<ActionResult<Unit>> Edit(EditQuestion.QuestionRequest request)
         {
+            await _mediator.Send(request);
+            return Ok();
             try
             {
                 await _mediator.Send(request);

@@ -660,6 +660,7 @@ export class EditQuestionQuestionRequest implements IEditQuestionQuestionRequest
     category?: QuestionCategory;
     type?: QuestionType;
     answers?: EditQuestionAnswerRequest[];
+    newAnswers?: EditQuestionNewAnswerRequest[];
 
     constructor(data?: IEditQuestionQuestionRequest) {
         if (data) {
@@ -680,6 +681,11 @@ export class EditQuestionQuestionRequest implements IEditQuestionQuestionRequest
                 this.answers = [] as any;
                 for (let item of _data["answers"])
                     this.answers!.push(EditQuestionAnswerRequest.fromJS(item));
+            }
+            if (Array.isArray(_data["newAnswers"])) {
+                this.newAnswers = [] as any;
+                for (let item of _data["newAnswers"])
+                    this.newAnswers!.push(EditQuestionNewAnswerRequest.fromJS(item));
             }
         }
     }
@@ -702,6 +708,11 @@ export class EditQuestionQuestionRequest implements IEditQuestionQuestionRequest
             for (let item of this.answers)
                 data["answers"].push(item.toJSON());
         }
+        if (Array.isArray(this.newAnswers)) {
+            data["newAnswers"] = [];
+            for (let item of this.newAnswers)
+                data["newAnswers"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -712,10 +723,11 @@ export interface IEditQuestionQuestionRequest {
     category?: QuestionCategory;
     type?: QuestionType;
     answers?: EditQuestionAnswerRequest[];
+    newAnswers?: EditQuestionNewAnswerRequest[];
 }
 
 export class EditQuestionAnswerRequest implements IEditQuestionAnswerRequest {
-    id?: number | undefined;
+    id?: number;
     text?: string;
     isCorrect?: boolean;
 
@@ -753,7 +765,47 @@ export class EditQuestionAnswerRequest implements IEditQuestionAnswerRequest {
 }
 
 export interface IEditQuestionAnswerRequest {
-    id?: number | undefined;
+    id?: number;
+    text?: string;
+    isCorrect?: boolean;
+}
+
+export class EditQuestionNewAnswerRequest implements IEditQuestionNewAnswerRequest {
+    text?: string;
+    isCorrect?: boolean;
+
+    constructor(data?: IEditQuestionNewAnswerRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.text = _data["text"];
+            this.isCorrect = _data["isCorrect"];
+        }
+    }
+
+    static fromJS(data: any): EditQuestionNewAnswerRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditQuestionNewAnswerRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["text"] = this.text;
+        data["isCorrect"] = this.isCorrect;
+        return data;
+    }
+}
+
+export interface IEditQuestionNewAnswerRequest {
     text?: string;
     isCorrect?: boolean;
 }

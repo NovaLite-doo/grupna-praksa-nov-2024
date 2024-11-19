@@ -29,7 +29,7 @@ namespace Konteh.Domain
             Answers.AddRange(answers);
         }
 
-        public void Edit(Question question)
+        public void Edit(Question question, IEnumerable<Answer> answers)
         {
             question.Validate();
 
@@ -44,11 +44,9 @@ namespace Konteh.Domain
                 {
                     originalAnswer.Edit(answer);
                 }
-                else
-                {
-                    Answers.Add(answer);
-                }
             }
+
+            AddAnswers(answers);
         }
     }
 }

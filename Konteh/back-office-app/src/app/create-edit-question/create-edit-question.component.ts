@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import { CreateQuestionAnswerRequest, CreateQuestionQuestionRequest, EditQuestionAnswerRequest, EditQuestionQuestionRequest, GetQuestionByIdResponse, QuestionCategory, QuestionsClient, QuestionType } from '../api/api-reference';
+import { CreateQuestionAnswerRequest, CreateQuestionQuestionRequest, EditQuestionAnswerRequest, EditQuestionNewAnswerRequest, EditQuestionQuestionRequest, GetQuestionByIdResponse, QuestionCategory, QuestionsClient, QuestionType } from '../api/api-reference';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 
@@ -101,12 +101,23 @@ export class CreateEditQuestionComponent {
       request.category = questionData.category ? questionData.category : QuestionCategory.OOP;
       request.type = questionData.type ? questionData.type : QuestionType.Radiobutton;
 
-      request.answers = questionData.answers!.map((answer: { id: number, text: string, isCorrect: boolean }) => {
-        return new EditQuestionAnswerRequest({
-          id: answer.id,
-          text: answer.text,
-          isCorrect: answer.isCorrect
-        });
+      request.answers = questionData.answers!
+        .filter((answer: { id: number | null, text: string, isCorrect: boolean }) => answer.id !== null)
+        .map((answer: { id: number, text: string, isCorrect: boolean }) => {
+          return new EditQuestionAnswerRequest({
+            id: answer.id,
+            text: answer.text,
+            isCorrect: answer.isCorrect
+          });
+      });
+
+      request.newAnswers = questionData.answers!
+        .filter((answer: { id: number | null, text: string, isCorrect: boolean }) => answer.id === null)
+        .map((answer: { text: string, isCorrect: boolean }) => {
+          return new EditQuestionNewAnswerRequest({
+            text: answer.text,
+            isCorrect: answer.isCorrect
+          });
       });
 
       this.questionsClient.edit(request)

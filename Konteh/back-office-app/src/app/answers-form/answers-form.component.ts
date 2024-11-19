@@ -19,7 +19,7 @@ export class AnswersFormComponent {
 
   addAnswer() {
     const answerFormGroup = new FormGroup({
-      id: new FormControl(-1),
+      id: new FormControl(),
       text: new FormControl('', [Validators.required]),
       isCorrect: new FormControl(false)
     });

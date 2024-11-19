@@ -58,7 +58,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QuestionsModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
     MsalModule, 
     HttpClientModule,
     MatToolbarModule,  

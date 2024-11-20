@@ -10,6 +10,7 @@ namespace Konteh.Domain
         public List<Answer> Answers { get; set; } = [];
         public QuestionCategory Category { get; set; }
         public QuestionType Type { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public void Edit(Question updatedQuestion, IEnumerable<Answer> newAnswers)
         {

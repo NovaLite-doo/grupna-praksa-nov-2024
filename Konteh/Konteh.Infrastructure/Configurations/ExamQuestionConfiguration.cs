@@ -11,7 +11,10 @@ namespace Konteh.Infrastructure.Configurations
 
             builder
                 .HasMany(e => e.SubmittedAnswers)
-                .WithMany();
+                .WithMany()
+                .UsingEntity<ExamQuestionAnswer>(
+                l => l.HasOne<Answer>().WithMany().OnDelete(DeleteBehavior.NoAction),
+                r => r.HasOne<ExamQuestion>().WithMany().OnDelete(DeleteBehavior.NoAction));
 
             builder
                 .HasOne(e => e.Question)

@@ -28,9 +28,9 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
         public class RequestHandler : IRequestHandler<Query, Response>
         {
-            private readonly IRepository<Question> _questionRepository;
+            private readonly IQuestionRepository _questionRepository;
 
-            public RequestHandler(IRepository<Question> questionRepository)
+            public RequestHandler(IQuestionRepository questionRepository)
             {
                 _questionRepository = questionRepository;
             }

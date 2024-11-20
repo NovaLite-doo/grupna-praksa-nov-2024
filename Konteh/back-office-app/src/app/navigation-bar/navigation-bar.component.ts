@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
-import { AuthenticationResult } from '@azure/msal-browser';
-import { WeatherForecastClient } from '../api/api-reference';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -10,7 +8,7 @@ import { WeatherForecastClient } from '../api/api-reference';
 })
 export class NavigationBarComponent {
 
-  constructor(private authService: MsalService, private weatherForecestClient: WeatherForecastClient) {
+  constructor(private authService: MsalService) {
 
   }
 
@@ -30,27 +28,11 @@ export class NavigationBarComponent {
 
   login() {
     this.authService.loginPopup().subscribe(
-      (response: AuthenticationResult) => {
-        this.authService.instance.setActiveAccount(response.account);
-      },
-      (error) => {
-        
-      }
+      response => this.authService.instance.setActiveAccount(response.account)
     );
   }
-  
+
   logout() {
     this.authService.logout()
-  }
-
-  test() {
-    this.weatherForecestClient.get().subscribe(
-      (data) => {
-        
-      },
-      (error) => {
-        console.log('Error loading weather forecast');
-      }
-    )
   }
 }

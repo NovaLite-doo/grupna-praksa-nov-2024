@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { CreateOrUpdateQuestionAnswerRequest, CreateOrUpdateQuestionQuestionRequest, GetQuestionByIdResponse, QuestionCategory, QuestionsClient, QuestionType } from '../../../api/api-reference';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { QuestionForm } from './models/question-form.model';
 
 @Component({
   selector: 'app-create-edit-question',
@@ -12,15 +13,9 @@ import { ActivatedRoute } from '@angular/router';
 export class CreateEditQuestionComponent {
   id: number | undefined;
 
-  questionForm = new FormGroup({
-    id: new FormControl(),
-    text: new FormControl('', [Validators.required]),
-    category: new FormControl<QuestionCategory | null>(null, [Validators.required]),
-    type: new FormControl<QuestionType | null>(null, [Validators.required]),
-    answers: new FormArray([])
-  })
+  questionForm = new QuestionForm();
 
-  constructor(private route: ActivatedRoute, private questionsClient: QuestionsClient) { }
+  constructor(private route: ActivatedRoute, private questionsClient: QuestionsClient, private router: Router) { }
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
@@ -83,6 +78,6 @@ export class CreateEditQuestionComponent {
   }
 
   createOrEditQuestion(request: CreateOrUpdateQuestionQuestionRequest): void {
-    this.questionsClient.createOrUpdate(request).subscribe();
+    this.questionsClient.createOrUpdate(request).subscribe(_ => this.router.navigate(['questions']));
   }
 }

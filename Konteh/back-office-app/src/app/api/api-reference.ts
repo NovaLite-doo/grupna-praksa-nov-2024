@@ -16,9 +16,10 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IQuestionsClient {
-    getAll(): Observable<GetAllQuestionsResponse[]>;
-    createOrUpdate(request: CreateOrUpdateQuestionQuestionRequest): Observable<FileResponse>;
+    delete(id: number): Observable<FileResponse>;
     getQuestionById(id: number): Observable<GetQuestionByIdResponse>;
+    search(searchText: string | null | undefined, pageNumber: number | undefined, pageSize: number | undefined, category: QuestionCategory | null | undefined): Observable<SearchQuestionsPagedResponse>;
+    createOrUpdate(request: CreateOrUpdateQuestionQuestionRequest): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -34,83 +35,27 @@ export class QuestionsClient implements IQuestionsClient {
         this.baseUrl = baseUrl ?? "https://localhost:7285";
     }
 
-    getAll(): Observable<GetAllQuestionsResponse[]> {
-        let url_ = this.baseUrl + "/questions";
+    delete(id: number): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/questions/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAll(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetAll(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<GetAllQuestionsResponse[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<GetAllQuestionsResponse[]>;
-        }));
-    }
-
-    protected processGetAll(response: HttpResponseBase): Observable<GetAllQuestionsResponse[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(GetAllQuestionsResponse.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    createOrUpdate(request: CreateOrUpdateQuestionQuestionRequest): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/questions";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(request);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
             })
         };
 
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreateOrUpdate(response_);
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreateOrUpdate(response_ as any);
+                    return this.processDelete(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<FileResponse>;
                 }
@@ -119,7 +64,7 @@ export class QuestionsClient implements IQuestionsClient {
         }));
     }
 
-    protected processCreateOrUpdate(response: HttpResponseBase): Observable<FileResponse> {
+    protected processDelete(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -188,6 +133,122 @@ export class QuestionsClient implements IQuestionsClient {
             result200 = GetQuestionByIdResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    search(searchText: string | null | undefined, pageNumber: number | undefined, pageSize: number | undefined, category: QuestionCategory | null | undefined): Observable<SearchQuestionsPagedResponse> {
+        let url_ = this.baseUrl + "/questions/search?";
+        if (searchText !== undefined && searchText !== null)
+            url_ += "SearchText=" + encodeURIComponent("" + searchText) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (category !== undefined && category !== null)
+            url_ += "Category=" + encodeURIComponent("" + category) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearch(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearch(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SearchQuestionsPagedResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SearchQuestionsPagedResponse>;
+        }));
+    }
+
+    protected processSearch(response: HttpResponseBase): Observable<SearchQuestionsPagedResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchQuestionsPagedResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createOrUpdate(request: CreateOrUpdateQuestionQuestionRequest): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/questions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrUpdate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processCreateOrUpdate(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -270,12 +331,60 @@ export class WeatherForecastClient implements IWeatherForecastClient {
     }
 }
 
-export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
+export class SearchQuestionsPagedResponse implements ISearchQuestionsPagedResponse {
+    questions?: SearchQuestionsResponse[];
+    totalItems?: number;
+
+    constructor(data?: ISearchQuestionsPagedResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["questions"])) {
+                this.questions = [] as any;
+                for (let item of _data["questions"])
+                    this.questions!.push(SearchQuestionsResponse.fromJS(item));
+            }
+            this.totalItems = _data["totalItems"];
+        }
+    }
+
+    static fromJS(data: any): SearchQuestionsPagedResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchQuestionsPagedResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.questions)) {
+            data["questions"] = [];
+            for (let item of this.questions)
+                data["questions"].push(item.toJSON());
+        }
+        data["totalItems"] = this.totalItems;
+        return data;
+    }
+}
+
+export interface ISearchQuestionsPagedResponse {
+    questions?: SearchQuestionsResponse[];
+    totalItems?: number;
+}
+
+export class SearchQuestionsResponse implements ISearchQuestionsResponse {
     id?: number;
     text?: string;
-    answers?: GetAllQuestionsAnswerResponse[];
+    category?: QuestionCategory;
 
-    constructor(data?: IGetAllQuestionsResponse) {
+    constructor(data?: ISearchQuestionsResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -288,17 +397,13 @@ export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
         if (_data) {
             this.id = _data["id"];
             this.text = _data["text"];
-            if (Array.isArray(_data["answers"])) {
-                this.answers = [] as any;
-                for (let item of _data["answers"])
-                    this.answers!.push(GetAllQuestionsAnswerResponse.fromJS(item));
-            }
+            this.category = _data["category"];
         }
     }
 
-    static fromJS(data: any): GetAllQuestionsResponse {
+    static fromJS(data: any): SearchQuestionsResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new GetAllQuestionsResponse();
+        let result = new SearchQuestionsResponse();
         result.init(data);
         return result;
     }
@@ -307,59 +412,21 @@ export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["text"] = this.text;
-        if (Array.isArray(this.answers)) {
-            data["answers"] = [];
-            for (let item of this.answers)
-                data["answers"].push(item.toJSON());
-        }
+        data["category"] = this.category;
         return data;
     }
 }
 
-export interface IGetAllQuestionsResponse {
+export interface ISearchQuestionsResponse {
     id?: number;
     text?: string;
-    answers?: GetAllQuestionsAnswerResponse[];
+    category?: QuestionCategory;
 }
 
-export class GetAllQuestionsAnswerResponse implements IGetAllQuestionsAnswerResponse {
-    id?: number;
-    text?: string;
-
-    constructor(data?: IGetAllQuestionsAnswerResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.text = _data["text"];
-        }
-    }
-
-    static fromJS(data: any): GetAllQuestionsAnswerResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetAllQuestionsAnswerResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["text"] = this.text;
-        return data;
-    }
-}
-
-export interface IGetAllQuestionsAnswerResponse {
-    id?: number;
-    text?: string;
+export enum QuestionCategory {
+    OOP = 0,
+    GIT = 1,
+    SQL = 2,
 }
 
 export class GetQuestionByIdResponse implements IGetQuestionByIdResponse {
@@ -420,12 +487,6 @@ export interface IGetQuestionByIdResponse {
     category?: QuestionCategory;
     type?: QuestionType;
     answers?: GetQuestionByIdAnswerResponse[];
-}
-
-export enum QuestionCategory {
-    OOP = 0,
-    GIT = 1,
-    SQL = 2,
 }
 
 export enum QuestionType {

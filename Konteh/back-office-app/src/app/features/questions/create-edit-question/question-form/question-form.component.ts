@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { QuestionCategory, QuestionType } from '../../../../api/api-reference';
+import { QuestionForm } from '../models/question-form.model';
 
 @Component({
   selector: 'app-question-form',
@@ -11,7 +12,7 @@ export class QuestionFormComponent {
   questionCategories = QuestionCategory;
   questionTypes = QuestionType;
 
-  @Input() questionForm: FormGroup = new FormGroup([]);
+  @Input() questionForm = new QuestionForm();
 
   get answers(): FormArray<FormGroup> {
     return this.questionForm.get('answers') as FormArray<FormGroup>;

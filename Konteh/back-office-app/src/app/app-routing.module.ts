@@ -4,7 +4,7 @@ import { MaslGuard } from './masl.guard';
 
 import { PublicPageComponent } from './public-page/public-page.component';
 import { RestrictedPageComponent } from './restricted-page/restricted-page.component';
-import { CreateEditQuestionComponent } from './create-edit-question/create-edit-question.component';
+import { CreateEditQuestionComponent } from './features/questions/create-edit-question/create-edit-question.component';
 
 const routes: Routes = [
   { 
@@ -22,12 +22,12 @@ const routes: Routes = [
       {
         path: 'add',
         component: CreateEditQuestionComponent,
-        canActivate: [MaslGuard],
+        canActivate: [MaslGuard]
       },
       {
         path: ':id',
         component: CreateEditQuestionComponent,
-        canActivate: [MaslGuard], 
+        canActivate: [MaslGuard]
       }
     ]
   }

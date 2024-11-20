@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { QuestionCategory, QuestionType } from '../api/api-reference';
+import { QuestionCategory, QuestionType } from '../../../../api/api-reference';
 
 @Component({
   selector: 'app-question-form',
@@ -42,5 +42,9 @@ export class QuestionFormComponent {
       isCorrect: new FormControl(false)
     });
     this.answers.push(answerFormGroup);
+  }
+
+  removeAnswer(index: number) {
+    this.answers?.removeAt(index);
   }
 }

@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { ConfirmationDialogComponent } from '../shared/confirmation-dialog/confirmation-dialog.component';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ConfirmationDialogComponent } from '../../../../shared/confirmation-dialog/confirmation-dialog.component';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -12,7 +12,7 @@ export class AnswerFormComponent {
   @Input() answerForm: FormGroup = new FormGroup([]);
   @Input() index: number = -1;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(private dialog: MatDialog) {}
 
   get rootGroup(): FormGroup {
     let parent = this.answerForm.parent as FormGroup;
@@ -24,9 +24,10 @@ export class AnswerFormComponent {
   get parent(): FormArray {
     return this.answerForm.parent as FormArray
   }
-
+  
+  @Output() removeAnswerEvent = new EventEmitter<number>();
   removeAnswer() {
-    this.parent?.removeAt(this.index);
+    this.removeAnswerEvent.emit(this.index);
   }
 
   confirmRemoval() {

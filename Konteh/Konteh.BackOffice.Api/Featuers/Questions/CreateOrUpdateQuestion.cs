@@ -36,7 +36,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             {
                 if (request.Id == null) 
                 {
-                    Create(request, cancellationToken);
+                    Create(request);
                 } 
                 else
                 {
@@ -48,52 +48,46 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                 return Unit.Value;
             }
 
-            private void Create(QuestionRequest request, CancellationToken cancellationToken)
+            private void Create(QuestionRequest request)
             {
-                var question = new Question()
+                var question = new Question
                 {
                     Text = request.Text,
                     Category = request.Category,
-                    Type = request.Type
+                    Type = request.Type,
+                    Answers = request.Answers.Select(x => new Answer
+                    {
+                        Text = x.Text,
+                        IsCorrect = x.IsCorrect
+                    }).ToList()
                 };
-                var answers = request.Answers.Select(x => new Answer
-                {
-                    Text = x.Text,
-                    IsCorrect = x.IsCorrect
-                }).ToList();
-                question.Answers = answers;
 
                 _questionRepository.Create(question);
             }
 
             private async Task Edit(QuestionRequest request, CancellationToken cancellationToken)
             {
-                var question = await _questionRepository.Get(request.Id ?? -1);
+                var question = await _questionRepository.Get(request.Id ?? -1) ?? throw new KeyNotFoundException($"Question with Id {request.Id} not found.");
 
-                if (question == null)
-                {
-                    throw new KeyNotFoundException($"Question with Id {request.Id} not found.");
-                }
-
-                var updatedQuestion = new Question()
+                var updatedQuestion = new Question
                 {
                     Text = request.Text,
                     Category = request.Category,
-                    Type = request.Type
+                    Type = request.Type,
+                    Answers = request.Answers.Where(x => x.Id != null).Select(x => new Answer
+                    {
+                        Id = x.Id!.Value,
+                        Text = x.Text,
+                        IsCorrect = x.IsCorrect
+                    }).ToList()
                 };
-                var updatedAnswers = request.Answers.Where(x => x.Id != null).Select(x => new Answer
-                {
-                    Id = x.Id ?? -1,
-                    Text = x.Text,
-                    IsCorrect = x.IsCorrect
-                }).ToList();
-                updatedQuestion.Answers = updatedAnswers;
 
-                var newAnswers = request.Answers.Where(x => x.Id == null).Select(x => new Answer
-                {
-                    Text = x.Text,
-                    IsCorrect = x.IsCorrect
-                });
+                var newAnswers = request.Answers.Where(x => x.Id == null)
+                    .Select(x => new Answer
+                    {
+                        Text = x.Text,
+                        IsCorrect = x.IsCorrect
+                    });
 
                 question.Edit(updatedQuestion, newAnswers);
             }

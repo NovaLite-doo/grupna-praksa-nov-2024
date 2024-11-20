@@ -21,10 +21,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { PublicPageComponent } from './public-page/public-page.component';
 import { RestrictedPageComponent } from './restricted-page/restricted-page.component';
-import { QuestionFormComponent } from './question-form/question-form.component';
+import { QuestionFormComponent } from './features/questions/create-edit-question/question-form/question-form.component';
 import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
-import { CreateEditQuestionComponent } from './create-edit-question/create-edit-question.component';
-import { AnswerFormComponent } from './answer-form/answer-form.component';
+import { CreateEditQuestionComponent } from './features/questions/create-edit-question/create-edit-question.component';
+import { AnswerFormComponent } from './features/questions/create-edit-question/answer-form/answer-form.component';
 
 
 export function MSALInstanceFactory(): IPublicClientApplication {

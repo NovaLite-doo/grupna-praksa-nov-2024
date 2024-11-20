@@ -28,8 +28,4 @@
     <ProjectReference Include="..\Konteh.Infrastructure\Konteh.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="MapperProfiles\" />
-  </ItemGroup>
-
 </Project>

@@ -37,13 +37,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var question = await _questionRepository.Get(request.Id);
-
-                if (question == null)
-                {
-                    throw new KeyNotFoundException($"Question with Id {request.Id} not found.");
-                }
-
+                var question = await _questionRepository.Get(request.Id) ?? throw new KeyNotFoundException($"Question with Id {request.Id} not found.");
                 return new Response
                 {
                     Id = question.Id,

@@ -1,7 +1,7 @@
 .dialog-box {
     display: flex;
     flex-direction: column;
-    padding: 2rem;
+    padding: 3rem;
 }
 
 .dialog-title {

@@ -44,7 +44,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                     Text = question.Text,
                     Category = question.Category,
                     Type = question.Type,
-                    Answers = question.Answers.Select(a => new AnswerResponse
+                    Answers = question.GetActiveAnswers().Select(a => new AnswerResponse
                     {
                         Id = a.Id,
                         Text = a.Text,

@@ -11,30 +11,31 @@ namespace Konteh.Domain
         public QuestionCategory Category { get; set; }
         public QuestionType Type { get; set; }
 
-
-        public void Edit(Question question, IEnumerable<Answer> newAnswers)
+        public void Edit(Question updatedQuestion, IEnumerable<Answer> newAnswers)
         {
-            Text = question.Text;
-            Category = question.Category;
-            Type = question.Type;
-
-            var answersToDelete = Answers.Where(x => !question.Answers.Select(a => a.Id).Contains(x.Id)).ToList();
-            foreach (var answerToDelete in answersToDelete)
-            {
-                //TODO logical deletion
-                Answers.Remove(answerToDelete);
-            }
+            Text = updatedQuestion.Text;
+            Category = updatedQuestion.Category;
+            Type = updatedQuestion.Type;
 
             foreach (var answer in Answers)
             {
-                var updatedAnswer = question.Answers.Single(x => x.Id == answer.Id);
+                var updatedAnswer = updatedQuestion.Answers.SingleOrDefault(x => x.Id == answer.Id);
                 if(updatedAnswer != null)
                 {
                     answer.Edit(updatedAnswer);
                 }
+                else
+                {
+                    answer.IsDeleted = true;
+                }
             }
 
             Answers.AddRange(newAnswers);
+        }
+
+        public IList<Answer> GetActiveAnswers()
+        {
+            return Answers.Where(x => !x.IsDeleted).ToList();
         }
     }
 }

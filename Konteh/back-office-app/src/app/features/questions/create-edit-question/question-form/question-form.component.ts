@@ -45,6 +45,6 @@ export class QuestionFormComponent {
   }
 
   removeAnswer(index: number) {
-    this.answers?.removeAt(index);
+    this.answers.removeAt(index);
   }
 }

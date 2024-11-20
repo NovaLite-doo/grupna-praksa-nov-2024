@@ -14,11 +14,28 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             _mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetAllQuestions.Response>>> GetAll()
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
-            var response = await _mediator.Send(new GetAllQuestions.Query());
+            try
+            {
+                await _mediator.Send(new DeleteQuestion.Command { Id = id });
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<SearchQuestions.PagedResponse>> Search([FromQuery] SearchQuestions.Query request)
+        {
+            var response = await _mediator.Send(request);
+
             return Ok(response);
         }
     }
 }
+

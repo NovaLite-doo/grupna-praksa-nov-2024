@@ -1,14 +1,9 @@
-using Konteh.Domain;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
-using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +17,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
+
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -33,12 +29,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         builder =>
         {
-            builder.AllowAnyOrigin()  
+
+            builder.AllowAnyOrigin()
                    .AllowAnyMethod()
                    .AllowAnyHeader();
         });
 });
-
 
 
 var app = builder.Build();

@@ -7,7 +7,7 @@ namespace Konteh.Infrastructure.Repository
         public void Create(T entity);
         public void Delete(T entity);
 
-        public Task<IList<T>> GetAll();
+        public Task<IEnumerable<T>> GetAll();
         public Task<T?> Get(int id);
         public Task SaveChanges();
 

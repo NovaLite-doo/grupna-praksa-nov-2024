@@ -32,10 +32,5 @@ namespace Konteh.Domain
 
             Answers.AddRange(newAnswers);
         }
-
-        public IList<Answer> GetActiveAnswers()
-        {
-            return Answers.Where(x => !x.IsDeleted).ToList();
-        }
     }
 }

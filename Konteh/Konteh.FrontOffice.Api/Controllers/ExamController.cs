@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Konteh.FrontOffice.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("exams")]
     public class ExamController : ControllerBase
     {
         private readonly IMediator _mediator;

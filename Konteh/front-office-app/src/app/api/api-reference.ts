@@ -16,7 +16,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IExamClient {
-    generateExam(): Observable<FileResponse>;
+    generateExam(command: CreateExamCommand): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -32,14 +32,18 @@ export class ExamClient implements IExamClient {
         this.baseUrl = baseUrl ?? "https://localhost:7296";
     }
 
-    generateExam(): Observable<FileResponse> {
+    generateExam(command: CreateExamCommand): Observable<FileResponse> {
         let url_ = this.baseUrl + "/exams";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
             })
         };
@@ -156,6 +160,70 @@ export class WeatherForecastClient implements IWeatherForecastClient {
         }
         return _observableOf(null as any);
     }
+}
+
+export class CreateExamCommand implements ICreateExamCommand {
+    email?: string;
+    faculty?: string;
+    major?: string;
+    name?: string;
+    surname?: string;
+    yearOfStudy?: YearOfStudy;
+
+    constructor(data?: ICreateExamCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.faculty = _data["faculty"];
+            this.major = _data["major"];
+            this.name = _data["name"];
+            this.surname = _data["surname"];
+            this.yearOfStudy = _data["yearOfStudy"];
+        }
+    }
+
+    static fromJS(data: any): CreateExamCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateExamCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["faculty"] = this.faculty;
+        data["major"] = this.major;
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        data["yearOfStudy"] = this.yearOfStudy;
+        return data;
+    }
+}
+
+export interface ICreateExamCommand {
+    email?: string;
+    faculty?: string;
+    major?: string;
+    name?: string;
+    surname?: string;
+    yearOfStudy?: YearOfStudy;
+}
+
+export enum YearOfStudy {
+    YearOne = 0,
+    YearTwo = 1,
+    YearThree = 2,
+    YearFour = 3,
+    Master = 4,
 }
 
 export class WeatherForecast implements IWeatherForecast {

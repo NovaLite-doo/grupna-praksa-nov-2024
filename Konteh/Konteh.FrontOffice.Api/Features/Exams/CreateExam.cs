@@ -48,7 +48,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                     examQuestions.AddRange(randomQuestions.Select(x => new ExamQuestion
                     {
-                        Question = x
+                        Question = x,
+                        QuestionId = x.Id
                     }));
                 }
 

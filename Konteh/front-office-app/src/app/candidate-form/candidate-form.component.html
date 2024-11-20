@@ -1,0 +1,54 @@
+<div class="candidate-form">
+    <h2>Enter Candidate Information</h2>
+  
+    <form [formGroup]="candidateForm" (ngSubmit)="onSubmit()">
+      <label for="name">Name</label>
+      <input id="name" formControlName="name" type="text">
+      <div *ngIf="candidateForm.get('name')?.invalid && candidateForm.get('name')?.touched">
+        <small *ngIf="candidateForm.get('name')?.hasError('required')">Name is required.</small>
+        <small *ngIf="candidateForm.get('name')?.hasError('minlength')">Name should be at least 2 characters long.</small>
+      </div>
+  
+      <label for="surname">Surname</label>
+      <input id="surname" formControlName="surname" type="text">
+      <div *ngIf="candidateForm.get('surname')?.invalid && candidateForm.get('surname')?.touched">
+        <small *ngIf="candidateForm.get('surname')?.hasError('required')">Surname is required.</small>
+        <small *ngIf="candidateForm.get('surname')?.hasError('minlength')">Surname should be at least 2 characters long.</small>
+      </div>
+  
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" type="email">
+      <div *ngIf="candidateForm.get('email')?.invalid && candidateForm.get('email')?.touched">
+        <small *ngIf="candidateForm.get('email')?.hasError('required')">Email is required.</small>
+        <small *ngIf="candidateForm.get('email')?.hasError('email')">Enter a valid email.</small>
+      </div>
+  
+      <label for="faculty">Faculty</label>
+      <input id="faculty" formControlName="faculty" type="text">
+      <div *ngIf="candidateForm.get('faculty')?.invalid && candidateForm.get('faculty')?.touched">
+        <small *ngIf="candidateForm.get('faculty')?.hasError('required')">Faculty is required.</small>
+      </div>
+  
+      <label for="major">Major</label>
+      <input id="major" formControlName="major" type="text">
+      <div *ngIf="candidateForm.get('major')?.invalid && candidateForm.get('major')?.touched">
+        <small *ngIf="candidateForm.get('major')?.hasError('required')">Major is required.</small>
+      </div>
+
+      <label for="yearOfStudy">Year of Study</label>
+      <select id="yearOfStudy" formControlName="yearOfStudy">
+        <option [value]="YearOfStudy.YearOne">First Year</option>
+        <option [value]="YearOfStudy.YearTwo">Second Year</option>
+        <option [value]="YearOfStudy.YearThree">Third Year</option>
+        <option [value]="YearOfStudy.YearFour">Fourth Year</option>
+        <option [value]="YearOfStudy.Master">Master</option>
+      </select>
+      <div *ngIf="candidateForm.get('yearOfStudy')?.invalid && candidateForm.get('yearOfStudy')?.touched">
+      <small *ngIf="candidateForm.get('yearOfStudy')?.hasError('required')">Year of Study is required.</small>
+    </div>
+  
+  
+      <button type="submit" [disabled]="candidateForm.invalid">Submit</button>
+    </form>
+  </div>
+  

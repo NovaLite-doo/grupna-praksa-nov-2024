@@ -15,9 +15,9 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         }
 
         [HttpPost()]
-        public async Task<IActionResult> GenerateExam()
+        public async Task<IActionResult> GenerateExam(CreateExam.Command command)
         {
-            await _mediator.Send(new CreateExam.Command());
+            await _mediator.Send(command);
 
             return Ok();
         }

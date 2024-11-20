@@ -1,9 +1,16 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Konteh.BackOffice.Api.Validation;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repository;
+using Konteh.Infrastructure.Validation;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using System.Reflection;
+using static Konteh.BackOffice.Api.Featuers.Questions.CreateOrUpdateQuestion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +26,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddMediatR(cfg => 
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -43,6 +55,8 @@ var app = builder.Build();
 app.UseOpenApi();
 app.UseSwaggerUi();
 app.UseCors(MyAllowSpecificOrigins);
+
+app.UseMiddleware<ValidationExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

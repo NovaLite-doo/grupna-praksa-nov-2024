@@ -2,6 +2,7 @@
 using Konteh.Domain;
 using Konteh.Infrastructure.Repository;
 using MediatR;
+using FluentValidation;
 
 namespace Konteh.BackOffice.Api.Featuers.Questions
 {
@@ -21,6 +22,15 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             public int? Id { get; set; }
             public string Text { get; set; } = string.Empty;
             public bool IsCorrect { get; set; }
+        }
+
+        public class QuestionValidator : AbstractValidator<QuestionRequest>
+        {
+            public QuestionValidator()
+            {
+                RuleFor(x => x.Text)
+                    .NotEmpty();
+            }
         }
 
         public class RequestHandler : IRequestHandler<QuestionRequest, Unit>

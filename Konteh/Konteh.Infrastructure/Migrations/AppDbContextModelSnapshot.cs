@@ -33,10 +33,10 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("SubmittedAnswersId");
 
-                    b.ToTable("AnswerExamQuestion");
+                    b.ToTable("AnswerExamQuestion", (string)null);
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Answer", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.Answer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,10 +58,10 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answers");
+                    b.ToTable("Answers", (string)null);
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Candidate", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.Candidate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,10 +100,10 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.HasIndex("ExamId")
                         .IsUnique();
 
-                    b.ToTable("Candidates");
+                    b.ToTable("Candidates", (string)null);
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Exam", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.Exam", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,10 +113,10 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exams");
+                    b.ToTable("Exams", (string)null);
                 });
 
-            modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.ExamQuestion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,10 +134,10 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("ExamQuestions");
+                    b.ToTable("ExamQuestions", (string)null);
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Question", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.Question", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -157,27 +157,27 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("AnswerExamQuestion", b =>
                 {
-                    b.HasOne("Konteh.Domain.ExamQuestion", null)
+                    b.HasOne("Konteh.BackOffice.Api.Domain.ExamQuestion", null)
                         .WithMany()
                         .HasForeignKey("ExamQuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Konteh.Domain.Answer", null)
+                    b.HasOne("Konteh.BackOffice.Api.Domain.Answer", null)
                         .WithMany()
                         .HasForeignKey("SubmittedAnswersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Answer", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.Answer", b =>
                 {
-                    b.HasOne("Konteh.Domain.Question", "Question")
+                    b.HasOne("Konteh.BackOffice.Api.Domain.Question", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -186,26 +186,26 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Candidate", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.Candidate", b =>
                 {
-                    b.HasOne("Konteh.Domain.Exam", "Exam")
+                    b.HasOne("Konteh.BackOffice.Api.Domain.Exam", "Exam")
                         .WithOne("Candidate")
-                        .HasForeignKey("Konteh.Domain.Candidate", "ExamId")
+                        .HasForeignKey("Konteh.BackOffice.Api.Domain.Candidate", "ExamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Exam");
                 });
 
-            modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.ExamQuestion", b =>
                 {
-                    b.HasOne("Konteh.Domain.Exam", "Exam")
+                    b.HasOne("Konteh.BackOffice.Api.Domain.Exam", "Exam")
                         .WithMany("Questions")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Konteh.Domain.Question", "Question")
+                    b.HasOne("Konteh.BackOffice.Api.Domain.Question", "Question")
                         .WithMany()
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -216,7 +216,7 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Exam", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.Exam", b =>
                 {
                     b.Navigation("Candidate")
                         .IsRequired();
@@ -224,7 +224,7 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Navigation("Questions");
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Question", b =>
+            modelBuilder.Entity("Konteh.BackOffice.Api.Domain.Question", b =>
                 {
                     b.Navigation("Answers");
                 });

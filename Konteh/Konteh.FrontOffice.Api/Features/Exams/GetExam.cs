@@ -1,17 +1,18 @@
 ﻿using Konteh.Domain;
 using Konteh.Infrastructure.Repository;
 using MediatR;
+using System.Reflection.Metadata;
 
 namespace Konteh.FrontOffice.Api.Features.Exams
 {
     public static class GetExam
     {
+        public static int numberOfQuestionsPerCategory = 2;
         public class Query : IRequest<Response>;
         public class Response
         {
             public int Id { get; set; }
             public IEnumerable<ExamQuestionResponse> ExamQuestions { get; set; } = new List<ExamQuestionResponse>();
-            public IEnumerable<AnswerResponse> Answers { get; set; } = new List<AnswerResponse>();
         }
 
         public class ExamQuestionResponse
@@ -52,7 +53,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 {
                     var randomQuestions = categoryGroup
                         .OrderBy(x => random.Next())
-                        .Take(2)
+                        .Take(numberOfQuestionsPerCategory)
                         .ToList();
 
                     foreach (var question in randomQuestions)

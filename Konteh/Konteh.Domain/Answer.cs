@@ -7,5 +7,12 @@
         public bool IsCorrect { get; set; }
         public int QuestionId { get; set; }
         public Question Question { get; set; } = null!;
+        public bool IsDeleted { get; set; } = false;
+
+        public void Edit(Answer updatedAnswer)
+        {
+            Text = updatedAnswer.Text;
+            IsCorrect = updatedAnswer.IsCorrect;
+        }
     }
 }

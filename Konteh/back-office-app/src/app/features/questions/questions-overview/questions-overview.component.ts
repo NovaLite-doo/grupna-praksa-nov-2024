@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
-import { QuestionCategory, QuestionsClient, SearchQuestionsResponse } from '../../api/api-reference';
 import { FormControl } from '@angular/forms';
+import { SearchQuestionsResponse, QuestionCategory, QuestionsClient } from '../../../api/api-reference';
+import { ConfirmationDialogComponent } from '../../../shared/confirmation-dialog/confirmation-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-questions-overview',
@@ -24,7 +25,7 @@ export class QuestionsOverviewComponent {
   categoryEnumKeys = Object.keys(QuestionCategory).filter(key => isNaN(Number(key)));
   searchTextControl: FormControl = new FormControl('');
 
-  constructor(private questionsClient: QuestionsClient, private dialog: MatDialog) { }
+  constructor(private questionsClient: QuestionsClient, private dialog: MatDialog, private router: Router, private readonly activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.searchTextControl.valueChanges
@@ -48,10 +49,16 @@ export class QuestionsOverviewComponent {
       });
   }
 
-  onEdit(question: SearchQuestionsResponse): void { }
+  onEdit(question: SearchQuestionsResponse) {
+    this.router.navigate([`${question.id}`], { relativeTo: this.activatedRoute });
+  }
+
+  onAdd(){
+    this.router.navigate(['add'], {relativeTo: this.activatedRoute});
+  }
 
   onDelete(question: SearchQuestionsResponse): void {
-    const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: { questionText: question.text }
     });
 

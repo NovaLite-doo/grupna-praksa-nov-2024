@@ -1,0 +1,10 @@
+<div class="dialog-box">
+    <p mat-dialog-title class="dialog-title">{{data.title}}</p>
+    <div mat-dialog-content>
+        <p class="dialog-message">{{data.message}}</p>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button (click)="confirm()" cdkFocusInitial>Yes</button>
+        <button mat-button (click)="close()" class="button-gap">No</button>
+    </div>
+</div>

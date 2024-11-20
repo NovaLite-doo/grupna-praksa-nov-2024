@@ -17,7 +17,9 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IQuestionsClient {
     delete(id: number): Observable<FileResponse>;
-    search(searchText: string | undefined, pageNumber: number | undefined, pageSize: number | undefined, category: QuestionCategory | null | undefined): Observable<SearchQuestionsPagedResponse>;
+    getQuestionById(id: number): Observable<GetQuestionByIdResponse>;
+    search(searchText: string | null | undefined, pageNumber: number | undefined, pageSize: number | undefined, category: QuestionCategory | null | undefined): Observable<SearchQuestionsPagedResponse>;
+    createOrUpdate(request: CreateOrUpdateQuestionQuestionRequest): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -88,11 +90,60 @@ export class QuestionsClient implements IQuestionsClient {
         return _observableOf(null as any);
     }
 
-    search(searchText: string | undefined, pageNumber: number | undefined, pageSize: number | undefined, category: QuestionCategory | null | undefined): Observable<SearchQuestionsPagedResponse> {
+    getQuestionById(id: number): Observable<GetQuestionByIdResponse> {
+        let url_ = this.baseUrl + "/questions/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetQuestionById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetQuestionById(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetQuestionByIdResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetQuestionByIdResponse>;
+        }));
+    }
+
+    protected processGetQuestionById(response: HttpResponseBase): Observable<GetQuestionByIdResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetQuestionByIdResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    search(searchText: string | null | undefined, pageNumber: number | undefined, pageSize: number | undefined, category: QuestionCategory | null | undefined): Observable<SearchQuestionsPagedResponse> {
         let url_ = this.baseUrl + "/questions/search?";
-        if (searchText === null)
-            throw new Error("The parameter 'searchText' cannot be null.");
-        else if (searchText !== undefined)
+        if (searchText !== undefined && searchText !== null)
             url_ += "SearchText=" + encodeURIComponent("" + searchText) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
@@ -142,6 +193,62 @@ export class QuestionsClient implements IQuestionsClient {
             result200 = SearchQuestionsPagedResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createOrUpdate(request: CreateOrUpdateQuestionQuestionRequest): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/questions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrUpdate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processCreateOrUpdate(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -320,6 +427,219 @@ export enum QuestionCategory {
     OOP = 0,
     GIT = 1,
     SQL = 2,
+}
+
+export class GetQuestionByIdResponse implements IGetQuestionByIdResponse {
+    id?: number;
+    text?: string;
+    category?: QuestionCategory;
+    type?: QuestionType;
+    answers?: GetQuestionByIdAnswerResponse[];
+
+    constructor(data?: IGetQuestionByIdResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.category = _data["category"];
+            this.type = _data["type"];
+            if (Array.isArray(_data["answers"])) {
+                this.answers = [] as any;
+                for (let item of _data["answers"])
+                    this.answers!.push(GetQuestionByIdAnswerResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetQuestionByIdResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetQuestionByIdResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["category"] = this.category;
+        data["type"] = this.type;
+        if (Array.isArray(this.answers)) {
+            data["answers"] = [];
+            for (let item of this.answers)
+                data["answers"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IGetQuestionByIdResponse {
+    id?: number;
+    text?: string;
+    category?: QuestionCategory;
+    type?: QuestionType;
+    answers?: GetQuestionByIdAnswerResponse[];
+}
+
+export enum QuestionType {
+    Radiobutton = 0,
+    Checkbox = 1,
+}
+
+export class GetQuestionByIdAnswerResponse implements IGetQuestionByIdAnswerResponse {
+    id?: number;
+    text?: string;
+    isCorrect?: boolean;
+
+    constructor(data?: IGetQuestionByIdAnswerResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.isCorrect = _data["isCorrect"];
+        }
+    }
+
+    static fromJS(data: any): GetQuestionByIdAnswerResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetQuestionByIdAnswerResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["isCorrect"] = this.isCorrect;
+        return data;
+    }
+}
+
+export interface IGetQuestionByIdAnswerResponse {
+    id?: number;
+    text?: string;
+    isCorrect?: boolean;
+}
+
+export class CreateOrUpdateQuestionQuestionRequest implements ICreateOrUpdateQuestionQuestionRequest {
+    id?: number | undefined;
+    text?: string;
+    category?: QuestionCategory;
+    type?: QuestionType;
+    answers?: CreateOrUpdateQuestionAnswerRequest[];
+
+    constructor(data?: ICreateOrUpdateQuestionQuestionRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.category = _data["category"];
+            this.type = _data["type"];
+            if (Array.isArray(_data["answers"])) {
+                this.answers = [] as any;
+                for (let item of _data["answers"])
+                    this.answers!.push(CreateOrUpdateQuestionAnswerRequest.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateQuestionQuestionRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateQuestionQuestionRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["category"] = this.category;
+        data["type"] = this.type;
+        if (Array.isArray(this.answers)) {
+            data["answers"] = [];
+            for (let item of this.answers)
+                data["answers"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ICreateOrUpdateQuestionQuestionRequest {
+    id?: number | undefined;
+    text?: string;
+    category?: QuestionCategory;
+    type?: QuestionType;
+    answers?: CreateOrUpdateQuestionAnswerRequest[];
+}
+
+export class CreateOrUpdateQuestionAnswerRequest implements ICreateOrUpdateQuestionAnswerRequest {
+    id?: number | undefined;
+    text?: string;
+    isCorrect?: boolean;
+
+    constructor(data?: ICreateOrUpdateQuestionAnswerRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.isCorrect = _data["isCorrect"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateQuestionAnswerRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateQuestionAnswerRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["isCorrect"] = this.isCorrect;
+        return data;
+    }
+}
+
+export interface ICreateOrUpdateQuestionAnswerRequest {
+    id?: number | undefined;
+    text?: string;
+    isCorrect?: boolean;
 }
 
 export class WeatherForecast implements IWeatherForecast {

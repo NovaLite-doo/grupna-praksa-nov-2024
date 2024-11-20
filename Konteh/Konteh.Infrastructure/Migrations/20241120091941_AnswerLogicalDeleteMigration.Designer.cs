@@ -3,6 +3,7 @@ using Konteh.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Konteh.BackOffice.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241120091941_AnswerLogicalDeleteMigration")]
+    partial class AnswerLogicalDeleteMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,6 +23,21 @@ namespace Konteh.BackOffice.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AnswerExamQuestion", b =>
+                {
+                    b.Property<int>("ExamQuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubmittedAnswersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExamQuestionId", "SubmittedAnswersId");
+
+                    b.HasIndex("SubmittedAnswersId");
+
+                    b.ToTable("AnswerExamQuestion");
+                });
 
             modelBuilder.Entity("Konteh.Domain.Answer", b =>
                 {
@@ -125,21 +143,6 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.ToTable("ExamQuestions");
                 });
 
-            modelBuilder.Entity("Konteh.Domain.ExamQuestionAnswer", b =>
-                {
-                    b.Property<int>("AnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ExamQuestionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AnswerId", "ExamQuestionId");
-
-                    b.HasIndex("ExamQuestionId");
-
-                    b.ToTable("ExamQuestionAnswer");
-                });
-
             modelBuilder.Entity("Konteh.Domain.Question", b =>
                 {
                     b.Property<int>("Id")
@@ -151,9 +154,6 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Property<int>("Category")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -164,6 +164,21 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("AnswerExamQuestion", b =>
+                {
+                    b.HasOne("Konteh.Domain.ExamQuestion", null)
+                        .WithMany()
+                        .HasForeignKey("ExamQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Konteh.Domain.Answer", null)
+                        .WithMany()
+                        .HasForeignKey("SubmittedAnswersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Konteh.Domain.Answer", b =>
@@ -205,21 +220,6 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Navigation("Exam");
 
                     b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("Konteh.Domain.ExamQuestionAnswer", b =>
-                {
-                    b.HasOne("Konteh.Domain.Answer", null)
-                        .WithMany()
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Konteh.Domain.ExamQuestion", null)
-                        .WithMany()
-                        .HasForeignKey("ExamQuestionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Konteh.Domain.Exam", b =>

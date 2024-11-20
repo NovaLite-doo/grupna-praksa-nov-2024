@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
+
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { QuestionsModule } from './questions/questions.module';
+import { QuestionsModule } from './features/questions/questions.module';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -14,9 +16,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { HttpClientModule } from '@angular/common/http';
 import { environment } from '../enviroments/enviroment';
-
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -49,8 +49,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
-    QuestionsModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,

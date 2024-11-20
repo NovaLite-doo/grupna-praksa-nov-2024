@@ -8,7 +8,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
     public static class CreateExam
     {
         public const int NumberOfQuestionsPerCategory = 2;
-        public class Command : IRequest<Unit>
+        public class Command : IRequest<Exam>
         {
             public string Email { get; internal set; } = string.Empty;
             public string Faculty { get; internal set; } = string.Empty;
@@ -18,7 +18,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             public YearOfStudy YearOfStudy { get; internal set; }
         }
 
-        public class RequestHandler : IRequestHandler<Command, Unit>
+        public class RequestHandler : IRequestHandler<Command, Exam>
         {
             private readonly IRepository<Question> _questionRepository;
             private readonly IRepository<Exam> _examRepository;
@@ -29,7 +29,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 _examRepository = examRepository;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Exam> Handle(Command request, CancellationToken cancellationToken)
             {
                 var questions = await _questionRepository.GetAll();
 
@@ -48,7 +48,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                     examQuestions.AddRange(randomQuestions.Select(x => new ExamQuestion
                     {
-                        Question = x
+                        Question = x,
+                        QuestionId = x.Id
                     }));
                 }
 
@@ -69,7 +70,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 _examRepository.Create(exam);
                 await _examRepository.SaveChanges();
 
-                return Unit.Value;
+                return exam;
             }
         }
 

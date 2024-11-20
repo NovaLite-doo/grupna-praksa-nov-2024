@@ -1,12 +1,10 @@
-﻿using Konteh.Domain;
-using Konteh.Infrastructure.Repository;
+﻿using Konteh.Infrastructure.Repository;
 using MediatR;
 
 namespace Konteh.BackOffice.Api.Featuers.Questions
 {
     public static class DeleteQuestion
     {
-
         public class Command : IRequest
         {
             public int Id { get; set; }
@@ -14,9 +12,9 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
         public class RequestHandler : IRequestHandler<Command>
         {
-            private readonly IRepository<Question> _questionRepository;
+            private readonly IQuestionRepository _questionRepository;
 
-            public RequestHandler(IRepository<Question> questionRepository)
+            public RequestHandler(IQuestionRepository questionRepository)
             {
                 _questionRepository = questionRepository;
             }
@@ -33,7 +31,6 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                 _questionRepository.Delete(question);
                 await _questionRepository.SaveChanges();
             }
-
         }
     }
 }

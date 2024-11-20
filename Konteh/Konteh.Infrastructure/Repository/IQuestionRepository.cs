@@ -5,12 +5,11 @@ namespace Konteh.Infrastructure.Repository
 {
     public interface IQuestionRepository : IRepository<Question>
     {
-        public Task<(IEnumerable<Question> questions, int pageCount)> SearchQuestions(
-            string searchText,
+        public Task<(IEnumerable<Question> questions, int totalItems)> SearchQuestions(
+            string? searchText,
             QuestionCategory? category,
             int pageNumber,
-            int pageSize,
-            CancellationToken cancellationToken);
+            int pageSize);
     }
 }
 

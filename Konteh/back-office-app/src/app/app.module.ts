@@ -3,16 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { QuestionsOverviewComponent } from './questions/questions-overview/questions-overview.component';
 import { QuestionsModule } from './questions/questions.module';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { InteractionType, IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
-import { MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MsalBroadcastService  } from '@azure/msal-angular';
-import { PublicPageComponent } from './public-page/public-page.component';
-import { RestrictedPageComponent } from './restricted-page/restricted-page.component';
+import { MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MsalBroadcastService } from '@azure/msal-angular';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -24,8 +21,8 @@ import { environment } from '../enviroments/enviroment';
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
-      clientId: environment.msalConfig.clientId,  
-      authority: environment.msalConfig.authority,  
+      clientId: environment.msalConfig.clientId,
+      authority: environment.msalConfig.authority,
       redirectUri: environment.msalConfig.redirectUri
     }
   });
@@ -48,9 +45,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationBarComponent,
-    PublicPageComponent,
-    RestrictedPageComponent
+    NavigationBarComponent
   ],
   imports: [
     BrowserModule,
@@ -59,11 +54,11 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MsalModule, 
+    MsalModule,
     HttpClientModule,
-    MatToolbarModule,  
-    MatButtonModule,  
-    MatIconModule, 
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
 
   ],
   providers: [
@@ -80,7 +75,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
       useFactory: MSALInterceptorConfigFactory
     },
     MsalService,
-    MsalBroadcastService  
+    MsalBroadcastService
   ],
   bootstrap: [AppComponent]
 })

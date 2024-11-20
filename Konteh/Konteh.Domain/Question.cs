@@ -9,8 +9,6 @@ namespace Konteh.Domain
         public List<Answer> Answers { get; } = [];
         public QuestionCategory Category { get; set; }
         public QuestionType Type { get; set; }
-
         public bool IsDeleted { get; set; } = false;
-
     }
 }

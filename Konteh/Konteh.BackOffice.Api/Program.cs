@@ -1,14 +1,9 @@
-using Konteh.Domain;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
-using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +19,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -36,7 +30,7 @@ builder.Services.AddCors(options =>
         builder =>
         {
 
-            builder.AllowAnyOrigin()  
+            builder.AllowAnyOrigin()
                    .AllowAnyMethod()
                    .AllowAnyHeader();
         });

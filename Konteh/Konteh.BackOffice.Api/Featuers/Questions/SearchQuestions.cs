@@ -8,30 +8,24 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
     {
         public class Query : IRequest<PagedResponse>
         {
-            public string SearchText { get; set; } = string.Empty;
+            public string? SearchText { get; set; } = string.Empty;
             public int PageNumber { get; set; } = 1;
             public int PageSize { get; set; } = 10;
-
             public QuestionCategory? Category { get; set; }
         }
 
         public class PagedResponse
         {
             public IEnumerable<Response> Questions { get; set; } = [];
-
-            public int PageCount { get; set; }
-
-
+            public int TotalItems { get; set; }
         }
-
 
         public class Response
         {
             public int Id { get; set; }
             public string Text { get; set; } = string.Empty;
-            public QuestionCategory? Category { get; set; }
+            public QuestionCategory Category { get; set; }
         }
-
 
         public class RequestHandler : IRequestHandler<Query, PagedResponse>
         {
@@ -44,15 +38,12 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
             public async Task<PagedResponse> Handle(Query request, CancellationToken cancellationToken)
             {
-
-                var (questions, pageCount) = await _questionRepository.SearchQuestions(
+                var (questions, totalItems) = await _questionRepository.SearchQuestions(
                     request.SearchText,
                     request.Category,
                     request.PageNumber,
-                    request.PageSize,
-                    cancellationToken
+                    request.PageSize
                 );
-
 
                 var response = new PagedResponse
                 {
@@ -62,13 +53,11 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                         Text = q.Text,
                         Category = q.Category
                     }),
-                    PageCount = pageCount
+                    TotalItems = totalItems
                 };
 
                 return response;
             }
         }
     }
-
-
 }

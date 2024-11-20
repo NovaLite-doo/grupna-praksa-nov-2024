@@ -20,13 +20,5 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             var response = await _mediator.Send(new GetAllQuestions.Query());
             return Ok(response);
         }
-
-        [HttpGet("generate-candidate-test")]
-        public async Task<ActionResult<GetRandomQuestions.Response>> GenerateCandidateTest()
-        {
-            var response = await _mediator.Send(new GetRandomQuestions.Query());
-
-            return Ok(response);
-        }
     }
 }

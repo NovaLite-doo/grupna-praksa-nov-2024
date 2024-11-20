@@ -15,8 +15,8 @@ namespace Konteh.FrontOffice.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("generate-candidate-test")]
-        public async Task<ActionResult<GetExam.Response>> GenerateCandidateTest()
+        [HttpGet("generate-candidate-exam")]
+        public async Task<ActionResult<GetExam.Response>> GenerateCandidateExam()
         {
             var response = await _mediator.Send(new GetExam.Query());
 

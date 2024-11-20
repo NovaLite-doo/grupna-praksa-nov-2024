@@ -16,7 +16,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IExamClient {
-    generateCandidateTest(): Observable<GetExamResponse>;
+    generateCandidateExam(): Observable<GetExamResponse>;
 }
 
 @Injectable({
@@ -32,8 +32,8 @@ export class ExamClient implements IExamClient {
         this.baseUrl = baseUrl ?? "https://localhost:7296";
     }
 
-    generateCandidateTest(): Observable<GetExamResponse> {
-        let url_ = this.baseUrl + "/Exam/generate-candidate-test";
+    generateCandidateExam(): Observable<GetExamResponse> {
+        let url_ = this.baseUrl + "/Exam/generate-candidate-exam";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -45,11 +45,11 @@ export class ExamClient implements IExamClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGenerateCandidateTest(response_);
+            return this.processGenerateCandidateExam(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGenerateCandidateTest(response_ as any);
+                    return this.processGenerateCandidateExam(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<GetExamResponse>;
                 }
@@ -58,7 +58,7 @@ export class ExamClient implements IExamClient {
         }));
     }
 
-    protected processGenerateCandidateTest(response: HttpResponseBase): Observable<GetExamResponse> {
+    protected processGenerateCandidateExam(response: HttpResponseBase): Observable<GetExamResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -157,6 +157,7 @@ export class WeatherForecastClient implements IWeatherForecastClient {
 export class GetExamResponse implements IGetExamResponse {
     id?: number;
     examQuestions?: GetExamExamQuestionResponse[];
+    answers?: GetExamAnswerResponse[];
 
     constructor(data?: IGetExamResponse) {
         if (data) {
@@ -174,6 +175,11 @@ export class GetExamResponse implements IGetExamResponse {
                 this.examQuestions = [] as any;
                 for (let item of _data["examQuestions"])
                     this.examQuestions!.push(GetExamExamQuestionResponse.fromJS(item));
+            }
+            if (Array.isArray(_data["answers"])) {
+                this.answers = [] as any;
+                for (let item of _data["answers"])
+                    this.answers!.push(GetExamAnswerResponse.fromJS(item));
             }
         }
     }
@@ -193,6 +199,11 @@ export class GetExamResponse implements IGetExamResponse {
             for (let item of this.examQuestions)
                 data["examQuestions"].push(item.toJSON());
         }
+        if (Array.isArray(this.answers)) {
+            data["answers"] = [];
+            for (let item of this.answers)
+                data["answers"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -200,11 +211,14 @@ export class GetExamResponse implements IGetExamResponse {
 export interface IGetExamResponse {
     id?: number;
     examQuestions?: GetExamExamQuestionResponse[];
+    answers?: GetExamAnswerResponse[];
 }
 
 export class GetExamExamQuestionResponse implements IGetExamExamQuestionResponse {
     id?: number;
     questionId?: number;
+    questionText?: string;
+    answers?: GetExamAnswerResponse[];
 
     constructor(data?: IGetExamExamQuestionResponse) {
         if (data) {
@@ -219,6 +233,12 @@ export class GetExamExamQuestionResponse implements IGetExamExamQuestionResponse
         if (_data) {
             this.id = _data["id"];
             this.questionId = _data["questionId"];
+            this.questionText = _data["questionText"];
+            if (Array.isArray(_data["answers"])) {
+                this.answers = [] as any;
+                for (let item of _data["answers"])
+                    this.answers!.push(GetExamAnswerResponse.fromJS(item));
+            }
         }
     }
 
@@ -233,6 +253,12 @@ export class GetExamExamQuestionResponse implements IGetExamExamQuestionResponse
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["questionId"] = this.questionId;
+        data["questionText"] = this.questionText;
+        if (Array.isArray(this.answers)) {
+            data["answers"] = [];
+            for (let item of this.answers)
+                data["answers"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -240,6 +266,48 @@ export class GetExamExamQuestionResponse implements IGetExamExamQuestionResponse
 export interface IGetExamExamQuestionResponse {
     id?: number;
     questionId?: number;
+    questionText?: string;
+    answers?: GetExamAnswerResponse[];
+}
+
+export class GetExamAnswerResponse implements IGetExamAnswerResponse {
+    questionId?: number;
+    text?: string;
+
+    constructor(data?: IGetExamAnswerResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.questionId = _data["questionId"];
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): GetExamAnswerResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetExamAnswerResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["questionId"] = this.questionId;
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface IGetExamAnswerResponse {
+    questionId?: number;
+    text?: string;
 }
 
 export class WeatherForecast implements IWeatherForecast {

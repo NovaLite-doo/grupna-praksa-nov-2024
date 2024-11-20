@@ -11,12 +11,20 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         {
             public int Id { get; set; }
             public IEnumerable<ExamQuestionResponse> ExamQuestions { get; set; } = new List<ExamQuestionResponse>();
+            public IEnumerable<AnswerResponse> Answers { get; set; } = new List<AnswerResponse>();
         }
 
         public class ExamQuestionResponse
         {
             public int Id { get; set; }
-            public int QuestionId { get; set; }
+            public string QuestionText { get; set; } = string.Empty;
+            public List<AnswerResponse> Answers { get; set; } = new List<AnswerResponse>();
+        }
+
+        public class AnswerResponse
+        {
+            public int Id { get; set; }
+            public string Text { get; set; } = string.Empty;
         }
 
         public class RequestHandler : IRequestHandler<Query, Response>
@@ -36,11 +44,9 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 var groupedByCategory = questions.GroupBy(q => q.Category).ToList();
 
-                var selectedQuestions = new List<Response>();
-
                 var random = new Random();
 
-                var examQuestions = new List<ExamQuestion>();
+                var examQuestions = new List<ExamQuestionResponse>();
 
                 foreach (var categoryGroup in groupedByCategory)
                 {
@@ -51,27 +57,30 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                     foreach (var question in randomQuestions)
                     {
-                        var examQuestion = new ExamQuestion
+                        var answerResponses = question.Answers
+                            .OrderBy(a => random.Next())
+                            .Select(a => new AnswerResponse
+                            {
+                                Id = a.Id,
+                                Text = a.Text
+                            })
+                            .ToList();
+
+                        var examQuestionResponse = new ExamQuestionResponse
                         {
-                            QuestionId = question.Id,
-                            Question = question
+                            Id = question.Id,
+                            QuestionText = question.Text,  
+                            Answers = answerResponses
                         };
 
-                        examQuestions.Add(examQuestion);
+                        examQuestions.Add(examQuestionResponse);
                     }
 
                 }
 
-                var examQuestionResponses = examQuestions.Select(eq => new ExamQuestionResponse
-                {
-                    QuestionId = eq.QuestionId,
-                    Id = eq.Id
-                }).ToList();
-
-
                 var response = new Response
                 {
-                    ExamQuestions = examQuestionResponses
+                    ExamQuestions = examQuestions
                 };
 
                 return response;

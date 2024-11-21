@@ -6,25 +6,23 @@ namespace Konteh.Infrastructure.Validation
 {
     public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        private readonly IValidator<TRequest> _validator;
+        private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-        public ValidationBehavior(IValidator<TRequest> validator) 
+        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
         {
-            _validator = validator;
+            _validators = validators;
         }
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            var context = new ValidationContext<TRequest>(request);
+            var validationFailures = await Task.WhenAll(_validators.Select(validator => validator.ValidateAsync(request)));
 
-            var validationResult = await _validator.ValidateAsync(context);
+            var errors = validationFailures
+              .Where(validationResult => !validationResult.IsValid)
+              .SelectMany(validationResult => validationResult.Errors);
 
-            if (!validationResult.IsValid)
+            if (errors.Any())
             {
-                var errors = validationResult.Errors
-                    .Where(x => x != null)
-                    .Select(x => new ValidationFailure(x.PropertyName, x.ErrorMessage));
-
                 throw new ValidationException(errors);
             }
 

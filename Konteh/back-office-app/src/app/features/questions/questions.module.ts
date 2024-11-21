@@ -20,6 +20,7 @@ import { QuestionFormComponent } from './create-edit-question/question-form/ques
 import { AnswerFormComponent } from './create-edit-question/answer-form/answer-form.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { QuestionsRoutingModule } from './questions-routing.module';
+import { GeneralErrorsComponent } from '../../shared/validation/general-errors.component';
 
 
 
@@ -47,7 +48,8 @@ import { QuestionsRoutingModule } from './questions-routing.module';
     MatInputModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    GeneralErrorsComponent
   ]
 })
 export class QuestionsModule { }

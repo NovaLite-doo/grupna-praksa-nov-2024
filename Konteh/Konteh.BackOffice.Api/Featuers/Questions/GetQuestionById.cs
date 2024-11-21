@@ -1,5 +1,6 @@
 ﻿using Konteh.Domain;
 using Konteh.Domain.Enumeration;
+using Konteh.Infrastructure.ExceptionHandling;
 using Konteh.Infrastructure.Repository;
 using MediatR;
 
@@ -37,7 +38,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var question = await _questionRepository.Get(request.Id) ?? throw new KeyNotFoundException($"Question with Id {request.Id} not found.");
+                var question = await _questionRepository.Get(request.Id) ?? throw new EntityNotFoundException($"Question with Id {request.Id} not found.");
                 return new Response
                 {
                     Id = question.Id,

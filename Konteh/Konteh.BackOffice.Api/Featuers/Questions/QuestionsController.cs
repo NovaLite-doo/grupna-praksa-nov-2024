@@ -1,11 +1,13 @@
 ﻿using Azure.Core;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Konteh.BackOffice.Api.Featuers.Questions
 {
     [ApiController]
     [Route("questions")]
+    [Authorize]
     public class QuestionsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -53,21 +55,13 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
         }
 
         [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateOrUpdate(CreateOrUpdateQuestion.QuestionRequest request)
         {
-            try
-            {
-                await _mediator.Send(request);
-                return Ok();
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
+            await _mediator.Send(request);
+            return Ok();
         }
     }
 }

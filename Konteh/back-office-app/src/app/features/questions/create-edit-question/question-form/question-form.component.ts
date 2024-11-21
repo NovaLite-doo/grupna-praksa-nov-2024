@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { QuestionCategory, QuestionType } from '../../../../api/api-reference';
 import { QuestionForm } from '../models/question-form.model';
+import { FORM_FIELD_ERROR_KEY } from '../../../../shared/validation/validation';
 
 @Component({
   selector: 'app-question-form',
@@ -47,5 +48,18 @@ export class QuestionFormComponent {
 
   removeAnswer(index: number) {
     this.answers.removeAt(index);
+  }
+
+  hasErrors = (formControlName: string) => {
+    const errors = this.questionForm?.get(formControlName)?.errors;
+    return errors && errors[FORM_FIELD_ERROR_KEY];
+  }
+
+  getErrors = (formControlName: string) => {
+    const errors = this.questionForm?.get(formControlName)?.errors;
+    if (!errors) {
+      return null;
+    }
+    return errors[FORM_FIELD_ERROR_KEY];
   }
 }

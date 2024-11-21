@@ -17,6 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { environment } from '../enviroments/enviroment';
+import { GeneralErrorsComponent } from './shared/validation/general-errors.component';
+import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -45,7 +47,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationBarComponent
+    NavigationBarComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -59,7 +62,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-
+    GeneralErrorsComponent
   ],
   providers: [
     provideAnimationsAsync(),

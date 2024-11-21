@@ -8,10 +8,11 @@
             <app-question-form [questionForm]="questionForm"></app-question-form>
         </div>
 
+        <app-general-errors [form]="questionForm"></app-general-errors>
         <button type="submit" class="create-edit-question-btn">
             <mat-icon class="create-edit-question-btn-icon">
                 {{ id ? 'edit' : 'add' }}
-            </mat-icon> 
+            </mat-icon>
             {{ id ? 'Save' : 'Add' }}
         </button>
     </form>

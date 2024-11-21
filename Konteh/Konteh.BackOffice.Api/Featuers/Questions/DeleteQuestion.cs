@@ -24,7 +24,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             {
 
                 var question = await _questionRepository.Get(request.Id);
-                if (question == null || question.IsDeleted) throw new EntityNotFoundException($"Question with Id {request.Id} not found.");
+                if (question == null || question.IsDeleted) throw new EntityNotFoundException();
 
                 _questionRepository.Delete(question);
                 await _questionRepository.SaveChanges();

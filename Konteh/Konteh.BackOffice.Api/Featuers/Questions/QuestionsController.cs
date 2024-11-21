@@ -43,15 +43,8 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
         [HttpGet("{id}")]
         public async Task<ActionResult<GetQuestionById.Response>> GetQuestionById(int id)
         {
-            try
-            {
-                var response = await _mediator.Send(new GetQuestionById.Query { Id = id });
-                return Ok(response);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
+            var response = await _mediator.Send(new GetQuestionById.Query { Id = id });
+            return Ok(response);
         }
 
         [HttpPut]

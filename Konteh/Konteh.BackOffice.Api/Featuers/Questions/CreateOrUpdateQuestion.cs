@@ -28,8 +28,17 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
         {
             public QuestionValidator()
             {
-                RuleFor(x => x.Text)
-                    .NotEmpty();
+                RuleFor(x => x.Text).NotEmpty();
+
+                RuleForEach(x => x.Answers)
+                    .ChildRules(a =>
+                    {
+                        a.RuleFor(x => x.Text).NotEmpty();
+                    });
+
+                RuleFor(x => x)
+                    .Must(x => x.Type == QuestionType.Checkbox || x.Answers.Where(a => a.IsCorrect).Count() <= 1)
+                    .WithMessage("Questions of type radiobutton can have only 1 correct answer.");
             }
         }
 

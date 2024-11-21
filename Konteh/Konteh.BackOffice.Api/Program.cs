@@ -56,7 +56,7 @@ app.UseOpenApi();
 app.UseSwaggerUi();
 app.UseCors(MyAllowSpecificOrigins);
 
-app.UseMiddleware<ValidationExceptionHandlingMiddleware>();
+app.UseMiddleware<ValidationErrorHandler>();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Konteh.BackOffice.Api.Validation
 {
-    public sealed class ValidationExceptionHandlingMiddleware
+    public sealed class ValidationErrorHandler
     {
         private readonly RequestDelegate _next;
 
-        public ValidationExceptionHandlingMiddleware(RequestDelegate next)
+        public ValidationErrorHandler(RequestDelegate next)
         {
             _next = next;
         }

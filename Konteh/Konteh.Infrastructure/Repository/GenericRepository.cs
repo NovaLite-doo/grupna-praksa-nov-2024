@@ -17,12 +17,12 @@ namespace Konteh.Infrastructure.Repository
 
         public virtual void Delete(T entity) => _dbSet.Remove(entity);
 
-        public async Task<T?> Get(int id) => await _dbSet.FindAsync(id);
+        public virtual async Task<T?> Get(int id) => await _dbSet.FindAsync(id);
 
         public virtual async Task<IEnumerable<T>> GetAll() => await _dbSet.ToListAsync();
 
         public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
 
-        public async Task<IList<T>> Search(Expression<Func<T, bool>> predicate) => await _dbSet.Where(predicate).ToListAsync();
+        public virtual async Task<IList<T>> Search(Expression<Func<T, bool>> predicate) => await _dbSet.Where(predicate).ToListAsync();
     }
 }

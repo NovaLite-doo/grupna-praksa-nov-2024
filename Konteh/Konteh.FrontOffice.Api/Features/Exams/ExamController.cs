@@ -21,5 +21,23 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
             return Ok();
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GetExamById.Response>> GetExamById([FromRoute] int id)
+        {
+            try
+            {
+                var query = new GetExamById.Query { Id = id };
+
+                var response = await _mediator.Send(query);
+
+                return Ok(response);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
     }
 }

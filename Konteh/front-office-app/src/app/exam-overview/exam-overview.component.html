@@ -1,0 +1,20 @@
+<div *ngIf="exam">
+    <h2>Exam ID: {{ exam.id }}</h2>
+  
+    <div *ngIf="exam.questions && exam.questions.length > 0">
+      <h3>Questions:</h3>
+      <ul>
+        <li *ngFor="let question of exam.questions">
+          <strong>Question {{ question.id }}:</strong> {{ question.question?.text }} (Category: {{ question.question?.category }})
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="exam.questions && exam.questions.length === 0">
+      <p>No questions available for this exam.</p>
+    </div>
+  </div>
+  
+  <div *ngIf="!exam">
+    <p>Loading exam data...</p>
+  </div>
+  

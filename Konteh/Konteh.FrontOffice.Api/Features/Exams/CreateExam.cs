@@ -22,15 +22,18 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         {
             private readonly IRepository<Question> _questionRepository;
             private readonly IRepository<Exam> _examRepository;
+            private readonly IRepository<Candidate> _candidateRepository;
 
-            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository)
+            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository)
             {
                 _questionRepository = questionRepository;
                 _examRepository = examRepository;
+                _candidateRepository = candidateRepository;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
+
                 var questions = await _questionRepository.GetAll();
 
                 var groupedByCategory = questions.GroupBy(q => q.Category).ToList();
@@ -38,6 +41,16 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 var random = new Random();
 
                 var examQuestions = new List<ExamQuestion>();
+                var candidate = new Candidate
+                {
+                    Email = request.Email,
+                    Faculty = request.Faculty,
+                    Major = request.Major,
+                    Name = request.Name,
+                    Surname = request.Surname,
+                    YearOfStudy = request.YearOfStudy
+                };
+                _candidateRepository.Create(candidate);
 
                 foreach (var categoryGroup in groupedByCategory)
                 {
@@ -53,17 +66,10 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                     }));
                 }
 
+
                 var exam = new Exam
                 {
-                    Candidate = new Candidate
-                    {
-                        Email = request.Email,
-                        Faculty = request.Faculty,
-                        Major = request.Major,
-                        Name = request.Name,
-                        Surname = request.Surname,
-                        YearOfStudy = request.YearOfStudy
-                    },
+                    Candidate = candidate,
                     Questions = examQuestions
                 };
 

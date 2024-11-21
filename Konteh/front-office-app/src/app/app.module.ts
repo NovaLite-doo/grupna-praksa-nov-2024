@@ -6,12 +6,14 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { CandidateFormComponent } from './candidate-form/candidate-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ExamOverviewComponent } from './exam-overview/exam-overview.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    CandidateFormComponent
+    CandidateFormComponent,
+    ExamOverviewComponent
   ],
   imports: [
     BrowserModule,

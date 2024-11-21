@@ -9,7 +9,6 @@ import { CreateExamCommand, ExamClient, YearOfStudy } from '../api/api-reference
   styleUrl: './candidate-form.component.css'
 })
 export class CandidateFormComponent {
-
   candidateForm!: FormGroup;
   YearOfStudy = YearOfStudy;
 
@@ -32,7 +31,6 @@ export class CandidateFormComponent {
   onSubmit(): void {
     if (this.candidateForm.valid) {
       const candidateData = this.candidateForm.value;
-
       const examCommand = new CreateExamCommand();
       examCommand.email = candidateData.email;
       examCommand.faculty = candidateData.faculty;
@@ -44,7 +42,8 @@ export class CandidateFormComponent {
       this.examClient.generateExam(examCommand).subscribe(
         (response) => {
           console.log('Exam generated successfully:', response);
-          //this.router.navigate(['/test']);  
+          const examId = 3;
+          this.router.navigate(['/exam-overview', examId]); 
         },
         (error) => {
           console.error('Error generating exam:', error);

@@ -1,6 +1,5 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Konteh.BackOffice.Api.Validation;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.ExceptionHandling;
 using Konteh.Infrastructure.Repository;

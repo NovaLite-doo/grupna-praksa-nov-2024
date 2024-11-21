@@ -1,0 +1,74 @@
+﻿{
+  Questions: [
+    {
+      QuestionId: 1,
+      Question: {
+        Id: 1,
+        Text: What is Object-Oriented Programming (OOP)?,
+        Answers: [
+          {
+            Text: A programming paradigm based on the concept of objects,
+            IsCorrect: false,
+            IsDeleted: false
+          },
+          {
+            Text: A type of relational database,
+            IsCorrect: false,
+            IsDeleted: false
+          }
+        ],
+        IsDeleted: false
+      }
+    },
+    {
+      QuestionId: 5,
+      Question: {
+        Id: 5,
+        Text: Which command is used to create a new Git repository?,
+        Answers: [
+          {
+            Text: git init,
+            IsCorrect: false,
+            IsDeleted: false
+          },
+          {
+            Text: git create,
+            IsCorrect: false,
+            IsDeleted: false
+          }
+        ],
+        Category: GIT,
+        IsDeleted: false
+      }
+    },
+    {
+      QuestionId: 7,
+      Question: {
+        Id: 7,
+        Text: Which SQL command is used to delete a table from a database?,
+        Answers: [
+          {
+            Text: DROP TABLE,
+            IsCorrect: false,
+            IsDeleted: false
+          },
+          {
+            Text: DELETE TABLE,
+            IsCorrect: false,
+            IsDeleted: false
+          }
+        ],
+        Category: SQL,
+        IsDeleted: false
+      }
+    }
+  ],
+  Candidate: {
+    Name: John,
+    Surname: Doe,
+    Email: student@example.com,
+    Faculty: Engineering,
+    Major: Computer Science,
+    YearOfStudy: Master
+  }
+}

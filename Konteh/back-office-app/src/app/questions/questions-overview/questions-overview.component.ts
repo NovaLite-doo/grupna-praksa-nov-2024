@@ -21,7 +21,7 @@ export class QuestionsOverviewComponent {
   totalItems = 0;
   searchText = '';
   selectedCategory: QuestionCategory | null = null;
-  categoryEnumKeys = Object.keys(QuestionCategory).filter(key => isNaN(Number(key)));
+  categoryEnumKeys = Object.keys(QuestionCategory).filter(key => isNaN(Number(key))) .map(key => key);
   searchTextControl: FormControl = new FormControl('');
 
   constructor(private questionsClient: QuestionsClient, private dialog: MatDialog) { }

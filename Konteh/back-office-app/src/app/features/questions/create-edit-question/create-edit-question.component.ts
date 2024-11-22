@@ -4,6 +4,7 @@ import { CreateOrUpdateQuestionAnswerRequest, CreateOrUpdateQuestionQuestionRequ
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionForm } from './models/question-form.model';
+import { setServerSideValidationError } from '../../../shared/validation/validation';
 
 @Component({
   selector: 'app-create-edit-question',
@@ -78,6 +79,9 @@ export class CreateEditQuestionComponent {
   }
 
   createOrEditQuestion(request: CreateOrUpdateQuestionQuestionRequest): void {
-    this.questionsClient.createOrUpdate(request).subscribe(_ => this.router.navigate(['questions']));
+    this.questionsClient.createOrUpdate(request).subscribe({
+      next: _ => this.router.navigate(['questions']),
+      error: errors => setServerSideValidationError(errors, this.questionForm)
+    });
   }
 }

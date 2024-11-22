@@ -38,8 +38,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 var groupedByCategory = questions.GroupBy(q => q.Category).ToList();
 
-                var random = new Random();
-
                 var examQuestions = new List<ExamQuestion>();
 
                 var exam = new Exam
@@ -59,7 +57,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 foreach (var categoryGroup in groupedByCategory)
                 {
                     var randomQuestions = categoryGroup
-                        .OrderBy(x => random.Next())
+                        .OrderBy(x => _random.Next())
                         .Take(NumberOfQuestionsPerCategory)
                         .ToList();
 

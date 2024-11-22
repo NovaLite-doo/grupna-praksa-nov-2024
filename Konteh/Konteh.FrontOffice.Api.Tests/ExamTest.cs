@@ -19,9 +19,11 @@ namespace Konteh.FrontOffice.Api.Tests
         {
             _mockQuestionRepository = A.Fake<IRepository<Question>>();
             _mockExamRepository = A.Fake<IRepository<Exam>>();
+            _mockRandom = A.Fake<Random>();
+
+            A.CallTo(() => _mockRandom.Next(0, A<int>.Ignored)).ReturnsNextFromSequence(0, 1, 3);
 
             _handler = new CreateExam.RequestHandler(_mockQuestionRepository, _mockExamRepository, _mockRandom);
-            _mockRandom = A.Fake<Random>();
         }
 
         [Test]
@@ -113,11 +115,24 @@ namespace Konteh.FrontOffice.Api.Tests
                     Category = QuestionCategory.SQL,
                     Type = QuestionType.Radiobutton,
                     IsDeleted = false
+                },
+                new() {
+                    Id = 8,
+                    Text = "Which SQL command is used to delete a table from a database?",
+                    Answers =
+                    [
+                        new Answer { Text = "DROP TABLE" },
+                        new Answer { Text = "DELETE TABLE" }
+                    ],
+                    Category = QuestionCategory.SQL,
+                    Type = QuestionType.Radiobutton,
+                    IsDeleted = false
                 }
             };
 
             A.CallTo(() => _mockQuestionRepository.GetAll()).Returns(questions);
-            A.CallTo(() => _mockRandom.Next()).ReturnsNextFromSequence(1, 5, 7);
+
+            A.CallTo(() => _mockRandom.Next(0, A<int>.Ignored)).ReturnsNextFromSequence(0, 1, 2);
 
 
             var command = new CreateExam.Command

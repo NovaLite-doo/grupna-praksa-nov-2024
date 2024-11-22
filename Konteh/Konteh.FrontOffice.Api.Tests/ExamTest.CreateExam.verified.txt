@@ -21,18 +21,18 @@
       }
     },
     {
-      QuestionId: 5,
+      QuestionId: 2,
       Question: {
-        Id: 5,
-        Text: Which command is used to create a new Git repository?,
+        Id: 2,
+        Text: What is Git?,
         Answers: [
           {
-            Text: git init,
+            Text: A version control system,
             IsCorrect: false,
             IsDeleted: false
           },
           {
-            Text: git create,
+            Text: A programming language,
             IsCorrect: false,
             IsDeleted: false
           }
@@ -42,18 +42,18 @@
       }
     },
     {
-      QuestionId: 7,
+      QuestionId: 3,
       Question: {
-        Id: 7,
-        Text: Which SQL command is used to delete a table from a database?,
+        Id: 3,
+        Text: What is SQL?,
         Answers: [
           {
-            Text: DROP TABLE,
+            Text: A language used for managing relational databases,
             IsCorrect: false,
             IsDeleted: false
           },
           {
-            Text: DELETE TABLE,
+            Text: A markup language for web pages,
             IsCorrect: false,
             IsDeleted: false
           }

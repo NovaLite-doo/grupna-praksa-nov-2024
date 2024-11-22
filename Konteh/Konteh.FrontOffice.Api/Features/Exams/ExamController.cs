@@ -14,20 +14,20 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             _mediator = mediator;
         }
 
-        [HttpPost()]
+        [HttpPost]
         public async Task<IActionResult> GenerateExam(CreateExam.Command command)
         {
-            await _mediator.Send(command);
+            var exam = await _mediator.Send(command);
 
-            return Ok();
+            return Ok(new { examId = exam.Id });
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GetExamById.Response>> GetExamById([FromRoute] int id)
+        [HttpGet("{examId}")]
+        public async Task<ActionResult<GetExamById.Response>> GetExamById([FromRoute] int examId)
         {
             try
             {
-                var query = new GetExamById.Query { Id = id };
+                var query = new GetExamById.Query { ExamId = examId };
 
                 var response = await _mediator.Send(query);
 

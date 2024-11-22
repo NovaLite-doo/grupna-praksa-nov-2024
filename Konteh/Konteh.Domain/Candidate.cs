@@ -11,7 +11,6 @@ namespace Konteh.Domain
         public string Faculty { get; set; } = string.Empty;
         public string Major { get; set; } = string.Empty;
         public YearOfStudy YearOfStudy { get; set; }
-        public int ExamId { get; set; }
         public Exam? Exam { get; set; }
     }
 }

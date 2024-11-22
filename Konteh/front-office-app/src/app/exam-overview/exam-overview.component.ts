@@ -22,6 +22,16 @@ export class ExamOverviewComponent {
     this.examClient.getExamById(id).subscribe(
       (response: IGetExamByIdResponse) => {
         this.exam = response;
+        if (this.exam?.questions) {
+          this.exam.questions.forEach(q => {
+            if (!q.question?.id) {
+              console.error(`Question with missing ID:`, q);
+            }
+            if (!q.question?.answers) {
+              console.error(`No answers available for question with ID:`, q.question?.id);
+            }
+          });
+        }
       },
       (error) => {
         console.error('Error fetching exam:', error);

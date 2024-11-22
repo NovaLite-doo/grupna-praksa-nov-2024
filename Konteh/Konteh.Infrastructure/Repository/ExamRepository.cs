@@ -21,8 +21,10 @@ namespace Konteh.Infrastructure.Repository
         public override async Task<Exam?> Get(int id)
         {
             return await _dbSet
+                .Where(e => e.Id == id)
                 .Include(e => e.Questions)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .ThenInclude(eq => eq.Question)
+                .FirstOrDefaultAsync();
         }
 
     }

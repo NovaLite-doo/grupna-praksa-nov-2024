@@ -8,17 +8,17 @@ namespace Konteh.FrontOffice.Api.Features.Exams
     public static class CreateExam
     {
         public const int NumberOfQuestionsPerCategory = 2;
-        public class Command : IRequest<Unit>
+        public class Command : IRequest<Exam>
         {
-            public string Email { get; internal set; } = string.Empty;
-            public string Faculty { get; internal set; } = string.Empty;
-            public string Major { get; internal set; } = string.Empty;
-            public string Name { get; internal set; } = string.Empty;
-            public string Surname { get; internal set; } = string.Empty;
-            public YearOfStudy YearOfStudy { get; internal set; }
+            public string Email { get; set; } = string.Empty;
+            public string Faculty { get; set; } = string.Empty;
+            public string Major { get; set; } = string.Empty;
+            public string Name { get; set; } = string.Empty;
+            public string Surname { get; set; } = string.Empty;
+            public YearOfStudy YearOfStudy { get; set; }
         }
 
-        public class RequestHandler : IRequestHandler<Command, Unit>
+        public class RequestHandler : IRequestHandler<Command, Exam>
         {
             private readonly IRepository<Question> _questionRepository;
             private readonly IRepository<Exam> _examRepository;
@@ -31,7 +31,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 _candidateRepository = candidateRepository;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Exam> Handle(Command request, CancellationToken cancellationToken)
             {
 
                 var questions = await _questionRepository.GetAll();
@@ -40,7 +40,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 var random = new Random();
 
-                var examQuestions = new List<ExamQuestion>();
                 var candidate = new Candidate
                 {
                     Email = request.Email,
@@ -51,6 +50,13 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                     YearOfStudy = request.YearOfStudy
                 };
                 _candidateRepository.Create(candidate);
+                await _candidateRepository.SaveChanges();
+
+
+                var exam = new Exam
+                {
+                    Candidate = candidate
+                };
 
                 foreach (var categoryGroup in groupedByCategory)
                 {
@@ -59,24 +65,19 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                         .Take(NumberOfQuestionsPerCategory)
                         .ToList();
 
-                    examQuestions.AddRange(randomQuestions.Select(x => new ExamQuestion
+                    exam.Questions.AddRange(randomQuestions.Select(x => new ExamQuestion
                     {
-                        Question = x,
-                        QuestionId = x.Id
+                        Question = x
+                        //QuestionId = x.Id
+                        //Exam = exam
                     }));
                 }
 
-
-                var exam = new Exam
-                {
-                    Candidate = candidate,
-                    Questions = examQuestions
-                };
+                //exam.Questions = examQuestions;
 
                 _examRepository.Create(exam);
                 await _examRepository.SaveChanges();
-
-                return Unit.Value;
+                return exam;
             }
         }
 

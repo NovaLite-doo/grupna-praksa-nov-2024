@@ -1,20 +1,41 @@
 <div *ngIf="exam">
-    <h2>Exam ID: {{ exam.id }}</h2>
-  
-    <div *ngIf="exam.questions && exam.questions.length > 0">
-      <h3>Questions:</h3>
-      <ul>
-        <li *ngFor="let question of exam.questions">
-          <strong>Question {{ question.id }}:</strong> {{ question.question?.text }} (Category: {{ question.question?.category }})
-        </li>
-      </ul>
-    </div>
-    <div *ngIf="exam.questions && exam.questions.length === 0">
-      <p>No questions available for this exam.</p>
-    </div>
+
+  <div *ngIf="exam.questions && exam.questions.length > 0">
+    <h2>Exam</h2>
+    <ul>
+      <li *ngFor="let question of exam.questions">
+        <div class="question-container">
+          
+          <div class="question-text">
+            {{ question.question?.text }} 
+          </div>
+          
+          <div *ngIf="question.question && question.question.answers && question.question.answers.length > 0">
+            <div class="answers">
+              <label *ngFor="let answer of question.question.answers">
+                <input
+                  type="radio"
+                  name="question{{ question.id }}"
+                  [value]="answer.id"
+                />
+                {{ answer.text }}
+              </label>
+            </div>
+          </div>
+
+          <div *ngIf="question.question && (!question.question.answers || question.question.answers.length === 0)">
+            <p>No answers available for this question.</p>
+          </div>
+        </div>
+      </li>
+    </ul>
   </div>
-  
-  <div *ngIf="!exam">
-    <p>Loading exam data...</p>
+
+  <div *ngIf="exam.questions && exam.questions.length === 0">
+    <p>No questions available for this exam.</p>
   </div>
-  
+</div>
+
+<div *ngIf="!exam">
+  <p>Loading exam data...</p>
+</div>

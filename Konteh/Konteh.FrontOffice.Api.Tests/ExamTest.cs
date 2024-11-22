@@ -29,7 +29,6 @@ namespace Konteh.FrontOffice.Api.Tests
         [Test]
         public async Task CreateExam()
         {
-            //arrange
             var questions = new List<Question>
             {
                 new() {
@@ -115,18 +114,6 @@ namespace Konteh.FrontOffice.Api.Tests
                     Category = QuestionCategory.SQL,
                     Type = QuestionType.Radiobutton,
                     IsDeleted = false
-                },
-                new() {
-                    Id = 8,
-                    Text = "Which SQL command is used to delete a table from a database?",
-                    Answers =
-                    [
-                        new Answer { Text = "DROP TABLE" },
-                        new Answer { Text = "DELETE TABLE" }
-                    ],
-                    Category = QuestionCategory.SQL,
-                    Type = QuestionType.Radiobutton,
-                    IsDeleted = false
                 }
             };
 
@@ -148,11 +135,6 @@ namespace Konteh.FrontOffice.Api.Tests
             var result = await _handler.Handle(command, CancellationToken.None);
 
             await Verify(result);
-
-            //Assert.That(result.Questions.Count, Is.EqualTo(3));
-            //Assert.That(result.Questions.Count(q => q.Question.Category == QuestionCategory.OOP), Is.EqualTo(1)); 
-            //Assert.That(result.Questions.Count(q => q.Question.Category == QuestionCategory.GIT), Is.EqualTo(1)); 
-            //Assert.That(result.Questions.Count(q => q.Question.Category == QuestionCategory.SQL), Is.EqualTo(1));
 
             A.CallTo(() => _mockExamRepository.SaveChanges()).MustHaveHappened();
         }

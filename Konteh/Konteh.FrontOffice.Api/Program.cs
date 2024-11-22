@@ -4,48 +4,54 @@ using Konteh.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
-
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-        builder =>
+    private static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Add services to the container.
+
+        var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+
+        builder.Services.AddCors(options =>
         {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
+            options.AddPolicy(name: MyAllowSpecificOrigins,
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
         });
-});
 
-builder.Services.AddControllers();
-builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
+        builder.Services.AddControllers();
+        builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
-builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
-builder.Services.AddScoped<Random>();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
+        builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
+        builder.Services.AddScoped<Random>();
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 
-var app = builder.Build();
+        var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+        // Configure the HTTP request pipeline.
 
-app.UseOpenApi();
-app.UseSwaggerUi();
+        app.UseOpenApi();
+        app.UseSwaggerUi();
 
-app.UseCors(MyAllowSpecificOrigins);
+        app.UseCors(MyAllowSpecificOrigins);
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
+        app.UseHttpsRedirection();
+        app.UseAuthorization();
 
-app.MapControllers();
+        app.MapControllers();
 
-app.Run();
+        app.Run();
+    }
+}

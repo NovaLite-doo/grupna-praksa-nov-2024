@@ -39,5 +39,20 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             }
         }
 
+        [HttpPost("submit")]
+        public async Task<IActionResult> SubmitExam(SubmitExam.Command command)
+        {
+            try
+            {
+                await _mediator.Send(command);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }

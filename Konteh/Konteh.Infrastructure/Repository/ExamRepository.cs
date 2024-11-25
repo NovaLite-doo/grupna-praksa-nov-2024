@@ -23,7 +23,8 @@ namespace Konteh.Infrastructure.Repository
             return await _dbSet
                 .Where(e => e.Id == id)
                 .Include(e => e.Questions)
-                .ThenInclude(eq => eq.Question)
+                    .ThenInclude(eq => eq.Question)
+                .ThenInclude(q => q.Answers)
                 .FirstOrDefaultAsync();
         }
 

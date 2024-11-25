@@ -1,4 +1,5 @@
 ﻿using Konteh.Domain;
+using Konteh.Domain.Enumeration;
 using Konteh.Infrastructure.Repository;
 using MediatR;
 
@@ -22,10 +23,16 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
             public int ExamId { get; set; }
             public int QuestionId { get; set; }
+            public string Text { get; set; } = string.Empty;
+            public QuestionType Type { get; set; }
+            public IEnumerable<AnswerDto> Answers { get; set; } = [];
 
-            public Question? Question { get; set; }
-
-
+        }
+        public class AnswerDto
+        {
+            public int Id { get; set; }
+            public string Text { get; set; } = string.Empty;
+            public bool IsCorrect { get; set; }
         }
         public class Handler : IRequestHandler<Query, Response>
         {
@@ -52,7 +59,13 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                         Id = q.Id,
                         ExamId = q.ExamId,
                         QuestionId = q.QuestionId,
-                        Question = q.Question
+                        Text = q.Question.Text,
+                        Type = q.Question.Type,
+                        Answers = q.Question.Answers.Select(a => new AnswerDto
+                        {
+                            Id = a.Id,
+                            Text = a.Text
+                        }).ToList()
                     }).ToList()
                 };
 

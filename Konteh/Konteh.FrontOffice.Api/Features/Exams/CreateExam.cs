@@ -33,6 +33,18 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
             public async Task<Exam> Handle(Command request, CancellationToken cancellationToken)
             {
+                var existingCandidate = (await _candidateRepository.Search(c => c.Email == request.Email)).FirstOrDefault();
+
+                if (existingCandidate != null)
+                {
+                    var existingExams = await _examRepository.Search(e => e.CandidateId == existingCandidate.Id);
+
+                    if (existingExams.Any())
+                    {
+                        throw new InvalidOperationException("Candidate has already taken the exam.");
+                    }
+                }
+
 
                 var questions = await _questionRepository.GetAll();
 

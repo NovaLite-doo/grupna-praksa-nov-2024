@@ -1,9 +1,10 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
+using Konteh.BackOffice.Api.Featuers.Exams;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.ExceptionHandling;
 using Konteh.Infrastructure.Repository;
 using Konteh.Infrastructure.Validation;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
@@ -31,16 +32,41 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+builder.Services.AddSignalR();
+
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
         builder =>
         {
-            builder.AllowAnyOrigin()
+            builder.WithOrigins("http://localhost:4200")
                    .AllowAnyMethod()
-                   .AllowAnyHeader();
+                   .AllowAnyHeader()
+                   .AllowCredentials();
         });
+});
+
+builder.Services.AddMassTransit(cfg =>
+{
+    cfg.SetKebabCaseEndpointNameFormatter();
+
+    var rabbitMqHost = builder.Configuration["RabbitMq:Host"];
+    var rabbitMqUsername = builder.Configuration["RabbitMq:Username"];
+    var rabbitMqPassword = builder.Configuration["RabbitMq:Password"];
+    cfg.UsingRabbitMq((context, configurator) =>
+    {
+        configurator.Host(rabbitMqHost, "/", h =>
+        {
+            h.Username(rabbitMqUsername!);
+            h.Password(rabbitMqPassword!);
+        });
+
+        configurator.ConfigureEndpoints(context);
+    });
+
+    cfg.AddConsumer<ExamNotifications.NotificationConsumer>();
+
 });
 
 var app = builder.Build();
@@ -58,5 +84,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ExamNotifications.NotificationHub>("exam-notification-hub");
 
 app.Run();

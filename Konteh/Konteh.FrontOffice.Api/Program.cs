@@ -1,6 +1,7 @@
 using Konteh.Domain;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repository;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -32,6 +33,24 @@ builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
 builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
+builder.Services.AddMassTransit(cfg =>
+{
+    cfg.SetKebabCaseEndpointNameFormatter();
+
+    var rabbitMqHost = builder.Configuration["RabbitMq:Host"];
+    var rabbitMqUsername = builder.Configuration["RabbitMq:Username"];
+    var rabbitMqPassword = builder.Configuration["RabbitMq:Password"];
+    cfg.UsingRabbitMq((context, configurator) =>
+    {
+        configurator.Host(rabbitMqHost, "/", h =>
+        {
+            h.Username(rabbitMqUsername!);
+            h.Password(rabbitMqPassword!);
+        });
+
+        configurator.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 

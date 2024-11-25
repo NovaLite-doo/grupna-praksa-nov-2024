@@ -1,36 +1,105 @@
-﻿using FakeItEasy;
+﻿using Argon;
 using Konteh.Domain;
 using Konteh.Domain.Enumeration;
 using Konteh.FrontOffice.Api.Features.Exams;
 using Konteh.Infrastructure;
-using Konteh.Infrastructure.Repository;
-using MediatR;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http.Json;
 
 
 namespace Konteh.FrontOffice.Api.Tests
 {
     public class ExamControllerTest
     {
-        private readonly WebApplicationFactory<Program> _factory;
+        private WebApplicationFactory<Program> _factory;
+        private HttpClient _client;
 
-        public ExamControllerTest(WebApplicationFactory<Program> factory)
+        [SetUp]
+        public void Setup()
         {
-            _factory = factory;
+            _factory = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureServices(services =>
+                    {
+                        var descriptor = services.SingleOrDefault(
+                            d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+
+                        if (descriptor != null)
+                        {
+                            services.Remove(descriptor);
+                        }
+
+                        services.AddDbContext<AppDbContext>(options =>
+                        {
+                            options.UseSqlServer("Server=localhost;Database=TestDatabase;Integrated Security=True;TrustServerCertificate=True;");
+                        });
+
+                        var serviceProvider = services.BuildServiceProvider();
+
+                        using (var scope = serviceProvider.CreateScope())
+                        {
+                            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                            dbContext.Database.EnsureCreated();
+
+                            var questions = LoadQuestionsFromFile("questions.json");
+                            dbContext.Questions.AddRange(questions);
+                            dbContext.SaveChanges();
+                        }
+                    });
+                });
+            _client = _factory.CreateClient();
         }
 
+        [Test]
         public async Task GenerateExam()
         {
-            var client = _factory.CreateClient();
+            var command = new CreateExam.Command
+            {
+                Email = "lucy@gmail.com",
+                Faculty = "Ftn",
+                Major = "RA",
+                Name = "Lucy",
+                Surname = "Bing",
+                YearOfStudy = YearOfStudy.Master
+            };
 
-            var result = await client.PostAsync("/exams", null);
+            var result = await _client.PostAsJsonAsync("/exams", command);
 
-            await Verify(result);
+            Assert.That(result.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
+
+            var jsonContent = await result.Content.ReadAsStringAsync();
+            var examId = JsonConvert.DeserializeObject<int>(jsonContent);
+
+            var examResponse = await _client.GetAsync($"/exams/{examId}");
+            var examJson = await examResponse.Content.ReadAsStringAsync();
+
+            var exam = JsonConvert.DeserializeObject<GetExamById.Response>(examJson);
+
+            await Verify(exam).IgnoreMembers("Id");
         }
 
-        
+        [TearDown]
+        public void TearDown()
+        {
+            _client.Dispose();
+            _factory.Dispose();
+        }
+
+        private List<Question> LoadQuestionsFromFile(string fileName)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", fileName);
+
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"File not found: {filePath}");
+            }
+
+            var json = File.ReadAllText(filePath);
+            return JsonConvert.DeserializeObject<List<Question>>(json);
+        }
     }
 }

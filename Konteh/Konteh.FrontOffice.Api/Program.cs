@@ -4,6 +4,7 @@ using Konteh.Infrastructure.Options;
 using Konteh.Infrastructure.Repository;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,19 +35,23 @@ builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
 builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
+builder.Services.Configure<RabbitMqOptions>(
+    builder.Configuration.GetSection(RabbitMqOptions.RabbitMq));
+
 builder.Services.AddMassTransit(cfg =>
 {
+    builder.Services.Configure<RabbitMqOptions>(
+        builder.Configuration.GetSection(RabbitMqOptions.RabbitMq));
     cfg.SetKebabCaseEndpointNameFormatter();
-
-    var options = new RabbitMqOptions();
-    builder.Configuration.GetSection(RabbitMqOptions.Options).Bind(options);
 
     cfg.UsingRabbitMq((context, configurator) =>
     {
-        configurator.Host(options.Host, "/", h =>
+        var rabbitMqOptions = context.GetRequiredService<IOptions<RabbitMqOptions>>().Value;
+
+        configurator.Host(rabbitMqOptions.Host, "/", h =>
         {
-            h.Username(options.Username);
-            h.Password(options.Password);
+            h.Username(rabbitMqOptions.Username);
+            h.Password(rabbitMqOptions.Password);
         });
 
         configurator.ConfigureEndpoints(context);

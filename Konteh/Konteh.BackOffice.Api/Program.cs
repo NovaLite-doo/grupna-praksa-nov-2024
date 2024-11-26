@@ -10,6 +10,8 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using System.Reflection;
 using static MassTransit.Logging.DiagnosticHeaders.Messaging;
@@ -52,19 +54,24 @@ builder.Services.AddCors(options =>
         });
 });
 
+
+builder.Services.Configure<RabbitMqOptions>(
+    builder.Configuration.GetSection(RabbitMqOptions.RabbitMq));
+
+
 builder.Services.AddMassTransit(cfg =>
 {
     cfg.SetKebabCaseEndpointNameFormatter();
 
-    var options = new RabbitMqOptions();
-    builder.Configuration.GetSection(RabbitMqOptions.Options).Bind(options);
 
     cfg.UsingRabbitMq((context, configurator) =>
     {
-        configurator.Host(options.Host, "/", h =>
+        var rabbitMqOptions = context.GetRequiredService<IOptions<RabbitMqOptions>>().Value;
+
+        configurator.Host(rabbitMqOptions.Host, "/", h =>
         {
-            h.Username(options.Username);
-            h.Password(options.Password);
+            h.Username(rabbitMqOptions.Username);
+            h.Password(rabbitMqOptions.Password);
         });
 
         configurator.ConfigureEndpoints(context);

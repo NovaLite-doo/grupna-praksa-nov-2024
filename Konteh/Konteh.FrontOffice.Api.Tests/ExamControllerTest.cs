@@ -71,15 +71,16 @@ namespace Konteh.FrontOffice.Api.Tests
 
             Assert.That(result.StatusCode, Is.EqualTo(System.Net.HttpStatusCode.OK));
 
-            var jsonContent = await result.Content.ReadAsStringAsync();
-            var examId = JsonConvert.DeserializeObject<int>(jsonContent);
+            var jsoncontent = await result.Content.ReadAsStringAsync();
+            var examId = JsonConvert.DeserializeObject<int>(jsoncontent);
 
             var examResponse = await _client.GetAsync($"/exams/{examId}");
             var examJson = await examResponse.Content.ReadAsStringAsync();
+            var retrievedExam = JsonConvert.DeserializeObject<Exam>(examJson);
 
-            var exam = JsonConvert.DeserializeObject<GetExamById.Response>(examJson);
+            Assert.That(retrievedExam, Is.Not.Null);
 
-            await Verify(exam).IgnoreMembers("Id");
+            await Verify(retrievedExam).IgnoreMembers("Id");
         }
 
         [TearDown]

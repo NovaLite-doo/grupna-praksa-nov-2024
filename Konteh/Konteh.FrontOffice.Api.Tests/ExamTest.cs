@@ -1,9 +1,8 @@
 using FakeItEasy;
 using Konteh.Domain;
 using Konteh.Domain.Enumeration;
-using Konteh.Infrastructure.Repository;
 using Konteh.FrontOffice.Api.Features.Exams;
-using System.Linq;
+using Konteh.Infrastructure.Repository;
 
 namespace Konteh.FrontOffice.Api.Tests
 {
@@ -39,8 +38,8 @@ namespace Konteh.FrontOffice.Api.Tests
                         new Answer { Text = "A programming paradigm based on the concept of objects" },
                         new Answer { Text = "A type of relational database" }
                     ],
-                    Category = QuestionCategory.OOP,  
-                    Type = QuestionType.Radiobutton, 
+                    Category = QuestionCategory.OOP,
+                    Type = QuestionType.Radiobutton,
                     IsDeleted = false
                 },
                 new() {
@@ -51,8 +50,8 @@ namespace Konteh.FrontOffice.Api.Tests
                         new Answer { Text = "A version control system" },
                         new Answer { Text = "A programming language" }
                     ],
-                    Category = QuestionCategory.GIT,  
-                    Type = QuestionType.Radiobutton, 
+                    Category = QuestionCategory.GIT,
+                    Type = QuestionType.Radiobutton,
                     IsDeleted = false
                 },
                 new() {
@@ -63,7 +62,7 @@ namespace Konteh.FrontOffice.Api.Tests
                         new Answer { Text = "A language used for managing relational databases" },
                         new Answer { Text = "A markup language for web pages" }
                     ],
-                    Category = QuestionCategory.SQL, 
+                    Category = QuestionCategory.SQL,
                     Type = QuestionType.Radiobutton,
                     IsDeleted = false
                 },
@@ -75,8 +74,8 @@ namespace Konteh.FrontOffice.Api.Tests
                         new Answer { Text = "A blueprint for creating objects" },
                         new Answer { Text = "A method in programming" }
                     ],
-                    Category = QuestionCategory.OOP,  
-                    Type = QuestionType.Radiobutton, 
+                    Category = QuestionCategory.OOP,
+                    Type = QuestionType.Radiobutton,
                     IsDeleted = false
                 },
                 new() {
@@ -132,9 +131,11 @@ namespace Konteh.FrontOffice.Api.Tests
                 YearOfStudy = YearOfStudy.Master
             };
 
-            var result = await _handler.Handle(command, CancellationToken.None);
+            var examId = await _handler.Handle(command, CancellationToken.None);
 
-            await Verify(result);
+            var exam = await _mockExamRepository.Get(examId);
+
+            await Verify(exam.Questions);
 
             A.CallTo(() => _mockExamRepository.SaveChanges()).MustHaveHappened();
         }

@@ -2,6 +2,7 @@
 using Konteh.Domain.Enumeration;
 using Konteh.Infrastructure.Repository;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace Konteh.FrontOffice.Api.Features.Exams
 {
@@ -17,7 +18,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             public string Surname { get; set; } = string.Empty;
             public YearOfStudy YearOfStudy { get; set; }
         }
-
         public class RequestHandler : IRequestHandler<Command, Exam>
         {
             private readonly IRepository<Question> _questionRepository;
@@ -41,10 +41,9 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                     if (existingExams.Any())
                     {
-                        throw new InvalidOperationException("Candidate has already taken the exam.");
+                        throw new ValidationException("Candidate has already taken the exam.");
                     }
                 }
-
 
                 var questions = await _questionRepository.GetAll();
 
@@ -64,7 +63,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 _candidateRepository.Create(candidate);
                 await _candidateRepository.SaveChanges();
 
-
                 var exam = new Exam
                 {
                     Candidate = candidate
@@ -80,12 +78,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                     exam.Questions.AddRange(randomQuestions.Select(x => new ExamQuestion
                     {
                         Question = x
-                        //QuestionId = x.Id
-                        //Exam = exam
                     }));
                 }
-
-                //exam.Questions = examQuestions;
 
                 _examRepository.Create(exam);
                 await _examRepository.SaveChanges();

@@ -53,6 +53,5 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 return BadRequest(new { message = ex.Message });
             }
         }
-
     }
 }

@@ -1,5 +1,4 @@
 <div *ngIf="exam">
-
   <div *ngIf="exam.questions && exam.questions.length > 0">
     <h2>Exam</h2>
 
@@ -17,7 +16,7 @@
                 type="radio"
                 name="question{{ exam.questions[currentQuestionIndex].id }}"
                 [value]="answer.id"
-                (change)="onAnswerSelected(exam.questions[currentQuestionIndex].id!, answer)"
+                (change)="onAnswerSelected(exam.questions[currentQuestionIndex].id!, answer.id!, true)"
                 [checked]="isAnswerSelected(exam.questions[currentQuestionIndex].id!, answer.id!)"
               />
               {{ answer.text }}
@@ -29,13 +28,12 @@
               <input
                 type="checkbox"
                 [value]="answer.id"
-                (change)="onAnswerSelected(exam.questions[currentQuestionIndex].id!, answer)"
+                (change)="onAnswerSelected(exam.questions[currentQuestionIndex].id!, answer.id!, false)"
                 [checked]="isAnswerSelected(exam.questions[currentQuestionIndex].id!, answer.id!)"
               />
               {{ answer.text }}
             </label>
           </div>
-
         </div>
       </div>
 
@@ -46,9 +44,7 @@
 
     <div class="navigation-buttons">
       <button *ngIf="currentQuestionIndex > 0" (click)="previousQuestion()">Previous Question</button>
-
       <button *ngIf="isLastQuestion()" (click)="submitExam()">Submit</button>
-      
       <button *ngIf="currentQuestionIndex < totalQuestions - 1" (click)="nextQuestion()">Next Question</button>
     </div>
   </div>

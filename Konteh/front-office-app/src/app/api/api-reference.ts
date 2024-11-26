@@ -473,7 +473,7 @@ export interface ISubmitExamCommand {
 
 export class SubmitExamExamQuestionDTO implements ISubmitExamExamQuestionDTO {
     id?: number;
-    submittedAnswers?: Answer[];
+    submittedAnswers?: number[];
 
     constructor(data?: ISubmitExamExamQuestionDTO) {
         if (data) {
@@ -490,7 +490,7 @@ export class SubmitExamExamQuestionDTO implements ISubmitExamExamQuestionDTO {
             if (Array.isArray(_data["submittedAnswers"])) {
                 this.submittedAnswers = [] as any;
                 for (let item of _data["submittedAnswers"])
-                    this.submittedAnswers!.push(Answer.fromJS(item));
+                    this.submittedAnswers!.push(item);
             }
         }
     }
@@ -508,7 +508,7 @@ export class SubmitExamExamQuestionDTO implements ISubmitExamExamQuestionDTO {
         if (Array.isArray(this.submittedAnswers)) {
             data["submittedAnswers"] = [];
             for (let item of this.submittedAnswers)
-                data["submittedAnswers"].push(item.toJSON());
+                data["submittedAnswers"].push(item);
         }
         return data;
     }
@@ -516,129 +516,7 @@ export class SubmitExamExamQuestionDTO implements ISubmitExamExamQuestionDTO {
 
 export interface ISubmitExamExamQuestionDTO {
     id?: number;
-    submittedAnswers?: Answer[];
-}
-
-export class Answer implements IAnswer {
-    id?: number;
-    text?: string;
-    isCorrect?: boolean;
-    questionId?: number;
-    question?: Question;
-
-    constructor(data?: IAnswer) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.text = _data["text"];
-            this.isCorrect = _data["isCorrect"];
-            this.questionId = _data["questionId"];
-            this.question = _data["question"] ? Question.fromJS(_data["question"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): Answer {
-        data = typeof data === 'object' ? data : {};
-        let result = new Answer();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["text"] = this.text;
-        data["isCorrect"] = this.isCorrect;
-        data["questionId"] = this.questionId;
-        data["question"] = this.question ? this.question.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IAnswer {
-    id?: number;
-    text?: string;
-    isCorrect?: boolean;
-    questionId?: number;
-    question?: Question;
-}
-
-export class Question implements IQuestion {
-    id?: number;
-    text?: string;
-    answers?: Answer[];
-    category?: QuestionCategory;
-    type?: QuestionType;
-    isDeleted?: boolean;
-
-    constructor(data?: IQuestion) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.text = _data["text"];
-            if (Array.isArray(_data["answers"])) {
-                this.answers = [] as any;
-                for (let item of _data["answers"])
-                    this.answers!.push(Answer.fromJS(item));
-            }
-            this.category = _data["category"];
-            this.type = _data["type"];
-            this.isDeleted = _data["isDeleted"];
-        }
-    }
-
-    static fromJS(data: any): Question {
-        data = typeof data === 'object' ? data : {};
-        let result = new Question();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["text"] = this.text;
-        if (Array.isArray(this.answers)) {
-            data["answers"] = [];
-            for (let item of this.answers)
-                data["answers"].push(item.toJSON());
-        }
-        data["category"] = this.category;
-        data["type"] = this.type;
-        data["isDeleted"] = this.isDeleted;
-        return data;
-    }
-}
-
-export interface IQuestion {
-    id?: number;
-    text?: string;
-    answers?: Answer[];
-    category?: QuestionCategory;
-    type?: QuestionType;
-    isDeleted?: boolean;
-}
-
-export enum QuestionCategory {
-    OOP = 0,
-    GIT = 1,
-    SQL = 2,
+    submittedAnswers?: number[];
 }
 
 export interface FileResponse {

@@ -31,7 +31,6 @@ export class CandidateFormComponent {
   onSubmit(): void {
     if (this.candidateForm.valid) {
       const candidateData = this.candidateForm.value;
-      console.log('Form data:', candidateData); 
       const examCommand = new CreateExamCommand();
       examCommand.email = candidateData.email;
       examCommand.faculty = candidateData.faculty;
@@ -39,36 +38,19 @@ export class CandidateFormComponent {
       examCommand.name = candidateData.name;
       examCommand.surname = candidateData.surname;
       examCommand.yearOfStudy = Number(candidateData.yearOfStudy); 
-
-      this.examClient.generateExam(examCommand).subscribe(
-        (response) => {
-          console.log('Exam generated successfully:', response);
-
-          const reader = new FileReader();
-          reader.onload = () => {
-            try {
-              const jsonResponse = JSON.parse(reader.result as string);
-              const examId = jsonResponse.examId;
-              if (examId) {
-                console.log('Generated Exam ID:', examId);
-                this.router.navigate(['/exam-overview', examId]);
-              } else {
-                console.error('examId not found in the response');
-              }
-            } catch (error) {
-              console.error('Error parsing Blob data:', error);
-            }
-          };
   
-          reader.readAsText(response.data);
-        },
-        (error) => {
-          console.error('Error generating exam:', error);
-        }
-      );
-    } else {
-      console.log('Form not valid!');
+      this.examClient.generateExam(examCommand).subscribe(response => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const jsonResponse = JSON.parse(reader.result as string);
+          const examId = jsonResponse.examId;
+          if (examId) {
+            this.router.navigate(['/exam-overview', examId]);
+          }
+        };
+  
+        reader.readAsText(response.data);
+      });
     }
   }
-
 }

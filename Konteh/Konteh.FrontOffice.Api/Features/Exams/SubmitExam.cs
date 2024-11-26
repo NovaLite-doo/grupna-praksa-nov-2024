@@ -15,7 +15,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         public class ExamQuestionDTO
         {
             public int Id { get; set; }
-            public List<Answer> SubmittedAnswers { get; set; } = new List<Answer>();
+            public List<int> SubmittedAnswers { get; set; } = [];
         }
 
         public class RequestHandler : IRequestHandler<Command, Unit>
@@ -40,14 +40,11 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                     throw new InvalidOperationException("Exam not found.");
                 }
 
-                foreach (var question in exam.Questions)
+                foreach (var examQuestion in exam.Questions)
                 {
-                    var answers = request.ExamQuestions.Single(e => e.Id == question.Id).SubmittedAnswers;
+                    var answers = request.ExamQuestions.Single(e => e.Id == examQuestion.Id).SubmittedAnswers;
 
-                    if (answers != null)
-                    {
-                        question.SubmittedAnswers.AddRange(answers);
-                    }
+                    examQuestion.SubmittedAnswers = examQuestion.Question.Answers.Where(answer => answers.Contains(answer.Id)).ToList();
 
                 }
 

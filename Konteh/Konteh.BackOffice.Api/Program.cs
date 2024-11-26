@@ -1,14 +1,18 @@
 using FluentValidation;
-using Konteh.BackOffice.Api.Featuers.Exams;
+using Konteh.BackOffice.Api.Featuers.Exams.ExamNotifications;
+using Konteh.Domain;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.ExceptionHandling;
+using Konteh.Infrastructure.Options;
 using Konteh.Infrastructure.Repository;
 using Konteh.Infrastructure.Validation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Web;
 using System.Reflection;
+using static MassTransit.Logging.DiagnosticHeaders.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +26,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
 builder.Services.AddMediatR(cfg => 
 {
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
@@ -51,21 +56,21 @@ builder.Services.AddMassTransit(cfg =>
 {
     cfg.SetKebabCaseEndpointNameFormatter();
 
-    var rabbitMqHost = builder.Configuration["RabbitMq:Host"];
-    var rabbitMqUsername = builder.Configuration["RabbitMq:Username"];
-    var rabbitMqPassword = builder.Configuration["RabbitMq:Password"];
+    var options = new RabbitMqOptions();
+    builder.Configuration.GetSection(RabbitMqOptions.Options).Bind(options);
+
     cfg.UsingRabbitMq((context, configurator) =>
     {
-        configurator.Host(rabbitMqHost, "/", h =>
+        configurator.Host(options.Host, "/", h =>
         {
-            h.Username(rabbitMqUsername!);
-            h.Password(rabbitMqPassword!);
+            h.Username(options.Username);
+            h.Password(options.Password);
         });
 
         configurator.ConfigureEndpoints(context);
     });
 
-    cfg.AddConsumer<ExamNotifications.NotificationConsumer>();
+    cfg.AddConsumer<ExamNotificationHandler>();
 
 });
 
@@ -85,6 +90,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<ExamNotifications.NotificationHub>("exam-notification-hub");
+app.MapHub<ExamNotificationHub>(ExamNotificationHub.Route);
 
 app.Run();

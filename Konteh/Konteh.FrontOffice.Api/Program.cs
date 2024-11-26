@@ -1,5 +1,6 @@
 using Konteh.Domain;
 using Konteh.Infrastructure;
+using Konteh.Infrastructure.Options;
 using Konteh.Infrastructure.Repository;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -37,15 +38,15 @@ builder.Services.AddMassTransit(cfg =>
 {
     cfg.SetKebabCaseEndpointNameFormatter();
 
-    var rabbitMqHost = builder.Configuration["RabbitMq:Host"];
-    var rabbitMqUsername = builder.Configuration["RabbitMq:Username"];
-    var rabbitMqPassword = builder.Configuration["RabbitMq:Password"];
+    var options = new RabbitMqOptions();
+    builder.Configuration.GetSection(RabbitMqOptions.Options).Bind(options);
+
     cfg.UsingRabbitMq((context, configurator) =>
     {
-        configurator.Host(rabbitMqHost, "/", h =>
+        configurator.Host(options.Host, "/", h =>
         {
-            h.Username(rabbitMqUsername!);
-            h.Password(rabbitMqPassword!);
+            h.Username(options.Username);
+            h.Password(options.Password);
         });
 
         configurator.ConfigureEndpoints(context);

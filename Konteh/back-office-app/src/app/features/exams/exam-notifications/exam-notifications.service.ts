@@ -10,7 +10,7 @@ export class ExamNotificationsService {
 
   constructor() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7285/exam-notification-hub')
+      .withUrl('https://localhost:7285/exam-notifications')
       .build();
   }
 

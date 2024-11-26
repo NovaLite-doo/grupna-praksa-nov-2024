@@ -32,10 +32,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         [HttpGet()]
         public void Notify()
         {
-            _publishEndpoint.Publish<ExamEvent>(new ExamEvent
-            {   Id = Guid.NewGuid(),
-                Message = "Hello, world!",
-                Type = ExamEventType.Started
+            _publishEndpoint.Publish(new ExamEvent
+            {   ExamId = 0
             });
         }
     }

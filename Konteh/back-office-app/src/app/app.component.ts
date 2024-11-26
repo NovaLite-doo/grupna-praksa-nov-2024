@@ -12,10 +12,6 @@ export class AppComponent {
   constructor(private examNotifier: ExamNotificationsService) {}
 
   ngOnInit(): void {
-    this.examNotifier.startConnection().subscribe(() => {
-      this.examNotifier.receiveMessage().subscribe((message) => {
-        console.log(message);
-      });
-    });
+    this.examNotifier.startConnection().subscribe();
   }
 }

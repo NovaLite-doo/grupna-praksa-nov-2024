@@ -38,6 +38,10 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                     .WithMessage("At least one answer must be correct.");
 
                 RuleFor(x => x)
+                    .Must(x => x.Answers.Any(a => !a.IsCorrect))
+                    .WithMessage("At least one answer must be incorrect.");
+
+                RuleFor(x => x)
                     .Must(x => x.Type != QuestionType.Radiobutton || x.Answers.Count(a => a.IsCorrect) == 1)
                     .WithMessage("Questions of type Radiobutton must have exactly 1 correct answer.");
             }

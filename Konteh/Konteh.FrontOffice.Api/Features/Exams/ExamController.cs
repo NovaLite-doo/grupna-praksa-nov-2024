@@ -1,5 +1,4 @@
 ﻿using Konteh.Domain.Events;
-using Konteh.Domain.Enumeration;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,43 +19,38 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerateExam(CreateExam.Command command)
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<int>> GenerateExam(CreateExam.Command command)
         {
-            var exam = await _mediator.Send(command);
+            var examId = await _mediator.Send(command);
 
-            return Ok(new { examId = exam.Id });
+            return Ok(examId);
+
         }
 
         [HttpGet("{examId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(GetExamById.Response), StatusCodes.Status200OK)]
+
         public async Task<ActionResult<GetExamById.Response>> GetExamById([FromRoute] int examId)
         {
-            try
-            {
-                var query = new GetExamById.Query { ExamId = examId };
+            var query = new GetExamById.Query { ExamId = examId };
 
-                var response = await _mediator.Send(query);
+            var response = await _mediator.Send(query);
 
-                return Ok(response);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
+            return Ok(response);
         }
 
         [HttpPost("submit")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> SubmitExam(SubmitExam.Command command)
         {
-            try
-            {
-                await _mediator.Send(command);
+            await _mediator.Send(command);
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok();
         }
 
 
@@ -65,7 +59,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         public void Notify()
         {
             _publishEndpoint.Publish(new ExamEvent
-            {   ExamId = 0
+            {
+                ExamId = 0
             });
         }
     }

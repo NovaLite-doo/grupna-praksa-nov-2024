@@ -37,20 +37,16 @@ export class CandidateFormComponent {
       examCommand.major = candidateData.major;
       examCommand.name = candidateData.name;
       examCommand.surname = candidateData.surname;
-      examCommand.yearOfStudy = Number(candidateData.yearOfStudy); 
+      examCommand.yearOfStudy = Number(candidateData.yearOfStudy);
   
       this.examClient.generateExam(examCommand).subscribe(response => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const jsonResponse = JSON.parse(reader.result as string);
-          const examId = jsonResponse.examId;
-          if (examId) {
-            this.router.navigate(['/exam-overview', examId]);
-          }
-        };
+        const examId = response;  
   
-        reader.readAsText(response.data);
+        if (examId) {
+          this.router.navigate(['/exam-overview', examId]);
+        }
       });
     }
   }
+  
 }

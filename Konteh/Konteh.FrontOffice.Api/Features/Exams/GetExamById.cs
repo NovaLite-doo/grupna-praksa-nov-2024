@@ -1,11 +1,12 @@
 ﻿using Konteh.Domain;
 using Konteh.Domain.Enumeration;
+using Konteh.Infrastructure.ExceptionHandling;
 using Konteh.Infrastructure.Repository;
 using MediatR;
 
 namespace Konteh.FrontOffice.Api.Features.Exams
 {
-    public class GetExamById
+    public static class GetExamById
     {
         public class Query : IRequest<Response>
         {
@@ -20,9 +21,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         public class ExamQuestionDto
         {
             public int Id { get; set; }
-
-            public int ExamId { get; set; }
-            public int QuestionId { get; set; }
             public string Text { get; set; } = string.Empty;
             public QuestionType Type { get; set; }
             public IEnumerable<AnswerDto> Answers { get; set; } = [];
@@ -32,13 +30,12 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         {
             public int Id { get; set; }
             public string Text { get; set; } = string.Empty;
-            public bool IsCorrect { get; set; }
         }
-        public class Handler : IRequestHandler<Query, Response>
+        public class RequestHandler : IRequestHandler<Query, Response>
         {
             private readonly IRepository<Exam> _examRepository;
 
-            public Handler(IRepository<Exam> examRepository)
+            public RequestHandler(IRepository<Exam> examRepository)
             {
                 _examRepository = examRepository;
             }
@@ -46,10 +43,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
                 var exam = await _examRepository.Get(request.ExamId);
-                if (exam == null)
-                {
-                    throw new KeyNotFoundException($"Exam with ID {request.ExamId} not found.");
-                }
+                if (exam == null) throw new EntityNotFoundException();
 
                 var response = new Response
                 {
@@ -57,8 +51,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                     Questions = exam.Questions.Select(q => new ExamQuestionDto
                     {
                         Id = q.Id,
-                        ExamId = q.ExamId,
-                        QuestionId = q.QuestionId,
                         Text = q.Question.Text,
                         Type = q.Question.Type,
                         Answers = q.Question.Answers.Select(a => new AnswerDto

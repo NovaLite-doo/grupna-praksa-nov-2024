@@ -8,7 +8,7 @@ using static Konteh.BackOffice.Api.Featuers.Questions.SearchQuestions;
 
 namespace Konteh.BackOffice.Api.Featuers.Exams
 {
-    public class GetExams
+    public class SearchExams
     {
         public class Query : IRequest<IEnumerable<ExamResponse>>
         {

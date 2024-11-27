@@ -18,9 +18,9 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetExams.ExamResponse>>> GetExams([FromQuery] string search, [FromQuery] bool? isCompleted)
+        public async Task<ActionResult<IEnumerable<SearchExams.ExamResponse>>> Search([FromQuery] string? search, [FromQuery] bool? isCompleted)
         {
-            var response = await _mediator.Send(new GetExams.Query
+            var response = await _mediator.Send(new SearchExams.Query
             {
                 Search = search,
                 IsCompleted = isCompleted

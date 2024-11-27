@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +15,13 @@ namespace Konteh.Infrastructure.Repository
         {
         }
 
-        public override async Task<IEnumerable<Exam>> GetAll() => await _dbSet
-            .Include(x => x.Questions)
-            .Include(x => x.Candidate)
-            .ToListAsync();
+        public override async Task<IList<Exam>> Search(Expression<Func<Exam, bool>> predicate)
+        {
+            return await _dbSet
+                .Where(predicate)
+                .Include(x => x.Questions)
+                .Include(x => x.Candidate)
+                .ToListAsync();
+        } 
     }
 }

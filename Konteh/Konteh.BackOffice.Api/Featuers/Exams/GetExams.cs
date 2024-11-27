@@ -12,6 +12,8 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
     {
         public class Query : IRequest<IEnumerable<ExamResponse>>
         {
+            public string? Search { get; set; } 
+            public bool? IsCompleted { get; set; }
         }
 
         public class ExamResponse
@@ -21,7 +23,7 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
             public int? QuestionCount { get; set; }
             public int? CorrectAnswerCount { get; set; }
             public double? Score { get; set; }
-            public string Status { get; set; } = string.Empty;
+            public bool IsCompleted { get; set; }
         }
 
         public class CandidateResponse
@@ -45,32 +47,50 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
 
             public async Task<IEnumerable<ExamResponse>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var exams = await _examRepository.GetAll();
+                var exams = await _examRepository.Search(x => 
+                    (request.Search == null || SearchMatchesName(x, request.Search)) 
+                    && (request.IsCompleted == null || x.IsCompleted == request.IsCompleted)
+                );
 
-                var response = MapToResponse(exams);
+                var response = exams.Select(x => MapToResponse(x));
 
                 return response;
             }
 
-            private IEnumerable<ExamResponse> MapToResponse(IEnumerable<Exam> exams)
+            private bool SearchMatchesName(Exam exam, string search)
             {
-                return exams.Select(x => new ExamResponse
+                search = search.ToLower().Replace(" ", "");
+
+                return (exam.Candidate.Name + exam.Candidate.Surname)
+                    .ToLower()
+                    .Contains(search);
+            }
+
+            private ExamResponse MapToResponse(Exam exam)
+            {
+                var response = new ExamResponse
                 {
-                    Id = x.Id,
-                    QuestionCount = 0,
-                    CorrectAnswerCount = 0,
-                    Score = 0,
-                    Status = "UNKNOWN",
-                    candidate = new CandidateResponse 
+                    Id = exam.Id,
+                    IsCompleted = exam.IsCompleted,
+                    candidate = new CandidateResponse
                     {
-                        Name = x.Candidate.Name,
-                        Surname = x.Candidate.Surname,
-                        Email = x.Candidate.Email,
-                        Faculty = x.Candidate.Faculty,
-                        Major = x.Candidate.Major,
-                        YearOfStudy = x.Candidate.YearOfStudy
+                        Name = exam.Candidate.Name,
+                        Surname = exam.Candidate.Surname,
+                        Email = exam.Candidate.Email,
+                        Faculty = exam.Candidate.Faculty,
+                        Major = exam.Candidate.Major,
+                        YearOfStudy = exam.Candidate.YearOfStudy
                     }
-                });
+                };
+
+                if(exam.IsCompleted)
+                {
+                    response.QuestionCount = exam.Questions.Count;
+                    response.CorrectAnswerCount = exam.GetCorrectAnswerCount();
+                    response.Score = exam.GetScore();
+                }
+
+                return response;
             }
         }
     }

@@ -8,5 +8,13 @@
         public List<Answer> SubmittedAnswers { get; } = [];
         public int ExamId { get; set; }
         public Exam Exam { get; set; } = null!;
+
+        public bool IsCorrect()
+        {
+            var correctAnswers = Question.Answers.Where(x => x.IsCorrect);
+
+            return SubmittedAnswers.Count == correctAnswers.Count() 
+                && !SubmittedAnswers.Any(x => !x.IsCorrect);
+        }
     }
 }

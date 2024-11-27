@@ -42,6 +42,9 @@ public class Program
 
         var app = builder.Build();
 
+        var environment = app.Environment.EnvironmentName;
+        Console.WriteLine($"Current Environment: {environment}");
+
         // Configure the HTTP request pipeline.
 
         app.UseOpenApi();
@@ -49,8 +52,12 @@ public class Program
         app.UseCors(MyAllowSpecificOrigins);
 
         app.UseHttpsRedirection();
-        app.UseAuthentication();
-        app.UseAuthorization();
+        if (environment != "Testing")
+        {
+            app.UseAuthentication();
+            app.UseAuthorization();
+        }
+
 
         app.MapControllers();
 

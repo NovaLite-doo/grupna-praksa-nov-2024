@@ -14,9 +14,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="NUnit" Version="4.2.2" />
     <PackageReference Include="NUnit.Analyzers" Version="4.4.0">
@@ -30,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Konteh.FrontOffice.Api\Konteh.FrontOffice.Api.csproj" />
-    <ProjectReference Include="..\Konteh.Infrastructure\Konteh.Infrastructure.csproj" />
+    <ProjectReference Include="..\Konteh.Tests.Infrastructure\Konteh.Tests.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,10 +1,11 @@
-﻿using Azure.Core;
-using MediatR;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Konteh.BackOffice.Api.Featuers.Questions
 {
     [ApiController]
+    [Authorize]
     [Route("questions")]
     public class QuestionsController : ControllerBase
     {

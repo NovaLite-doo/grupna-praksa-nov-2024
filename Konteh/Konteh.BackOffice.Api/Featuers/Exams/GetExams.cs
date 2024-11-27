@@ -48,7 +48,7 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
             public async Task<IEnumerable<ExamResponse>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var exams = await _examRepository.Search(x => 
-                    (request.Search == null || SearchMatchesName(x, request.Search)) 
+                    (request.Search == null || SearchMatchesCandidate(x, request.Search)) 
                     && (request.IsCompleted == null || x.IsCompleted == request.IsCompleted)
                 );
 
@@ -57,7 +57,7 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
                 return response;
             }
 
-            private bool SearchMatchesName(Exam exam, string search)
+            private bool SearchMatchesCandidate(Exam exam, string search)
             {
                 search = search.ToLower().Replace(" ", "");
 

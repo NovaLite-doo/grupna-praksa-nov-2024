@@ -7,13 +7,15 @@ import { CandidateFormComponent } from './candidate-form/candidate-form.componen
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ExamOverviewComponent } from './exam-overview/exam-overview.component';
+import { ThankYouPageComponent } from './thank-you-page/thank-you-page.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     CandidateFormComponent,
-    ExamOverviewComponent
+    ExamOverviewComponent,
+    ThankYouPageComponent
   ],
   imports: [
     BrowserModule,

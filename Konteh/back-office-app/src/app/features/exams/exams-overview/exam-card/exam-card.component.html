@@ -1,0 +1,38 @@
+<mat-card class="exam-card">
+    <mat-card-content>
+        <div class="exam-card-content">
+            <div class="exam-card-section">
+                <div class="status">
+                    <mat-icon *ngIf="isCompleted" class="status-completed">check</mat-icon>
+                    <mat-spinner *ngIf="!isCompleted" class="status-in-progress"></mat-spinner>
+                </div>
+            </div>
+
+            <div class="exam-card-section">
+                <div class="information">
+                    <div class="information-title">Candidate</div>
+                    <div class="information-value"><b>Full name:</b> Marko Nikolic</div>
+                    <div class="information-value"><b>Email:</b> nikolicmarko1243&#64;gmail.com</div>
+                </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="exam-card-section">
+                <div class="information">
+                    <div class="information-title">Education</div>
+                    <div class="information-value"><b>Faculty:</b> faculty of Technical Sciences</div>
+                    <div class="information-value"><b>Major:</b> High performance computing</div>
+                    <div class="information-value"><b>Year of study:</b> Master</div>
+                </div>
+            </div>
+
+            <div *ngIf="isCompleted" class="exam-card-section right">
+                <div class="score">
+                    <div class="score-fraction">17/32</div>
+                    <app-pie-score [score]="17/32 * 100"></app-pie-score>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

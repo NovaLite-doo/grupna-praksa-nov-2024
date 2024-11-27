@@ -1,4 +1,5 @@
-﻿using Konteh.Infrastructure.Repository;
+﻿using Konteh.Infrastructure.ExceptionHandling;
+using Konteh.Infrastructure.Repository;
 using MediatR;
 
 namespace Konteh.BackOffice.Api.Featuers.Questions
@@ -23,10 +24,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             {
 
                 var question = await _questionRepository.Get(request.Id);
-                if (question == null || question.IsDeleted)
-                {
-                    throw new Exception("Question not found or already deleted.");
-                }
+                if (question == null || question.IsDeleted) throw new EntityNotFoundException();
 
                 _questionRepository.Delete(question);
                 await _questionRepository.SaveChanges();

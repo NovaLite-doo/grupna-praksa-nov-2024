@@ -17,7 +17,7 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
         public class ExamResponse
         {
             public int Id { get; set; }
-            public CandidateResponse candidate { get; set; } = new CandidateResponse();
+            public CandidateResponse Candidate { get; set; } = new CandidateResponse();
             public int? QuestionCount { get; set; }
             public int? CorrectAnswerCount { get; set; }
             public double? Score { get; set; }
@@ -58,7 +58,9 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
             {
                 search = search.ToLower().Replace(" ", "");
 
-                return await _examRepository.Search(x => (x.Candidate.Name + x.Candidate.Surname).ToLower().Contains(search));
+                return await _examRepository.Search(x => 
+                    (x.Candidate.Name + x.Candidate.Surname).ToLower().Contains(search)  
+                );
             }
 
             private ExamResponse MapToResponse(Exam exam)
@@ -67,7 +69,7 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
                 {
                     Id = exam.Id,
                     IsCompleted = exam.IsCompleted,
-                    candidate = new CandidateResponse
+                    Candidate = new CandidateResponse
                     {
                         Name = exam.Candidate.Name,
                         Surname = exam.Candidate.Surname,

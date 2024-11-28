@@ -58,9 +58,7 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
             {
                 search = search.ToLower().Replace(" ", "");
 
-                Expression<Func<Exam, bool>> predicate = x => (x.Candidate.Name + x.Candidate.Surname).ToLower().Contains(search);
-
-                return await _examRepository.Search(predicate);
+                return await _examRepository.Search(x => (x.Candidate.Name + x.Candidate.Surname).ToLower().Contains(search));
             }
 
             private ExamResponse MapToResponse(Exam exam)

@@ -3,8 +3,7 @@ using Konteh.Domain.Enumeration;
 using Konteh.Infrastructure.Repository;
 using MassTransit.Initializers;
 using MediatR;
-using System.Collections;
-using static Konteh.BackOffice.Api.Featuers.Questions.SearchQuestions;
+using System.Linq.Expressions;
 
 namespace Konteh.BackOffice.Api.Featuers.Exams
 {
@@ -13,7 +12,6 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
         public class Query : IRequest<IEnumerable<ExamResponse>>
         {
             public string? Search { get; set; } 
-            public bool? IsCompleted { get; set; }
         }
 
         public class ExamResponse
@@ -47,23 +45,22 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
 
             public async Task<IEnumerable<ExamResponse>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var exams = await _examRepository.Search(x => 
-                    (request.Search == null || SearchMatchesCandidate(x, request.Search)) 
-                    && (request.IsCompleted == null || x.IsCompleted == request.IsCompleted)
-                );
+                var exams = string.IsNullOrEmpty(request.Search) ?
+                    await _examRepository.GetAll() :
+                    await Search(request.Search);
 
                 var response = exams.Select(x => MapToResponse(x));
 
                 return response;
             }
 
-            private bool SearchMatchesCandidate(Exam exam, string search)
+            private async Task<IEnumerable<Exam>> Search(string search)
             {
                 search = search.ToLower().Replace(" ", "");
 
-                return (exam.Candidate.Name + exam.Candidate.Surname)
-                    .ToLower()
-                    .Contains(search);
+                Expression<Func<Exam, bool>> predicate = x => (x.Candidate.Name + x.Candidate.Surname).ToLower().Contains(search);
+
+                return await _examRepository.Search(predicate);
             }
 
             private ExamResponse MapToResponse(Exam exam)

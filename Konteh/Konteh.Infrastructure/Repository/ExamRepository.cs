@@ -15,13 +15,21 @@ namespace Konteh.Infrastructure.Repository
         {
         }
 
-        public override async Task<IList<Exam>> Search(Expression<Func<Exam, bool>> predicate)
+        public override async Task<IEnumerable<Exam>> GetAll() => await IncludeProperties().ToListAsync();
+
+        public override async Task<IEnumerable<Exam>> Search(Expression<Func<Exam, bool>> predicate) => await IncludeProperties().Where(predicate).ToListAsync();
+
+        private IQueryable<Exam> IncludeProperties()
         {
-            return await _dbSet
-                .Where(predicate)
+            var exams = _dbSet
                 .Include(x => x.Questions)
-                .Include(x => x.Candidate)
-                .ToListAsync();
-        } 
+                    .ThenInclude(x => x.Question)
+                        .ThenInclude(x => x.Answers)
+                .Include(x => x.Questions)
+                    .ThenInclude(x => x.SubmittedAnswers)
+                .Include(x => x.Candidate);
+
+            return exams;
+        }
     }
 }

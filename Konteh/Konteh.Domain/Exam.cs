@@ -14,7 +14,8 @@
 
         public double GetScore()
         {
-            return (double)Questions.Count(x => x.IsCorrect()) / Questions.Count;
+            double score = (double)Questions.Count(x => x.IsCorrect()) / Questions.Count * 100;
+            return Math.Round(score, 2);
         }
     }
 }

@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { PieScoreComponent } from './exams-overview/pie-score/pie-score.component';
 import { ExamCardComponent } from './exams-overview/exam-card/exam-card.component';
-
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -27,7 +27,8 @@ import { ExamCardComponent } from './exams-overview/exam-card/exam-card.componen
     MatIconModule,
     MatProgressSpinnerModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class ExamsModule { }

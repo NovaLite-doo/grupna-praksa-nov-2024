@@ -264,6 +264,81 @@ export class QuestionsClient implements IQuestionsClient {
     }
 }
 
+export interface IExamsClient {
+    search(search: string | null | undefined): Observable<SearchExamsExamResponse[]>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class ExamsClient implements IExamsClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "https://localhost:7285";
+    }
+
+    search(search: string | null | undefined): Observable<SearchExamsExamResponse[]> {
+        let url_ = this.baseUrl + "/exams?";
+        if (search !== undefined && search !== null)
+            url_ += "search=" + encodeURIComponent("" + search) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearch(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearch(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SearchExamsExamResponse[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SearchExamsExamResponse[]>;
+        }));
+    }
+
+    protected processSearch(response: HttpResponseBase): Observable<SearchExamsExamResponse[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(SearchExamsExamResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
 export interface IWeatherForecastClient {
     get(): Observable<WeatherForecast[]>;
 }
@@ -824,6 +899,126 @@ export interface ICreateOrUpdateQuestionAnswerRequest {
     id?: number | undefined;
     text?: string;
     isCorrect?: boolean;
+}
+
+export class SearchExamsExamResponse implements ISearchExamsExamResponse {
+    id?: number;
+    candidate?: SearchExamsCandidateResponse;
+    questionCount?: number | undefined;
+    correctAnswerCount?: number | undefined;
+    score?: number | undefined;
+    isCompleted?: boolean;
+
+    constructor(data?: ISearchExamsExamResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.candidate = _data["candidate"] ? SearchExamsCandidateResponse.fromJS(_data["candidate"]) : <any>undefined;
+            this.questionCount = _data["questionCount"];
+            this.correctAnswerCount = _data["correctAnswerCount"];
+            this.score = _data["score"];
+            this.isCompleted = _data["isCompleted"];
+        }
+    }
+
+    static fromJS(data: any): SearchExamsExamResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchExamsExamResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["candidate"] = this.candidate ? this.candidate.toJSON() : <any>undefined;
+        data["questionCount"] = this.questionCount;
+        data["correctAnswerCount"] = this.correctAnswerCount;
+        data["score"] = this.score;
+        data["isCompleted"] = this.isCompleted;
+        return data;
+    }
+}
+
+export interface ISearchExamsExamResponse {
+    id?: number;
+    candidate?: SearchExamsCandidateResponse;
+    questionCount?: number | undefined;
+    correctAnswerCount?: number | undefined;
+    score?: number | undefined;
+    isCompleted?: boolean;
+}
+
+export class SearchExamsCandidateResponse implements ISearchExamsCandidateResponse {
+    name?: string;
+    surname?: string;
+    email?: string;
+    faculty?: string;
+    major?: string;
+    yearOfStudy?: YearOfStudy;
+
+    constructor(data?: ISearchExamsCandidateResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.surname = _data["surname"];
+            this.email = _data["email"];
+            this.faculty = _data["faculty"];
+            this.major = _data["major"];
+            this.yearOfStudy = _data["yearOfStudy"];
+        }
+    }
+
+    static fromJS(data: any): SearchExamsCandidateResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchExamsCandidateResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        data["email"] = this.email;
+        data["faculty"] = this.faculty;
+        data["major"] = this.major;
+        data["yearOfStudy"] = this.yearOfStudy;
+        return data;
+    }
+}
+
+export interface ISearchExamsCandidateResponse {
+    name?: string;
+    surname?: string;
+    email?: string;
+    faculty?: string;
+    major?: string;
+    yearOfStudy?: YearOfStudy;
+}
+
+export enum YearOfStudy {
+    YearOne = 0,
+    YearTwo = 1,
+    YearThree = 2,
+    YearFour = 3,
+    Master = 4,
 }
 
 export class WeatherForecast implements IWeatherForecast {

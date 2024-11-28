@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Konteh.BackOffice.Api.Featuers.Exams
 {
     [ApiController]
-    [Route("questions")]
-    //[Authorize]
+    [Route("exams")]
+    [Authorize]
     public class ExamsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -18,12 +18,11 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SearchExams.ExamResponse>>> Search([FromQuery] string? search, [FromQuery] bool? isCompleted)
+        public async Task<ActionResult<IEnumerable<SearchExams.ExamResponse>>> Search([FromQuery] string? search)
         {
             var response = await _mediator.Send(new SearchExams.Query
             {
-                Search = search,
-                IsCompleted = isCompleted
+                Search = search
             });
 
             return Ok(response);

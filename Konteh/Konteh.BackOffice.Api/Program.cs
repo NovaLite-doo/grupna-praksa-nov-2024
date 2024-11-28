@@ -9,12 +9,9 @@ using Konteh.Infrastructure.Validation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using System.Reflection;
-using static MassTransit.Logging.DiagnosticHeaders.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 

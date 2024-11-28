@@ -6,24 +6,12 @@
     <div class="exams">
         <mat-form-field appearance="outline">
             <mat-label>Search</mat-label>
-            <input type="search" matInput placeholder="Search..." />
+            <input type="search" matInput [formControl]="searchFormControl" placeholder="Search exams" />
         </mat-form-field>
-
-        <div class="filter-options">
-            <div class="filter-option" [class.filter-option-selected]="status == 'All'" (click)="changeStatusFilter('All')">
-                <div class="filter-option-text">All</div>
-            </div>
-            <div class="filter-option" [class.filter-option-selected]="status == 'Completed'" (click)="changeStatusFilter('Completed')">
-                <div class="filter-option-text">Completed</div>
-            </div>
-            <div class="filter-option" [class.filter-option-selected]="status == 'In progress'"  (click)="changeStatusFilter('In progress')">
-                <div class="filter-option-text">In progress</div>
-            </div>
-        </div>
 
         <div *ngIf="exams.length > 0" class="exams-list">
             <div *ngFor="let exam of exams">
-                <app-exam-card [isCompleted]="false"></app-exam-card>
+                <app-exam-card [exam]="exam"></app-exam-card>
             </div>
         </div>
 

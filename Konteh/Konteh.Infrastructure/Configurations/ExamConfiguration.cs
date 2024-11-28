@@ -15,7 +15,7 @@ namespace Konteh.Infrastructure.Configurations
 
             builder.HasMany(x => x.Questions)
                 .WithOne(x => x.Exam)
-                .HasForeignKey(x => x.QuestionId);
+                .HasForeignKey(x => x.ExamId);
         }
     }
 }

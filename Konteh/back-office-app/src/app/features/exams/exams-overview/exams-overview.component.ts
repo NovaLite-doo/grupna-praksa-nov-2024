@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { PieScoreComponent } from './pie-score/pie-score.component';
+import { ExamsClient, SearchExamsExamResponse } from '../../../api/api-reference';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-exams-overview',
@@ -9,9 +10,36 @@ import { PieScoreComponent } from './pie-score/pie-score.component';
 })
 export class ExamsOverviewComponent {
   status: string = "All";
-  exams = [1, 2, 3, 4, 5];
+  exams: SearchExamsExamResponse[] = [];
 
-  changeStatusFilter(status: string) {
-    this.status = status;
+  search: string | null = null;
+  searchFormControl: FormControl = new FormControl('');
+
+  constructor(private examsClient: ExamsClient) {}
+
+  ngOnInit(): void {
+    this.loadExams();
+
+    this.searchExams();
+  }
+
+  loadExams(): void {
+    this.examsClient.search(this.search).subscribe(
+      exams => {
+        this.exams = exams;
+      }
+    );
+  }
+
+  searchExams(): void {
+    this.searchFormControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      )
+      .subscribe(searchText => {
+        this.search = searchText ? searchText : null;
+        this.loadExams();
+      })
   }
 }

@@ -3,6 +3,7 @@ using Konteh.Domain;
 using Konteh.Domain.Enumeration;
 using Konteh.FrontOffice.Api.Features.Exams;
 using Konteh.Infrastructure.Repository;
+using Konteh.Tests.Infrastructure;
 
 namespace Konteh.FrontOffice.Api.Tests
 {
@@ -28,93 +29,7 @@ namespace Konteh.FrontOffice.Api.Tests
         [Test]
         public async Task CreateExam()
         {
-            var questions = new List<Question>
-            {
-                new() {
-                    Id = 1,
-                    Text = "What is Object-Oriented Programming (OOP)?",
-                    Answers =
-                    [
-                        new Answer { Text = "A programming paradigm based on the concept of objects" },
-                        new Answer { Text = "A type of relational database" }
-                    ],
-                    Category = QuestionCategory.OOP,
-                    Type = QuestionType.Radiobutton,
-                    IsDeleted = false
-                },
-                new() {
-                    Id = 2,
-                    Text = "What is Git?",
-                    Answers =
-                    [
-                        new Answer { Text = "A version control system" },
-                        new Answer { Text = "A programming language" }
-                    ],
-                    Category = QuestionCategory.GIT,
-                    Type = QuestionType.Radiobutton,
-                    IsDeleted = false
-                },
-                new() {
-                    Id = 3,
-                    Text = "What is SQL?",
-                    Answers =
-                    [
-                        new Answer { Text = "A language used for managing relational databases" },
-                        new Answer { Text = "A markup language for web pages" }
-                    ],
-                    Category = QuestionCategory.SQL,
-                    Type = QuestionType.Radiobutton,
-                    IsDeleted = false
-                },
-                new() {
-                    Id = 4,
-                    Text = "What does the keyword 'class' represent in OOP?",
-                    Answers =
-                    [
-                        new Answer { Text = "A blueprint for creating objects" },
-                        new Answer { Text = "A method in programming" }
-                    ],
-                    Category = QuestionCategory.OOP,
-                    Type = QuestionType.Radiobutton,
-                    IsDeleted = false
-                },
-                new() {
-                    Id = 5,
-                    Text = "Which command is used to create a new Git repository?",
-                    Answers =
-                    [
-                        new Answer { Text = "git init" },
-                        new Answer { Text = "git create" }
-                    ],
-                    Category = QuestionCategory.GIT,
-                    Type = QuestionType.Radiobutton,
-                    IsDeleted = false
-                },
-                new() {
-                    Id = 6,
-                    Text = "Which SQL statement is used to extract data from a database?",
-                    Answers =
-                    [
-                        new Answer { Text = "SELECT" },
-                        new Answer { Text = "EXTRACT" }
-                    ],
-                    Category = QuestionCategory.SQL,
-                    Type = QuestionType.Radiobutton,
-                    IsDeleted = false
-                },
-                new() {
-                    Id = 7,
-                    Text = "Which SQL command is used to delete a table from a database?",
-                    Answers =
-                    [
-                        new Answer { Text = "DROP TABLE" },
-                        new Answer { Text = "DELETE TABLE" }
-                    ],
-                    Category = QuestionCategory.SQL,
-                    Type = QuestionType.Radiobutton,
-                    IsDeleted = false
-                }
-            };
+            var questions = QuestionsDataSet.GetQuestions().ToList();
 
             A.CallTo(() => _mockQuestionRepository.GetAll()).Returns(questions);
 

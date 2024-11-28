@@ -1,5 +1,5 @@
 ﻿using Konteh.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +14,9 @@ namespace Konteh.Tests.Infrastructure
         protected HttpClient _client;
         private string _connectionString = "Server=localhost;Database=KontehTest;Integrated Security=True;TrustServerCertificate=True;";
         private Respawner _respawner = null!;
+
+        private const string FakeUserId = "fake-user-id";
+        private const string FakeUserName = "fakeuser@domain.com";
 
         [SetUp]
         public async Task SetUp()
@@ -35,9 +38,15 @@ namespace Konteh.Tests.Infrastructure
                         {
                             options.UseSqlServer(_connectionString);
                         });
-                    });
 
-                    builder.UseEnvironment("Testing");
+                        services.AddAuthentication(options =>
+                        {
+                            options.DefaultAuthenticateScheme = "TestScheme";
+                            options.DefaultChallengeScheme = "TestScheme";
+                        })
+                        .AddScheme<AuthenticationSchemeOptions, FakeAuthenticationHandler>("TestScheme", options => { });
+
+                    });
                 });
 
             _client = _factory.CreateClient();

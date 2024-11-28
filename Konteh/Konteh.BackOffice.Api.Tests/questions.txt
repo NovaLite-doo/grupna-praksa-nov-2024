@@ -1,4 +1,0 @@
-What is Object-Oriented Programming (OOP)?
-What is Git?
-What is inheritance?
-What does the keyword 'class' represent in OOP?

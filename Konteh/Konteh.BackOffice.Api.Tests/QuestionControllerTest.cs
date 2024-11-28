@@ -10,7 +10,6 @@ namespace Konteh.BackOffice.Api.Tests
         [SetUp]
         public async Task SetUpAsync()
         {
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing", EnvironmentVariableTarget.Process);
             await AddQuestions();
         }
 
@@ -19,11 +18,13 @@ namespace Konteh.BackOffice.Api.Tests
         {
             var queryParameters = new Dictionary<string, string>
             {
+                { "SearchText", "" }
             };
 
             var response = await _client.GetAsync(QueryHelpers.AddQueryString("/questions/search", queryParameters));
 
             Assert.That(response.IsSuccessStatusCode, Is.True);
+
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<SearchQuestions.PagedResponse>(content);
 

@@ -17,7 +17,7 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
         public class ExamResponse
         {
             public int Id { get; set; }
-            public CandidateResponse candidate { get; set; } = null!;
+            public CandidateResponse candidate { get; set; } = new CandidateResponse();
             public int? QuestionCount { get; set; }
             public int? CorrectAnswerCount { get; set; }
             public double? Score { get; set; }

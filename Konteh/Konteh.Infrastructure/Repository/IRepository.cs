@@ -11,6 +11,6 @@ namespace Konteh.Infrastructure.Repository
         public Task<T?> Get(int id);
         public Task SaveChanges();
 
-        public Task<IEnumerable<T>> Search(Expression<Func<T, bool>> predicate);
+        public Task<IList<T>> Search(Expression<Func<T, bool>> predicate);
     }
 }

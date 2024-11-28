@@ -23,6 +23,6 @@ namespace Konteh.Infrastructure.Repository
 
         public async Task SaveChanges() => await _dbContext.SaveChangesAsync();
 
-        public virtual async Task<IEnumerable<T>> Search(Expression<Func<T, bool>> predicate) => await _dbSet.Where(predicate).ToListAsync();
+        public virtual async Task<IList<T>> Search(Expression<Func<T, bool>> predicate) => await _dbSet.Where(predicate).ToListAsync();
     }
 }

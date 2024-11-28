@@ -2,12 +2,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 
     width: calc(100% - 4rem);
 
     padding: 2rem;
 
     background-color: #f5df4d;
+    min-height: calc(100vh - 5rem);
 }
 
 .exams {
@@ -26,8 +28,6 @@
     border-radius: 0.5rem;
     min-width: 20rem;
     max-width: 70%;
-
-    min-height: 80vh;
 }
 
 .exams-list {

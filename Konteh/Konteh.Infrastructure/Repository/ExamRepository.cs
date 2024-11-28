@@ -22,12 +22,12 @@ namespace Konteh.Infrastructure.Repository
         private IQueryable<Exam> IncludeProperties()
         {
             var exams = _dbSet
-                .Include(x => x.Questions)
-                    .ThenInclude(x => x.Question)
-                        .ThenInclude(x => x.Answers)
+                .Include(x => x.Candidate)
                 .Include(x => x.Questions)
                     .ThenInclude(x => x.SubmittedAnswers)
-                .Include(x => x.Candidate);
+                .Include(x => x.Questions)
+                    .ThenInclude(x => x.Question)
+                        .ThenInclude(x => x.Answers);
 
             return exams;
         }

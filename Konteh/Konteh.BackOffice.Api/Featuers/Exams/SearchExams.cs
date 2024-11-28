@@ -3,7 +3,6 @@ using Konteh.Domain.Enumeration;
 using Konteh.Infrastructure.Repository;
 using MassTransit.Initializers;
 using MediatR;
-using System.Linq.Expressions;
 
 namespace Konteh.BackOffice.Api.Featuers.Exams
 {

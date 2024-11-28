@@ -500,7 +500,6 @@ export enum QuestionType {
 export class GetExamByIdAnswerDto implements IGetExamByIdAnswerDto {
     id?: number;
     text?: string;
-    isCorrect?: boolean;
 
     constructor(data?: IGetExamByIdAnswerDto) {
         if (data) {
@@ -515,7 +514,6 @@ export class GetExamByIdAnswerDto implements IGetExamByIdAnswerDto {
         if (_data) {
             this.id = _data["id"];
             this.text = _data["text"];
-            this.isCorrect = _data["isCorrect"];
         }
     }
 
@@ -530,7 +528,6 @@ export class GetExamByIdAnswerDto implements IGetExamByIdAnswerDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["text"] = this.text;
-        data["isCorrect"] = this.isCorrect;
         return data;
     }
 }
@@ -538,12 +535,11 @@ export class GetExamByIdAnswerDto implements IGetExamByIdAnswerDto {
 export interface IGetExamByIdAnswerDto {
     id?: number;
     text?: string;
-    isCorrect?: boolean;
 }
 
 export class SubmitExamCommand implements ISubmitExamCommand {
     examId?: number;
-    examQuestions?: SubmitExamExamQuestionDTO[];
+    examQuestions?: SubmitExamExamQuestionDto[];
 
     constructor(data?: ISubmitExamCommand) {
         if (data) {
@@ -560,7 +556,7 @@ export class SubmitExamCommand implements ISubmitExamCommand {
             if (Array.isArray(_data["examQuestions"])) {
                 this.examQuestions = [] as any;
                 for (let item of _data["examQuestions"])
-                    this.examQuestions!.push(SubmitExamExamQuestionDTO.fromJS(item));
+                    this.examQuestions!.push(SubmitExamExamQuestionDto.fromJS(item));
             }
         }
     }
@@ -586,14 +582,14 @@ export class SubmitExamCommand implements ISubmitExamCommand {
 
 export interface ISubmitExamCommand {
     examId?: number;
-    examQuestions?: SubmitExamExamQuestionDTO[];
+    examQuestions?: SubmitExamExamQuestionDto[];
 }
 
-export class SubmitExamExamQuestionDTO implements ISubmitExamExamQuestionDTO {
+export class SubmitExamExamQuestionDto implements ISubmitExamExamQuestionDto {
     id?: number;
     submittedAnswers?: number[];
 
-    constructor(data?: ISubmitExamExamQuestionDTO) {
+    constructor(data?: ISubmitExamExamQuestionDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -613,9 +609,9 @@ export class SubmitExamExamQuestionDTO implements ISubmitExamExamQuestionDTO {
         }
     }
 
-    static fromJS(data: any): SubmitExamExamQuestionDTO {
+    static fromJS(data: any): SubmitExamExamQuestionDto {
         data = typeof data === 'object' ? data : {};
-        let result = new SubmitExamExamQuestionDTO();
+        let result = new SubmitExamExamQuestionDto();
         result.init(data);
         return result;
     }
@@ -632,7 +628,7 @@ export class SubmitExamExamQuestionDTO implements ISubmitExamExamQuestionDTO {
     }
 }
 
-export interface ISubmitExamExamQuestionDTO {
+export interface ISubmitExamExamQuestionDto {
     id?: number;
     submittedAnswers?: number[];
 }

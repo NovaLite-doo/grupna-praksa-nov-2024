@@ -1,3 +1,5 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';  
+
 .exam-container {
     font-family: Arial, sans-serif;
     background-color: #f4f7f9;
@@ -106,6 +108,22 @@
 .navigation-buttons button:hover {
   background-color: #FFCC00;
 }
+.submit-button button{
+  margin-top: auto; 
+  text-align: center; 
+  border: none;
+  background-color: #f5df4d;
+  color: white; 
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  font-size: 16px; 
+  cursor: pointer;
+  transition: background-color 0.3s ease; 
+  font-weight: bold;
+}
 
+.submit-button {
+  margin-top: auto; 
+  text-align: center; 
   
-  
+}

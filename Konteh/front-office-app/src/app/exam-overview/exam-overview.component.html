@@ -1,59 +1,36 @@
 <div *ngIf="exam">
-  <div *ngIf="exam.questions && exam.questions.length > 0">
+  <mat-card>
     <h2>Exam</h2>
 
     <div class="question-container">
       <div class="question-text">
-        {{ exam.questions[currentQuestionIndex]!.text || '' }}
+        <mat-label>{{ exam.questions![currentQuestionIndex].text || '' }}</mat-label>
       </div>
 
-      <div *ngIf="exam.questions[currentQuestionIndex]?.answers && exam.questions[currentQuestionIndex].answers!.length > 0">
-        <div class="answers">
-          
-          <div *ngIf="exam.questions[currentQuestionIndex].type === 0">
-            <label *ngFor="let answer of exam.questions[currentQuestionIndex].answers">
-              <input
-                type="radio"
-                name="question{{ exam.questions[currentQuestionIndex].id }}"
-                [value]="answer.id"
-                (change)="onAnswerSelected(exam.questions[currentQuestionIndex].id!, answer.id!, true)"
-                [checked]="isAnswerSelected(exam.questions[currentQuestionIndex].id!, answer.id!)"
-              />
-              {{ answer.text }}
-            </label>
-          </div>
+      <app-answer-selection
+          [questionId]="exam.questions![currentQuestionIndex].id!"
+          [answers]="exam.questions![currentQuestionIndex].answers ?? []"
+          [selectedAnswers]="selectedAnswers[exam.questions![currentQuestionIndex].id!] || []"
+          [questionType]="exam.questions![currentQuestionIndex].type ?? 0"
+          (answerSelected)="onAnswerSelected($event)">
+      </app-answer-selection>
 
-          <div *ngIf="exam.questions[currentQuestionIndex].type === 1">
-            <label *ngFor="let answer of exam.questions[currentQuestionIndex].answers">
-              <input
-                type="checkbox"
-                [value]="answer.id"
-                (change)="onAnswerSelected(exam.questions[currentQuestionIndex].id!, answer.id!, false)"
-                [checked]="isAnswerSelected(exam.questions[currentQuestionIndex].id!, answer.id!)"
-              />
-              {{ answer.text }}
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="exam.questions[currentQuestionIndex]?.answers?.length === 0">
-        <p>No answers available for this question.</p>
-      </div>
     </div>
 
     <div class="navigation-buttons">
-      <button *ngIf="currentQuestionIndex > 0" (click)="previousQuestion()">Previous Question</button>
-      <button *ngIf="isLastQuestion()" (click)="submitExam()">Submit</button>
-      <button *ngIf="currentQuestionIndex < totalQuestions - 1" (click)="nextQuestion()">Next Question</button>
+      <button mat-raised-button *ngIf="currentQuestionIndex > 0" (click)="previousQuestion()" type="button">Previous Question</button>
+      <button mat-raised-button *ngIf="currentQuestionIndex < totalQuestions - 1" (click)="nextQuestion()">Next Question</button>
     </div>
-  </div>
 
-  <div *ngIf="exam.questions && exam.questions.length === 0">
-    <p>No questions available for this exam.</p>
-  </div>
+    <div class="submit-button">
+      <button mat-raised-button (click)="submitExam()" type="button">
+        Submit
+      </button>
+    </div>
+  </mat-card>
 </div>
 
 <div *ngIf="!exam">
+  <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
   <p>Loading exam data...</p>
-</div>  
+</div>

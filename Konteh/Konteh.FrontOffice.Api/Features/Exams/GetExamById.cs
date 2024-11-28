@@ -16,7 +16,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         public class Response
         {
             public int Id { get; set; }
-            public List<ExamQuestionDto> Questions { get; set; } = [];
+            public IEnumerable<ExamQuestionDto> Questions { get; set; } = [];
         }
         public class ExamQuestionDto
         {
@@ -57,8 +57,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                         {
                             Id = a.Id,
                             Text = a.Text
-                        }).ToList()
-                    }).ToList()
+                        })
+                    })
                 };
 
                 return response;

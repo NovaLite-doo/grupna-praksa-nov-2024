@@ -33,22 +33,10 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
             public async Task<int> Handle(Command request, CancellationToken cancellationToken)
             {
-                var existingCandidate = (await _candidateRepository.Search(c => c.Email == request.Email)).FirstOrDefault();
-
-                if (existingCandidate != null)
-                {
-                    var existingExams = await _examRepository.Search(e => e.CandidateId == existingCandidate.Id);
-
-                    if (existingExams.Any())
-                    {
-                        throw new ValidationException("Candidate has already taken the exam.");
-                    }
-                }
+                await EnsureCandidateHasNotTakenExam(request.Email);
 
                 var questions = await _questionRepository.GetAll();
-
                 var groupedByCategory = questions.GroupBy(q => q.Category).ToList();
-
                 var random = new Random();
 
                 var candidate = new Candidate
@@ -84,6 +72,21 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 _examRepository.Create(exam);
                 await _examRepository.SaveChanges();
                 return exam.Id;
+            }
+
+            private async Task EnsureCandidateHasNotTakenExam(string email)
+            {
+                var existingCandidate = (await _candidateRepository.Search(c => c.Email == email)).FirstOrDefault();
+
+                if (existingCandidate != null)
+                {
+                    var existingExams = await _examRepository.Search(e => e.CandidateId == existingCandidate.Id);
+
+                    if (existingExams.Any())
+                    {
+                        throw new ValidationException("Candidate has already taken the exam.");
+                    }
+                }
             }
         }
 

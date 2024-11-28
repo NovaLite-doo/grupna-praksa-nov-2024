@@ -1,53 +1,45 @@
 <div class="candidate-form">
-    <h2>Candidate Information</h2>
+  <h2>Candidate Information</h2>
 
-    <form [formGroup]="candidateForm" (ngSubmit)="onSubmit()">
-      <label for="name">Name</label>
-      <input id="name" formControlName="name" type="text">
-      <div *ngIf="candidateForm.get('name')?.invalid && candidateForm.get('name')?.touched">
-        <small *ngIf="candidateForm.get('name')?.hasError('required')">Name is required.</small>
-        <small *ngIf="candidateForm.get('name')?.hasError('minlength')">Name should be at least 2 characters long.</small>
-      </div>
-  
-      <label for="surname">Surname</label>
-      <input id="surname" formControlName="surname" type="text">
-      <div *ngIf="candidateForm.get('surname')?.invalid && candidateForm.get('surname')?.touched">
-        <small *ngIf="candidateForm.get('surname')?.hasError('required')">Surname is required.</small>
-        <small *ngIf="candidateForm.get('surname')?.hasError('minlength')">Surname should be at least 2 characters long.</small>
-      </div>
-  
-      <label for="email">Email</label>
-      <input id="email" formControlName="email" type="email">
-      <div *ngIf="candidateForm.get('email')?.invalid && candidateForm.get('email')?.touched">
-        <small *ngIf="candidateForm.get('email')?.hasError('required')">Email is required.</small>
-        <small *ngIf="candidateForm.get('email')?.hasError('email')">Enter a valid email.</small>
-      </div>
-  
-      <label for="faculty">Faculty</label>
-      <input id="faculty" formControlName="faculty" type="text">
-      <div *ngIf="candidateForm.get('faculty')?.invalid && candidateForm.get('faculty')?.touched">
-        <small *ngIf="candidateForm.get('faculty')?.hasError('required')">Faculty is required.</small>
-      </div>
-  
-      <label for="major">Major</label>
-      <input id="major" formControlName="major" type="text">
-      <div *ngIf="candidateForm.get('major')?.invalid && candidateForm.get('major')?.touched">
-        <small *ngIf="candidateForm.get('major')?.hasError('required')">Major is required.</small>
-      </div>
+  <form [formGroup]="candidateForm" (ngSubmit)="onSubmit()">
+    
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Name <span class="required">*</span></mat-label>
+      <input matInput id="name" formControlName="name" type="text" required>
+    </mat-form-field>
 
-      <label for="yearOfStudy">Year of Study</label>
-      <select id="yearOfStudy" formControlName="yearOfStudy">
-        <option [value]="YearOfStudy.YearOne">First Year</option>
-        <option [value]="YearOfStudy.YearTwo">Second Year</option>
-        <option [value]="YearOfStudy.YearThree">Third Year</option>
-        <option [value]="YearOfStudy.YearFour">Fourth Year</option>
-        <option [value]="YearOfStudy.Master">Master</option>
-      </select>
-      <div *ngIf="candidateForm.get('yearOfStudy')?.invalid && candidateForm.get('yearOfStudy')?.touched">
-      <small *ngIf="candidateForm.get('yearOfStudy')?.hasError('required')">Year of Study is required.</small>
-    </div>
-  
-      <button type="submit" [disabled]="candidateForm.invalid">Submit</button>
-    </form>
-  </div>
-  
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Surname <span class="required">*</span></mat-label>
+      <input matInput id="surname" formControlName="surname" type="text" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Email <span class="required">*</span></mat-label>
+      <input matInput id="email" formControlName="email" type="email" required>
+      <mat-error *ngIf="candidateForm.get('email')?.invalid && candidateForm.get('email')?.touched">
+        <ng-container *ngIf="candidateForm.get('email')?.hasError('email')">Enter a valid email format.</ng-container>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Faculty <span class="required">*</span></mat-label>
+      <input matInput id="faculty" formControlName="faculty" type="text" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Major <span class="required">*</span></mat-label>
+      <input matInput id="major" formControlName="major" type="text" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Year of Study <span class="required">*</span></mat-label>
+      <mat-select id="yearOfStudy" formControlName="yearOfStudy" required>
+        <mat-option *ngFor="let label of getYearOfStudyLabels(); let i = index" [value]="i">
+          {{ label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="candidateForm.invalid">Submit</button>
+  </form>
+</div>

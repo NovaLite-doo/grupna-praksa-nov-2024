@@ -1,106 +1,77 @@
 .candidate-form {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .candidate-form h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .candidate-form label {
-    display: block;
-    font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #333;
-  }
-  
-  .candidate-form input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  .candidate-form input:focus {
-    outline: none;
-    border-color: #5b9bd5;
-    box-shadow: 0 0 5px rgba(91, 155, 213, 0.5);
-  }
-  
-  .candidate-form input.ng-touched.ng-invalid {
-    border-color: #e74c3c;
-  }
-  
-  small {
-    color: #e74c3c;
-    font-size: 0.875rem;
-    display: block;
-    margin-top: 5px;
-  }
-  
-  .candidate-form button {
-    width: 100%;
-    padding: 12px;
-    background-color: #4caf50;
-    color: white;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .candidate-form button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .candidate-form button:hover:not(:disabled) {
-    background-color: #45a049;
-  }
-  
-  @media (max-width: 600px) {
-    .candidate-form {
-      padding: 15px;
-    }
-  
-    .candidate-form h2 {
-      font-size: 1.5rem;
-    }
-  
-    .candidate-form input {
-      font-size: 0.95rem;
-    }
-  
-    .candidate-form button {
-      font-size: 1rem;
-    }
-  }
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-  #yearOfStudy {
-    width: 100%; 
-    padding: 8px; 
-    margin: 10px 0; 
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
-    background-color: #f9f9f9; 
-    font-size: 14px; 
-  }
-  
-  #yearOfStudy + div small {
-    color: red;
-    font-size: 12px; 
-    display: block; 
-    margin-top: 5px; 
-  }
-  
+.candidate-form h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+  border-radius: 8px; 
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-radius: 8px; 
+}
+
+mat-error {
+  color: #e53935; 
+  font-size: 12px;
+}
+
+mat-form-field, button {
+  margin-bottom: 20px;
+}
+
+mat-form-field.mat-focused {
+  border-color: #3f51b5;
+}
+
+mat-form-field mat-label {
+  color: #555;
+}
+
+mat-form-field.ng-invalid.ng-touched .mat-error {
+  display: block;
+}
+
+button[disabled] {
+  background-color: #e0e0e0;
+  color: #9e9e9e;
+}
+
+button:not([disabled]) {
+  background-color: #3f51b5;
+  color: white;
+}
+
+mat-form-field.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: #ffffff;
+}
+
+.mat-select-trigger {
+  color: #555;
+}
+
+mat-form-field:last-of-type {
+  margin-bottom: 0;
+}
+
+.candidate-form {
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}

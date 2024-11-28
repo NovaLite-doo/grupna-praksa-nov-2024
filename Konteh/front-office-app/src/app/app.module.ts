@@ -8,6 +8,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ExamOverviewComponent } from './exam-overview/exam-overview.component';
 import { ThankYouPageComponent } from './thank-you-page/thank-you-page.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { AnswerSelectionComponent } from './answer-selection/answer-selection.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms'; 
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
 
 
 @NgModule({
@@ -15,13 +26,24 @@ import { ThankYouPageComponent } from './thank-you-page/thank-you-page.component
     AppComponent,
     CandidateFormComponent,
     ExamOverviewComponent,
-    ThankYouPageComponent
+    ThankYouPageComponent,
+    AnswerSelectionComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule 
+    HttpClientModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatIconModule,
+    MatRadioModule,
+    MatCheckboxModule,
+    FormsModule,
+    MatProgressSpinnerModule,
+    MatCardModule,
     
   ],
   providers: [

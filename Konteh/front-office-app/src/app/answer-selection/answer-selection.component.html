@@ -1,0 +1,31 @@
+<div class="answers" [ngSwitch]="questionType">
+    <div *ngSwitchCase="0">
+      <label *ngFor="let answer of answers">
+        <input
+          type="radio"
+          name="question{{ questionId }}"
+          [value]="answer.id?.toString()"
+          (change)="onAnswerSelected(answer.id!, true)"
+          [checked]="isAnswerSelected(answer.id!)"
+        />
+        {{ answer.text }}
+      </label>
+    </div>
+  
+    <div *ngSwitchCase="1">
+      <label *ngFor="let answer of answers">
+        <input
+          type="checkbox"
+          [value]="answer.id?.toString()"
+          (change)="onAnswerSelected(answer.id!, false)"
+          [checked]="isAnswerSelected(answer.id!)"
+        />
+        {{ answer.text }}
+      </label>
+    </div>
+  
+    <div *ngSwitchDefault>
+      <p>Unknown question type.</p>
+    </div>
+  </div>
+  

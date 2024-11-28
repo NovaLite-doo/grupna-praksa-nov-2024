@@ -9,7 +9,15 @@ import { CreateExamCommand, ExamClient, YearOfStudy } from '../api/api-reference
   styleUrl: './candidate-form.component.css'
 })
 export class CandidateFormComponent {
-  candidateForm!: FormGroup;
+  candidateForm: FormGroup = new FormGroup({
+    'name': new FormControl('', [Validators.required, Validators.minLength(2)]),
+    'surname': new FormControl('', [Validators.required, Validators.minLength(2)]),
+    'email': new FormControl('', [Validators.required, Validators.email]),
+    'faculty': new FormControl('', [Validators.required]),
+    'major': new FormControl('', [Validators.required]),
+    'yearOfStudy': new FormControl(null, [Validators.required])
+  });
+
   YearOfStudy = YearOfStudy;
 
   constructor(
@@ -17,36 +25,31 @@ export class CandidateFormComponent {
     private examClient: ExamClient 
   ) { }
 
-  ngOnInit(): void {
-    this.candidateForm = new FormGroup({
-      'name': new FormControl('', [Validators.required, Validators.minLength(2)]),
-      'surname': new FormControl('', [Validators.required, Validators.minLength(2)]),
-      'email': new FormControl('', [Validators.required, Validators.email]),
-      'faculty': new FormControl('', [Validators.required]),
-      'major': new FormControl('', [Validators.required]),
-      'yearOfStudy': new FormControl(null, [Validators.required])
-    });
-  }
-
   onSubmit(): void {
     if (this.candidateForm.valid) {
       const candidateData = this.candidateForm.value;
-      const examCommand = new CreateExamCommand();
-      examCommand.email = candidateData.email;
-      examCommand.faculty = candidateData.faculty;
-      examCommand.major = candidateData.major;
-      examCommand.name = candidateData.name;
-      examCommand.surname = candidateData.surname;
-      examCommand.yearOfStudy = Number(candidateData.yearOfStudy);
+      
+      const examCommand = new CreateExamCommand({
+        email: candidateData.email,
+        faculty: candidateData.faculty,
+        major: candidateData.major,
+        name: candidateData.name,
+        surname: candidateData.surname,
+        yearOfStudy: Number(candidateData.yearOfStudy),  
+      });
   
       this.examClient.generateExam(examCommand).subscribe(response => {
-        const examId = response;  
-  
+        const examId = response;
         if (examId) {
           this.router.navigate(['/exam-overview', examId]);
         }
       });
     }
   }
-  
+
+  getYearOfStudyLabels(): string[] {
+    return Object.keys(YearOfStudy)
+      .filter(key => isNaN(Number(key)))
+      .map(key => key.replace(/([A-Z])/g, ' $1').trim());
+  }
 }

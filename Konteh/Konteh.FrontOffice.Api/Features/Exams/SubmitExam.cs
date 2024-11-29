@@ -16,7 +16,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         public class ExamQuestionDto
         {
             public int Id { get; set; }
-            public List<int> SubmittedAnswers { get; set; } = [];
+            public List<int> SubmittedAnswerIds { get; set; } = [];
         }
 
         public class RequestHandler : IRequestHandler<Command, Unit>
@@ -36,7 +36,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 foreach (var examQuestion in exam.Questions)
                 {
-                    var answers = request.ExamQuestions.Single(e => e.Id == examQuestion.Id).SubmittedAnswers;
+                    var answers = request.ExamQuestions.Single(e => e.Id == examQuestion.Id).SubmittedAnswerIds;
 
                     examQuestion.SubmittedAnswers = examQuestion.Question.Answers.Where(answer => answers.Contains(answer.Id)).ToList();
 

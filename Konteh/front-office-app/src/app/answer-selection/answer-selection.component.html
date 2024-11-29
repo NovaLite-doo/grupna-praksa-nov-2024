@@ -1,31 +1,27 @@
 <div class="answers" [ngSwitch]="questionType">
-    <div *ngSwitchCase="0">
-      <label *ngFor="let answer of answers">
-        <input
-          type="radio"
-          name="question{{ questionId }}"
-          [value]="answer.id?.toString()"
-          (change)="onAnswerSelected(answer.id!, true)"
-          [checked]="isAnswerSelected(answer.id!)"
-        />
+  <div *ngSwitchCase="0">
+    <mat-radio-group name="question{{ questionId }}" aria-label="Select answer" (change)="onAnswerSelected($event.value, true)">
+      <mat-radio-button
+        *ngFor="let answer of answers"
+        [value]="answer.id?.toString()"
+        [checked]="isAnswerSelected(answer.id!)">
         {{ answer.text }}
-      </label>
-    </div>
-  
-    <div *ngSwitchCase="1">
-      <label *ngFor="let answer of answers">
-        <input
-          type="checkbox"
-          [value]="answer.id?.toString()"
-          (change)="onAnswerSelected(answer.id!, false)"
-          [checked]="isAnswerSelected(answer.id!)"
-        />
-        {{ answer.text }}
-      </label>
-    </div>
-  
-    <div *ngSwitchDefault>
-      <p>Unknown question type.</p>
-    </div>
+      </mat-radio-button>
+    </mat-radio-group>
   </div>
-  
+
+  <div *ngSwitchCase="1">
+    <label *ngFor="let answer of answers">
+      <mat-checkbox
+        [value]="answer.id?.toString()"
+        [checked]="isAnswerSelected(answer.id!)"
+        (change)="onAnswerSelected(answer.id!, false)">
+        {{ answer.text }}
+      </mat-checkbox>
+    </label>
+  </div>
+
+  <div *ngSwitchDefault>
+    <p>Unknown question type.</p>
+  </div>
+</div>

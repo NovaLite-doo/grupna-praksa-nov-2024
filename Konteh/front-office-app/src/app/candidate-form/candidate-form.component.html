@@ -4,35 +4,32 @@
   <form [formGroup]="candidateForm" (ngSubmit)="onSubmit()">
     
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Name <span class="required">*</span></mat-label>
+      <mat-label>Name </mat-label>
       <input matInput id="name" formControlName="name" type="text" required>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Surname <span class="required">*</span></mat-label>
+      <mat-label>Surname </mat-label>
       <input matInput id="surname" formControlName="surname" type="text" required>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Email <span class="required">*</span></mat-label>
+      <mat-label>Email </mat-label>
       <input matInput id="email" formControlName="email" type="email" required>
-      <mat-error *ngIf="candidateForm.get('email')?.invalid && candidateForm.get('email')?.touched">
-        <ng-container *ngIf="candidateForm.get('email')?.hasError('email')">Enter a valid email format.</ng-container>
-      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Faculty <span class="required">*</span></mat-label>
+      <mat-label>Faculty </mat-label>
       <input matInput id="faculty" formControlName="faculty" type="text" required>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Major <span class="required">*</span></mat-label>
+      <mat-label>Major </mat-label>
       <input matInput id="major" formControlName="major" type="text" required>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Year of Study <span class="required">*</span></mat-label>
+      <mat-label>Year of Study </mat-label>
       <mat-select id="yearOfStudy" formControlName="yearOfStudy" required>
         <mat-option *ngFor="let label of getYearOfStudyLabels(); let i = index" [value]="i">
           {{ label }}

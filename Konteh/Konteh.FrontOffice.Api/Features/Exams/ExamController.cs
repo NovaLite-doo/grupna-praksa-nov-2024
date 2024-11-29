@@ -21,7 +21,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> GenerateExam(CreateExam.Command command)
         {
             var examId = await _mediator.Send(command);

@@ -32,9 +32,6 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
@@ -46,7 +43,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answers");
+                    b.ToTable("Answers", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.Candidate", b =>
@@ -82,7 +79,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Candidates");
+                    b.ToTable("Candidates", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.Exam", b =>
@@ -101,7 +98,7 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.HasIndex("CandidateId")
                         .IsUnique();
 
-                    b.ToTable("Exams");
+                    b.ToTable("Exams", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
@@ -124,7 +121,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("ExamQuestions");
+                    b.ToTable("ExamQuestions", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.ExamQuestionAnswer", b =>
@@ -139,7 +136,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("ExamQuestionId");
 
-                    b.ToTable("ExamQuestionAnswer");
+                    b.ToTable("ExamQuestionAnswer", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.Question", b =>
@@ -165,7 +162,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.Answer", b =>

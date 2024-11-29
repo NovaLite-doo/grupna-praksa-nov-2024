@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { ExamClient, IGetExamByIdResponse, SubmitExamCommand, SubmitExamExamQuestionDto } from '../api/api-reference';
 import { ActivatedRoute, Router } from '@angular/router';
+import { retryWhen } from 'rxjs';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { ExamForm } from './models/exam-form.model';
+import { ExamQuestionForm } from './models/exam-question-form.model';
 
 @Component({
   selector: 'app-exam-overview',
@@ -10,14 +14,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class ExamOverviewComponent {
   exam: IGetExamByIdResponse | null = null;
   currentQuestionIndex: number = 0;
-  selectedAnswers: { [questionId: number]: number[] } = {}; 
+  selectedAnswers: { [questionId: number]: number[] } = {};
+  examFormGroup = new ExamForm();
 
-  constructor(private examClient: ExamClient, private route: ActivatedRoute, private router: Router) {}
+  constructor(private examClient: ExamClient, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     const examId = Number(this.route.snapshot.paramMap.get('id'));
-    if(examId){
-    this.fetchExam(examId);
+    if (examId) {
+      this.fetchExam(examId);
     }
   }
 
@@ -25,13 +30,17 @@ export class ExamOverviewComponent {
     this.examClient.getExamById(id).subscribe(
       (response: IGetExamByIdResponse) => {
         this.exam = response;
+        this.examFormGroup.patchValue({
+          id: response.id
+        });
+        response.questions?.forEach(question => (this.examFormGroup.controls['questions'] as FormArray<ExamQuestionForm>).push(new ExamQuestionForm(question)));
       },
     );
   }
 
   onAnswerSelected(event: { questionId: number, answerId: number, isRadio: boolean }): void {
     const { questionId, answerId, isRadio } = event;
-    
+
     if (isRadio) {
       this.selectedAnswers[questionId] = [answerId];
     } else {
@@ -47,23 +56,23 @@ export class ExamOverviewComponent {
   }
 
   submitExam(): void {
-  const submitCommand = new SubmitExamCommand({
-    examId: this.exam!.id,
-    examQuestions: this.exam!.questions?.map(q => new SubmitExamExamQuestionDto({
-      id: q.id!,
-      submittedAnswers: this.selectedAnswers[q.id!] || [] 
-    }))
-  });
+    const submitCommand = new SubmitExamCommand({
+      examId: this.exam!.id,
+      examQuestions: this.examFormGroup.questions.value.map(x => new SubmitExamExamQuestionDto({
+        id: x.id,
+        submittedAnswers: x.selectedAnswer !== undefined && x.selectedAnswer !== null ? [x.selectedAnswer] : x.answers.filter((a: any) => a.isSelected).map((a: any) => a.id)
+      }))
+    });
 
-  this.examClient.submitExam(submitCommand).subscribe(
-    () => {
-      this.router.navigate(['/thank-you']);
-    },
-    (error) => {
-      console.error('Error submitting exam:', error);
-    }
-  );
-}
+    this.examClient.submitExam(submitCommand).subscribe(
+      () => {
+        this.router.navigate(['/thank-you']);
+      },
+      (error) => {
+        console.error('Error submitting exam:', error);
+      }
+    );
+  }
 
   nextQuestion(): void {
     if (this.currentQuestionIndex < this.totalQuestions - 1) {
@@ -79,6 +88,10 @@ export class ExamOverviewComponent {
 
   isLastQuestion(): boolean {
     return this.currentQuestionIndex === this.totalQuestions - 1;
+  }
+
+  get currentQuestion() {
+    return this.examFormGroup.questions.controls[this.currentQuestionIndex];
   }
 
   get totalQuestions(): number {

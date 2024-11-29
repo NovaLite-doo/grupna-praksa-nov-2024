@@ -1,8 +1,8 @@
-﻿using Konteh.Domain;
+﻿using FluentValidation;
+using Konteh.Domain;
 using Konteh.Domain.Enumeration;
 using Konteh.Infrastructure.Repository;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Konteh.FrontOffice.Api.Features.Exams
 {
@@ -17,6 +17,28 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             public string Name { get; set; } = string.Empty;
             public string Surname { get; set; } = string.Empty;
             public YearOfStudy YearOfStudy { get; set; }
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Email)
+                    .NotEmpty().WithMessage("Email is required.")
+                    .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("A valid email is required.");
+
+                RuleFor(x => x.Name)
+                    .NotEmpty().WithMessage("Name is required.");
+
+                RuleFor(x => x.Surname)
+                    .NotEmpty().WithMessage("Surname is required.");
+
+                RuleFor(x => x.Faculty)
+                    .NotEmpty().WithMessage("Faculty is required.");
+
+                RuleFor(x => x.Major)
+                    .NotEmpty().WithMessage("Major is required.");
+            }
         }
         public class RequestHandler : IRequestHandler<Command, int>
         {

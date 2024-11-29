@@ -9,10 +9,12 @@ import { CreateExamCommand, ExamClient, YearOfStudy } from '../api/api-reference
   styleUrl: './candidate-form.component.css'
 })
 export class CandidateFormComponent {
+  emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
   candidateForm: FormGroup = new FormGroup({
     'name': new FormControl('', [Validators.required, Validators.minLength(2)]),
     'surname': new FormControl('', [Validators.required, Validators.minLength(2)]),
-    'email': new FormControl('', [Validators.required, Validators.email]),
+    'email': new FormControl('', [Validators.required,Validators.pattern(this.emailRegex)]),
     'faculty': new FormControl('', [Validators.required]),
     'major': new FormControl('', [Validators.required]),
     'yearOfStudy': new FormControl(null, [Validators.required])

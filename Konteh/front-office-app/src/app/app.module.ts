@@ -19,6 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms'; 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
+import { ExamQuestionComponent } from './exam-question/exam-question.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { MatCardModule } from '@angular/material/card';
     CandidateFormComponent,
     ExamOverviewComponent,
     ThankYouPageComponent,
-    AnswerSelectionComponent
+    AnswerSelectionComponent,
+    ExamQuestionComponent
   ],
   imports: [
     BrowserModule,

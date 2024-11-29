@@ -7,13 +7,15 @@
         <mat-label>{{ exam.questions![currentQuestionIndex].text || '' }}</mat-label>
       </div>
 
-      <app-answer-selection
+
+      <app-exam-question [examQuestion]="currentQuestion"></app-exam-question>
+      <!-- <app-answer-selection
           [questionId]="exam.questions![currentQuestionIndex].id!"
           [answers]="exam.questions![currentQuestionIndex].answers ?? []"
           [selectedAnswers]="selectedAnswers[exam.questions![currentQuestionIndex].id!] || []"
           [questionType]="exam.questions![currentQuestionIndex].type ?? 0"
           (answerSelected)="onAnswerSelected($event)">
-      </app-answer-selection>
+      </app-answer-selection> -->
 
     </div>
 

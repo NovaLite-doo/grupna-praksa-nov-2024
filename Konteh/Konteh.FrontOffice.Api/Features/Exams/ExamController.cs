@@ -1,5 +1,4 @@
 ﻿using Konteh.Domain.Events;
-using Konteh.Domain.Enumeration;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +18,37 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             _publishEndpoint = publishEndpoint;
         }
 
-        [HttpPost()]
-        public async Task<IActionResult> GenerateExam()
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<int>> GenerateExam(CreateExam.Command command)
         {
-            await _mediator.Send(new CreateExam.Command());
+            var examId = await _mediator.Send(command);
+
+            return Ok(examId);
+
+        }
+
+        [HttpGet("{examId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(GetExamById.Response), StatusCodes.Status200OK)]
+
+        public async Task<ActionResult<GetExamById.Response>> GetExamById(int examId)
+        {
+            var query = new GetExamById.Query { ExamId = examId };
+
+            var response = await _mediator.Send(query);
+
+            return Ok(response);
+        }
+
+        [HttpPost("submit")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> SubmitExam(SubmitExam.Command command)
+        {
+            await _mediator.Send(command);
 
             return Ok();
         }
@@ -33,7 +59,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         public void Notify()
         {
             _publishEndpoint.Publish(new ExamEvent
-            {   ExamId = 0
+            {
+                ExamId = 0
             });
         }
     }

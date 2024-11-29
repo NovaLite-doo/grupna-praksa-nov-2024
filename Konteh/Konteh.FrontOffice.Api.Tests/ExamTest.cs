@@ -51,7 +51,7 @@ namespace Konteh.FrontOffice.Api.Tests
 
             var exam = await _mockExamRepository.Get(examId);
 
-            await Verify(exam.Questions);
+            await Verify(exam);
 
             A.CallTo(() => _mockExamRepository.SaveChanges()).MustHaveHappened();
         }

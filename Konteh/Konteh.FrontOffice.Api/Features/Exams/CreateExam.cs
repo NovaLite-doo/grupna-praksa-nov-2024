@@ -1,4 +1,5 @@
-﻿using Konteh.Domain;
+﻿using FluentValidation;
+using Konteh.Domain;
 using Konteh.Domain.Enumeration;
 using Konteh.Infrastructure.Repository;
 using MediatR;
@@ -7,7 +8,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 {
     public static class CreateExam
     {
-        public const int NumberOfQuestionsPerCategory = 1;
+        public const int NumberOfQuestionsPerCategory = 2;
         public class Command : IRequest<int>
         {
             public string Email { get; set; } = string.Empty;
@@ -16,6 +17,38 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             public string Name { get; set; } = string.Empty;
             public string Surname { get; set; } = string.Empty;
             public YearOfStudy YearOfStudy { get; set; }
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            private IRepository<Candidate> _candidateRepository;
+            public CommandValidator(IRepository<Candidate> candidateRepository)
+            {
+                _candidateRepository = candidateRepository;
+                RuleFor(x => x.Email)
+                    .NotEmpty().WithMessage("Email is required.")
+                    .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("A valid email is required.");
+
+                RuleFor(x => x.Email)
+                    .MustAsync(NotAlreadyExist)
+                    .When(x => !string.IsNullOrEmpty(x.Email))
+                    .WithMessage("Email already registered");
+
+                RuleFor(x => x.Name)
+                    .NotEmpty().WithMessage("Name is required.");
+
+                RuleFor(x => x.Surname)
+                    .NotEmpty().WithMessage("Surname is required.");
+
+                RuleFor(x => x.Faculty)
+                    .NotEmpty().WithMessage("Faculty is required.");
+
+                RuleFor(x => x.Major)
+                    .NotEmpty().WithMessage("Major is required.");
+            }
+
+            private async Task<bool> NotAlreadyExist(string email, CancellationToken cancellationToken) =>
+                !(await _candidateRepository.Search(x => x.Email == email)).Any();
         }
 
         public class RequestHandler : IRequestHandler<Command, int>
@@ -36,10 +69,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             public async Task<int> Handle(Command request, CancellationToken cancellationToken)
             {
                 var questions = await _questionRepository.GetAll();
-
                 var groupedByCategory = questions.GroupBy(q => q.Category).ToList();
-
-                var examQuestions = new List<ExamQuestion>();
+                var random = new Random();
 
                 var candidate = new Candidate
                 {
@@ -51,12 +82,10 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                     YearOfStudy = request.YearOfStudy
                 };
                 _candidateRepository.Create(candidate);
-                //await _candidateRepository.SaveChanges();
 
                 var exam = new Exam
                 {
-                    Candidate = candidate,
-                    Questions = examQuestions
+                    Candidate = candidate
                 };
 
                 foreach (var categoryGroup in groupedByCategory)
@@ -66,7 +95,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                         .Take(NumberOfQuestionsPerCategory)
                         .ToList();
 
-                    examQuestions.AddRange(randomQuestions.Select(x => new ExamQuestion
+                    exam.Questions.AddRange(randomQuestions.Select(x => new ExamQuestion
                     {
                         Question = x
                     }));
@@ -74,10 +103,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 _examRepository.Create(exam);
                 await _examRepository.SaveChanges();
-
                 return exam.Id;
             }
         }
-
     }
 }

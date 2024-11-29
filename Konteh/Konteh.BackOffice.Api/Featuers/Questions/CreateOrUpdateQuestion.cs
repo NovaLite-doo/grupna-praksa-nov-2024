@@ -2,6 +2,8 @@
 using Konteh.Domain;
 using Konteh.Infrastructure.Repository;
 using MediatR;
+using FluentValidation;
+using Konteh.Infrastructure.ExceptionHandling;
 
 namespace Konteh.BackOffice.Api.Featuers.Questions
 {
@@ -21,6 +23,36 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
             public int? Id { get; set; }
             public string Text { get; set; } = string.Empty;
             public bool IsCorrect { get; set; }
+        }
+
+        public class QuestionValidator : AbstractValidator<QuestionRequest>
+        {
+            public QuestionValidator()
+            {
+                RuleFor(x => x.Text).NotEmpty();
+
+                RuleForEach(x => x.Answers).SetValidator(new AnswerValidator());
+
+                RuleFor(x => x)
+                    .Must(x => x.Answers.Any(a => a.IsCorrect))
+                    .WithMessage("At least one answer must be correct.");
+
+                RuleFor(x => x)
+                    .Must(x => x.Answers.Any(a => !a.IsCorrect))
+                    .WithMessage("At least one answer must be incorrect.");
+
+                RuleFor(x => x)
+                    .Must(x => x.Type != QuestionType.Radiobutton || x.Answers.Count(a => a.IsCorrect) == 1)
+                    .WithMessage("Questions of type Radiobutton must have exactly 1 correct answer.");
+            }
+        }
+
+        public class AnswerValidator : AbstractValidator<AnswerRequest>
+        {
+            public AnswerValidator()
+            {
+                RuleFor(x => x.Text).NotEmpty();
+            }
         }
 
         public class RequestHandler : IRequestHandler<QuestionRequest, Unit>
@@ -67,7 +99,8 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
             private async Task Edit(QuestionRequest request, CancellationToken cancellationToken)
             {
-                var question = await _questionRepository.Get(request.Id ?? -1) ?? throw new KeyNotFoundException($"Question with Id {request.Id} not found.");
+                var question = await _questionRepository.Get(request.Id!.Value);
+                if (question == null || question.IsDeleted) throw new EntityNotFoundException();
 
                 var updatedQuestion = new Question
                 {

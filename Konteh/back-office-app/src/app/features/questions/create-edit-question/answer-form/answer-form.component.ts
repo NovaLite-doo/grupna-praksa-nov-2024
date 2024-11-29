@@ -3,6 +3,7 @@ import { ConfirmationDialogComponent } from '../../../../shared/confirmation-dia
 import { FormArray, FormControl, FormGroup, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { AnswerForm } from '../models/answer-form.model';
+import { FORM_ERROR_KEY, FORM_FIELD_ERROR_KEY } from '../../../../shared/validation/validation';
 
 @Component({
   selector: 'app-answer-form',
@@ -29,6 +30,19 @@ export class AnswerFormComponent {
 
   removeAnswer() {
     this.removeAnswerEvent.emit(this.index);
+  }
+
+  hasErrors = (formControlName: string) => {
+    const errors = this.answerForm?.get(formControlName)?.errors;
+    return errors && errors[FORM_FIELD_ERROR_KEY];
+  }
+
+  getErrors = (formControlName: string) => {
+    const errors = this.answerForm?.get(formControlName)?.errors;
+    if (!errors) {
+      return null;
+    }
+    return errors[FORM_FIELD_ERROR_KEY];
   }
 
   confirmRemoval() {

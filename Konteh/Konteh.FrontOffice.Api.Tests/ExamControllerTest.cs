@@ -1,5 +1,4 @@
 ﻿using Argon;
-using Konteh.Domain;
 using Konteh.Domain.Enumeration;
 using Konteh.FrontOffice.Api.Features.Exams;
 using Konteh.Tests.Infrastructure;
@@ -38,7 +37,7 @@ namespace Konteh.FrontOffice.Api.Tests
 
             var examResponse = await _client.GetAsync($"/exams/{examId}");
             var examJson = await examResponse.Content.ReadAsStringAsync();
-            var retrievedExam = JsonConvert.DeserializeObject<Exam>(examJson);
+            var retrievedExam = JsonConvert.DeserializeObject<GetExamById.Response>(examJson);
 
             Assert.That(retrievedExam, Is.Not.Null);
 

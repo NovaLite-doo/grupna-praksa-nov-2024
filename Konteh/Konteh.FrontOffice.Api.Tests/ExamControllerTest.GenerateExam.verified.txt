@@ -1,1 +1,62 @@
-﻿{}
+﻿{
+  Questions: [
+    {
+      Text: Which of the following is NOT a characteristic of Object-Oriented Programming (OOP)?,
+      Answers: [
+        {
+          Text: Encapsulation
+        },
+        {
+          Text: Polymorphisme
+        },
+        {
+          Text: Functionality
+        }
+      ]
+    },
+    {
+      Text: Which OOP principle promotes data hiding and protection?,
+      Answers: [
+        {
+          Text: Encapsulation
+        },
+        {
+          Text: Polymorphism
+        }
+      ]
+    },
+    {
+      Text: What is Git?,
+      Answers: [
+        {
+          Text: A version control system
+        },
+        {
+          Text: A programming language
+        }
+      ]
+    },
+    {
+      Text: What is the purpose of the 'git pull' command?,
+      Answers: [
+        {
+          Text: To fetch changes from a remote repository and merge them
+        },
+        {
+          Text: To upload changes to a remote repository
+        }
+      ]
+    },
+    {
+      Text: In Git, what is the difference between 'git merge' and 'git rebase'?,
+      Answers: [
+        {
+          Text: Merge combines the histories of two branches, rebase re-applies commits on top of another branch
+        },
+        {
+          Text: Merge re-applies commits on top of another branch, rebase combines histories
+        }
+      ]
+    }
+  ]
+}

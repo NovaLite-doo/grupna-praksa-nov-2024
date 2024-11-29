@@ -6,13 +6,15 @@
         </button>
     </div>
 
-    <mat-form-field appearance="outline" class="answer-text">
-        <mat-label>Text</mat-label>
-        <input matInput formControlName="text" placeholder="Enter question text">
-    </mat-form-field>
-
-    <mat-checkbox formControlName="isCorrect" labelPosition="before" class="answer-is-correct">Is
-        correct:</mat-checkbox>
+    <div class="answer-form-bottom">
+        <mat-form-field appearance="outline" class="answer-text">
+            <mat-label>Text</mat-label>
+            <input matInput formControlName="text" placeholder="Enter question text">
+        </mat-form-field>
+        <mat-error *ngIf="hasErrors('text')">{{getErrors('text')}}</mat-error>
+    
+        <mat-checkbox formControlName="isCorrect" labelPosition="before" class="answer-is-correct">Is correct:</mat-checkbox>
+    </div>
 
     <div class="black-hr"></div>
 </form>

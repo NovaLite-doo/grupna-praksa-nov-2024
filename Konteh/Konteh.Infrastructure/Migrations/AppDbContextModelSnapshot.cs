@@ -32,9 +32,6 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
@@ -46,7 +43,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answers");
+                    b.ToTable("Answers", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.Candidate", b =>
@@ -60,9 +57,6 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ExamId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Faculty")
                         .IsRequired()
@@ -85,10 +79,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExamId")
-                        .IsUnique();
-
-                    b.ToTable("Candidates");
+                    b.ToTable("Candidates", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.Exam", b =>
@@ -99,9 +90,15 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Exams");
+                    b.HasIndex("CandidateId")
+                        .IsUnique();
+
+                    b.ToTable("Exams", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
@@ -120,9 +117,11 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExamId");
+
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("ExamQuestions");
+                    b.ToTable("ExamQuestions", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.ExamQuestionAnswer", b =>
@@ -137,7 +136,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("ExamQuestionId");
 
-                    b.ToTable("ExamQuestionAnswer");
+                    b.ToTable("ExamQuestionAnswer", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.Question", b =>
@@ -163,7 +162,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("Konteh.Domain.Answer", b =>
@@ -177,22 +176,22 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Candidate", b =>
+            modelBuilder.Entity("Konteh.Domain.Exam", b =>
                 {
-                    b.HasOne("Konteh.Domain.Exam", "Exam")
-                        .WithOne("Candidate")
-                        .HasForeignKey("Konteh.Domain.Candidate", "ExamId")
+                    b.HasOne("Konteh.Domain.Candidate", "Candidate")
+                        .WithOne("Exam")
+                        .HasForeignKey("Konteh.Domain.Exam", "CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Exam");
+                    b.Navigation("Candidate");
                 });
 
             modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
                 {
                     b.HasOne("Konteh.Domain.Exam", "Exam")
                         .WithMany("Questions")
-                        .HasForeignKey("QuestionId")
+                        .HasForeignKey("ExamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -222,11 +221,13 @@ namespace Konteh.BackOffice.Api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Konteh.Domain.Candidate", b =>
+                {
+                    b.Navigation("Exam");
+                });
+
             modelBuilder.Entity("Konteh.Domain.Exam", b =>
                 {
-                    b.Navigation("Candidate")
-                        .IsRequired();
-
                     b.Navigation("Questions");
                 });
 

@@ -10,13 +10,10 @@ namespace Konteh.Tests.Infrastructure
 {
     public abstract class BaseIntegrationFixture<TProgram> where TProgram : class
     {
-        protected WebApplicationFactory<TProgram> _factory;
-        protected HttpClient _client;
+        protected WebApplicationFactory<TProgram> _factory = null!;
+        protected HttpClient _client = null!;
         private string _connectionString = "Server=localhost;Database=KontehTest;Integrated Security=True;TrustServerCertificate=True;";
         private Respawner _respawner = null!;
-
-        private const string FakeUserId = "fake-user-id";
-        private const string FakeUserName = "fakeuser@domain.com";
 
         [SetUp]
         public async Task SetUp()

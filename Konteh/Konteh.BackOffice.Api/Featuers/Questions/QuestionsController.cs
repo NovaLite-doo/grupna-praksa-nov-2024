@@ -7,6 +7,7 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
     [ApiController]
     [Authorize]
     [Route("questions")]
+    [Authorize]
     public class QuestionsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -42,33 +43,18 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
         [HttpGet("{id}")]
         public async Task<ActionResult<GetQuestionById.Response>> GetQuestionById(int id)
         {
-            try
-            {
-                var response = await _mediator.Send(new GetQuestionById.Query { Id = id });
-                return Ok(response);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
+            var response = await _mediator.Send(new GetQuestionById.Query { Id = id });
+            return Ok(response);
         }
 
         [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateOrUpdate(CreateOrUpdateQuestion.QuestionRequest request)
         {
-            try
-            {
-                await _mediator.Send(request);
-                return Ok();
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
+            await _mediator.Send(request);
+            return Ok();
         }
     }
 }

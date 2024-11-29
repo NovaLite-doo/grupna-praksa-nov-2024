@@ -1,0 +1,77 @@
+.candidate-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.candidate-form h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+  border-radius: 8px; 
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-radius: 8px; 
+}
+
+mat-error {
+  color: #e53935; 
+  font-size: 12px;
+}
+
+mat-form-field, button {
+  margin-bottom: 20px;
+}
+
+mat-form-field.mat-focused {
+  border-color: #3f51b5;
+}
+
+mat-form-field mat-label {
+  color: #555;
+}
+
+mat-form-field.ng-invalid.ng-touched .mat-error {
+  display: block;
+}
+
+button[disabled] {
+  background-color: #e0e0e0;
+  color: #9e9e9e;
+}
+
+button:not([disabled]) {
+  background-color: #3f51b5;
+  color: white;
+}
+
+mat-form-field.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: #ffffff;
+}
+
+.mat-select-trigger {
+  color: #555;
+}
+
+mat-form-field:last-of-type {
+  margin-bottom: 0;
+}
+
+.candidate-form {
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}

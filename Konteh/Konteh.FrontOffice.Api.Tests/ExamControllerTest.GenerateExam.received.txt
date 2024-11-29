@@ -1,0 +1,59 @@
+﻿{
+  Questions: [
+    {
+      Text: What is the purpose of the 'super' keyword in OOP?,
+      Answers: [
+        {
+          Text: To call a method or constructor from the parent class
+        },
+        {
+          Text: To define a new object
+        }
+      ]
+    },
+    {
+      Text: What is Object-Oriented Programming (OOP)?,
+      Answers: [
+        {
+          Text: A programming paradigm based on the concept of objects
+        },
+        {
+          Text: A type of relational database
+        }
+      ]
+    },
+    {
+      Text: What is Git?,
+      Answers: [
+        {
+          Text: A version control system
+        },
+        {
+          Text: A programming language
+        }
+      ]
+    },
+    {
+      Text: What is the purpose of the 'git pull' command?,
+      Answers: [
+        {
+          Text: To fetch changes from a remote repository and merge them
+        },
+        {
+          Text: To upload changes to a remote repository
+        }
+      ]
+    },
+    {
+      Text: In Git, what is the difference between 'git merge' and 'git rebase'?,
+      Answers: [
+        {
+          Text: Merge combines the histories of two branches, rebase re-applies commits on top of another branch
+        },
+        {
+          Text: Merge re-applies commits on top of another branch, rebase combines histories
+        }
+      ]
+    }
+  ]
+}

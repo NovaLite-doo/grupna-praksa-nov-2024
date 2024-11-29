@@ -7,6 +7,7 @@
         <mat-label>Text</mat-label>
         <input matInput formControlName="text" placeholder="Enter question text">
     </mat-form-field>
+    <mat-error *ngIf="hasErrors('text')">{{getErrors('text')}}</mat-error>
 
     <mat-form-field appearance="outline">
         <mat-label class="no-margin">Category</mat-label>

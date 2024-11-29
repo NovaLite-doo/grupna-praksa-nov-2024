@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Konteh.Domain.Events;
+using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Konteh.FrontOffice.Api.Features.Exams
@@ -8,35 +10,58 @@ namespace Konteh.FrontOffice.Api.Features.Exams
     public class ExamController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ExamController(IMediator mediator)
+        public ExamController(IMediator mediator, IPublishEndpoint publishEndpoint)
         {
             _mediator = mediator;
+            _publishEndpoint = publishEndpoint;
         }
 
-        [HttpPost()]
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> GenerateExam(CreateExam.Command command)
         {
-            var response = await _mediator.Send(command);
+            var examId = await _mediator.Send(command);
+
+            return Ok(examId);
+
+        }
+
+        [HttpGet("{examId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(GetExamById.Response), StatusCodes.Status200OK)]
+
+        public async Task<ActionResult<GetExamById.Response>> GetExamById(int examId)
+        {
+            var query = new GetExamById.Query { ExamId = examId };
+
+            var response = await _mediator.Send(query);
 
             return Ok(response);
         }
 
-        [HttpGet("{examId}")]
-        public async Task<ActionResult<GetExamById.Response>> GetExamById([FromRoute] int examId)
+        [HttpPost("submit")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> SubmitExam(SubmitExam.Command command)
         {
-            try
-            {
-                var query = new GetExamById.Query { ExamId = examId };
+            await _mediator.Send(command);
 
-                var response = await _mediator.Send(query);
+            return Ok();
+        }
 
-                return Ok(response);
-            }
-            catch (KeyNotFoundException ex)
+
+        // temporary endpoint
+        [HttpGet()]
+        public void Notify()
+        {
+            _publishEndpoint.Publish(new ExamEvent
             {
-                return NotFound(new { message = ex.Message });
-            }
+                ExamId = 0
+            });
         }
     }
 }

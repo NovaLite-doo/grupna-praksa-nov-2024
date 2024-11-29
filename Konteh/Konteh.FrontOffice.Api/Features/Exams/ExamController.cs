@@ -34,7 +34,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(GetExamById.Response), StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<GetExamById.Response>> GetExamById([FromRoute] int examId)
+        public async Task<ActionResult<GetExamById.Response>> GetExamById(int examId)
         {
             var query = new GetExamById.Query { ExamId = examId };
 

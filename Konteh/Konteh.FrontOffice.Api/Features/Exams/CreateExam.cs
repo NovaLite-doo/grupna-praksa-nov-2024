@@ -21,11 +21,18 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
         public class CommandValidator : AbstractValidator<Command>
         {
-            public CommandValidator()
+            private IRepository<Candidate> _candidateRepository;
+            public CommandValidator(IRepository<Candidate> candidateRepository)
             {
+                _candidateRepository = candidateRepository;
                 RuleFor(x => x.Email)
                     .NotEmpty().WithMessage("Email is required.")
                     .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("A valid email is required.");
+
+                RuleFor(x => x.Email)
+                    .MustAsync(NotAlreadyExist)
+                    .When(x => !string.IsNullOrEmpty(x.Email))
+                    .WithMessage("Email already registered");
 
                 RuleFor(x => x.Name)
                     .NotEmpty().WithMessage("Name is required.");
@@ -39,7 +46,11 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 RuleFor(x => x.Major)
                     .NotEmpty().WithMessage("Major is required.");
             }
+
+            private async Task<bool> NotAlreadyExist(string email, CancellationToken cancellationToken) =>
+                !(await _candidateRepository.Search(x => x.Email == email)).Any();
         }
+
         public class RequestHandler : IRequestHandler<Command, int>
         {
             private readonly IRepository<Question> _questionRepository;
@@ -55,8 +66,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
             public async Task<int> Handle(Command request, CancellationToken cancellationToken)
             {
-                await EnsureCandidateHasNotTakenExam(request.Email);
-
                 var questions = await _questionRepository.GetAll();
                 var groupedByCategory = questions.GroupBy(q => q.Category).ToList();
                 var random = new Random();
@@ -71,7 +80,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                     YearOfStudy = request.YearOfStudy
                 };
                 _candidateRepository.Create(candidate);
-                await _candidateRepository.SaveChanges();
+                //await _candidateRepository.SaveChanges();
 
                 var exam = new Exam
                 {
@@ -95,22 +104,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 await _examRepository.SaveChanges();
                 return exam.Id;
             }
-
-            private async Task EnsureCandidateHasNotTakenExam(string email)
-            {
-                var existingCandidate = (await _candidateRepository.Search(c => c.Email == email)).FirstOrDefault();
-
-                if (existingCandidate != null)
-                {
-                    var existingExams = await _examRepository.Search(e => e.CandidateId == existingCandidate.Id);
-
-                    if (existingExams.Any())
-                    {
-                        throw new ValidationException("Candidate has already taken the exam.");
-                    }
-                }
-            }
         }
-
     }
 }

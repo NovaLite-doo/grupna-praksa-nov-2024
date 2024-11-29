@@ -2,35 +2,35 @@
   <h2>Candidate Information</h2>
 
   <form [formGroup]="candidateForm" (ngSubmit)="onSubmit()">
-    
+
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Name </mat-label>
-      <input matInput id="name" formControlName="name" type="text" required>
+      <input matInput id="name" formControlName="name" type="text">
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Surname </mat-label>
-      <input matInput id="surname" formControlName="surname" type="text" required>
+      <input matInput id="surname" formControlName="surname" type="text">
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Email </mat-label>
-      <input matInput id="email" formControlName="email" type="email" required>
+      <input matInput id="email" formControlName="email" type="email">
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Faculty </mat-label>
-      <input matInput id="faculty" formControlName="faculty" type="text" required>
+      <input matInput id="faculty" formControlName="faculty" type="text">
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Major </mat-label>
-      <input matInput id="major" formControlName="major" type="text" required>
+      <input matInput id="major" formControlName="major" type="text">
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Year of Study </mat-label>
-      <mat-select id="yearOfStudy" formControlName="yearOfStudy" required>
+      <mat-select id="yearOfStudy" formControlName="yearOfStudy">
         <mat-option *ngFor="let label of getYearOfStudyLabels(); let i = index" [value]="i">
           {{ label }}
         </mat-option>

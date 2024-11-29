@@ -18,19 +18,21 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             public int Id { get; set; }
             public IEnumerable<ExamQuestionDto> Questions { get; set; } = [];
         }
+
         public class ExamQuestionDto
         {
             public int Id { get; set; }
             public string Text { get; set; } = string.Empty;
             public QuestionType Type { get; set; }
             public IEnumerable<AnswerDto> Answers { get; set; } = [];
-
         }
+
         public class AnswerDto
         {
             public int Id { get; set; }
             public string Text { get; set; } = string.Empty;
         }
+
         public class RequestHandler : IRequestHandler<Query, Response>
         {
             private readonly IRepository<Exam> _examRepository;
@@ -42,9 +44,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var exam = await _examRepository.Get(request.ExamId);
-                if (exam == null) throw new EntityNotFoundException();
-
+                var exam = await _examRepository.Get(request.ExamId) ?? throw new EntityNotFoundException();
                 var response = new Response
                 {
                     Id = exam.Id,

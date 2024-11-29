@@ -13,7 +13,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import { AnswerSelectionComponent } from './answer-selection/answer-selection.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms'; 
@@ -28,7 +27,6 @@ import { ExamQuestionComponent } from './exam-question/exam-question.component';
     CandidateFormComponent,
     ExamOverviewComponent,
     ThankYouPageComponent,
-    AnswerSelectionComponent,
     ExamQuestionComponent
   ],
   imports: [

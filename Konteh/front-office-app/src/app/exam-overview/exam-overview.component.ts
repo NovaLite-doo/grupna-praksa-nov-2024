@@ -14,7 +14,6 @@ import { ExamQuestionForm } from './models/exam-question-form.model';
 export class ExamOverviewComponent {
   exam: IGetExamByIdResponse | null = null;
   currentQuestionIndex: number = 0;
-  selectedAnswers: { [questionId: number]: number[] } = {};
   examFormGroup = new ExamForm();
 
   constructor(private examClient: ExamClient, private route: ActivatedRoute, private router: Router) { }
@@ -36,23 +35,6 @@ export class ExamOverviewComponent {
         response.questions?.forEach(question => (this.examFormGroup.controls['questions'] as FormArray<ExamQuestionForm>).push(new ExamQuestionForm(question)));
       },
     );
-  }
-
-  onAnswerSelected(event: { questionId: number, answerId: number, isRadio: boolean }): void {
-    const { questionId, answerId, isRadio } = event;
-
-    if (isRadio) {
-      this.selectedAnswers[questionId] = [answerId];
-    } else {
-      const selectedAnswersForQuestion = this.selectedAnswers[questionId] || [];
-      const index = selectedAnswersForQuestion.indexOf(answerId);
-      if (index > -1) {
-        selectedAnswersForQuestion.splice(index, 1);
-      } else {
-        selectedAnswersForQuestion.push(answerId);
-      }
-      this.selectedAnswers[questionId] = selectedAnswersForQuestion;
-    }
   }
 
   submitExam(): void {
@@ -97,5 +79,4 @@ export class ExamOverviewComponent {
   get totalQuestions(): number {
     return this.exam?.questions?.length ?? 0;
   }
-
 }

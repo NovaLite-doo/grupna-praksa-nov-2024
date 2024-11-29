@@ -27,8 +27,5 @@ namespace Konteh.Infrastructure.Repository
                 .ThenInclude(q => q.Answers)
                 .FirstOrDefaultAsync();
         }
-
-
     }
 }
-

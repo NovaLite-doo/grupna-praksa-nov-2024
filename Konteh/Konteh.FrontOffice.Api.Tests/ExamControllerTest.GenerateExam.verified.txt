@@ -1,6 +1,17 @@
 ﻿{
   Questions: [
     {
+      Text: What is Object-Oriented Programming (OOP)?,
+      Answers: [
+        {
+          Text: A programming paradigm based on the concept of objects
+        },
+        {
+          Text: A type of relational database
+        }
+      ]
+    },
+    {
       Text: Which of the following is NOT a characteristic of Object-Oriented Programming (OOP)?,
       Answers: [
         {
@@ -11,17 +22,6 @@
         },
         {
           Text: Functionality
-        }
-      ]
-    },
-    {
-      Text: Which OOP principle promotes data hiding and protection?,
-      Answers: [
-        {
-          Text: Encapsulation
-        },
-        {
-          Text: Polymorphism
         }
       ]
     },

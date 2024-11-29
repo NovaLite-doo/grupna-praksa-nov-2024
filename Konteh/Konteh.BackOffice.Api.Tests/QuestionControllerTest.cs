@@ -1,11 +1,10 @@
 using Konteh.BackOffice.Api.Featuers.Questions;
-using Konteh.Tests.Infrastructure;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 
 namespace Konteh.BackOffice.Api.Tests
 {
-    public class QuestionControllerTest : BaseIntegrationFixture<Program>
+    public class QuestionControllerTest : BackOfficeIntragrationFixture
     {
         [SetUp]
         public async Task SetUpAsync()
@@ -16,7 +15,7 @@ namespace Konteh.BackOffice.Api.Tests
         [Test]
         public async Task Test_SearchQuestions()
         {
-            var queryParameters = new Dictionary<string, string>
+            var queryParameters = new Dictionary<string, string?>
             {
                 { "SearchText", "" }
             };

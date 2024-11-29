@@ -38,31 +38,31 @@ public class Program
         builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
         builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
         builder.Services.AddScoped<IRepository<Candidate>, CandidateRepository>();
-        builder.Services.AddScoped<Random>();
+        builder.Services.AddScoped<IRandom, KontehRandom>();
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-builder.Services.Configure<RabbitMqOptions>(
-    builder.Configuration.GetSection(RabbitMqOptions.RabbitMq));
+        builder.Services.Configure<RabbitMqOptions>(
+            builder.Configuration.GetSection(RabbitMqOptions.RabbitMq));
 
-builder.Services.AddMassTransit(cfg =>
-{
-    builder.Services.Configure<RabbitMqOptions>(
-        builder.Configuration.GetSection(RabbitMqOptions.RabbitMq));
-    cfg.SetKebabCaseEndpointNameFormatter();
-
-    cfg.UsingRabbitMq((context, configurator) =>
-    {
-        var rabbitMqOptions = context.GetRequiredService<IOptions<RabbitMqOptions>>().Value;
-
-        configurator.Host(rabbitMqOptions.Host, "/", h =>
+        builder.Services.AddMassTransit(cfg =>
         {
-            h.Username(rabbitMqOptions.Username);
-            h.Password(rabbitMqOptions.Password);
-        });
+            builder.Services.Configure<RabbitMqOptions>(
+                builder.Configuration.GetSection(RabbitMqOptions.RabbitMq));
+            cfg.SetKebabCaseEndpointNameFormatter();
 
-        configurator.ConfigureEndpoints(context);
-    });
-});
+            cfg.UsingRabbitMq((context, configurator) =>
+            {
+                var rabbitMqOptions = context.GetRequiredService<IOptions<RabbitMqOptions>>().Value;
+
+                configurator.Host(rabbitMqOptions.Host, "/", h =>
+                {
+                    h.Username(rabbitMqOptions.Username);
+                    h.Password(rabbitMqOptions.Password);
+                });
+
+                configurator.ConfigureEndpoints(context);
+            });
+        });
 
         var app = builder.Build();
 

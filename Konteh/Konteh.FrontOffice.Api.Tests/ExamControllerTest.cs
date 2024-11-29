@@ -1,13 +1,13 @@
 ﻿using Argon;
 using Konteh.Domain.Enumeration;
 using Konteh.FrontOffice.Api.Features.Exams;
-using Konteh.Tests.Infrastructure;
 using System.Net.Http.Json;
 
 
 namespace Konteh.FrontOffice.Api.Tests
 {
-    public class ExamControllerTest : BaseIntegrationFixture<Program>
+    [Category("integration")]
+    public class ExamControllerTest : FrontOfficeIntegrationFixture
     {
         [SetUp]
         public async Task SetUpAsync()

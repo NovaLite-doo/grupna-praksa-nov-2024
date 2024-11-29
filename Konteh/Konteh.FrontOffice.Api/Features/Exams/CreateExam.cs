@@ -22,13 +22,15 @@ namespace Konteh.FrontOffice.Api.Features.Exams
         {
             private readonly IRepository<Question> _questionRepository;
             private readonly IRepository<Exam> _examRepository;
+            private readonly IRepository<Candidate> _candidateRepository;
             private readonly Random _random;
 
-            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, Random random)
+            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, Random random, IRepository<Candidate> candidateRepository)
             {
                 _questionRepository = questionRepository;
                 _examRepository = examRepository;
                 _random = random;
+                _candidateRepository = candidateRepository;
             }
 
             public async Task<int> Handle(Command request, CancellationToken cancellationToken)
@@ -39,17 +41,21 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 var examQuestions = new List<ExamQuestion>();
 
+                var candidate = new Candidate
+                {
+                    Email = request.Email,
+                    Faculty = request.Faculty,
+                    Major = request.Major,
+                    Name = request.Name,
+                    Surname = request.Surname,
+                    YearOfStudy = request.YearOfStudy
+                };
+                _candidateRepository.Create(candidate);
+                //await _candidateRepository.SaveChanges();
+
                 var exam = new Exam
                 {
-                    Candidate = new Candidate
-                    {
-                        Email = request.Email,
-                        Faculty = request.Faculty,
-                        Major = request.Major,
-                        Name = request.Name,
-                        Surname = request.Surname,
-                        YearOfStudy = request.YearOfStudy
-                    },
+                    Candidate = candidate,
                     Questions = examQuestions
                 };
 
@@ -62,9 +68,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                     examQuestions.AddRange(randomQuestions.Select(x => new ExamQuestion
                     {
-                        Question = x,
-                        QuestionId = x.Id,
-                        ExamId = exam.Id
+                        Question = x
                     }));
                 }
 

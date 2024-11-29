@@ -11,6 +11,7 @@ namespace Konteh.FrontOffice.Api.Tests
     {
         private IRepository<Question> _mockQuestionRepository;
         private IRepository<Exam> _mockExamRepository;
+        private IRepository<Candidate> _mockCandidateRepository;
         private CreateExam.RequestHandler _handler;
         private Random _mockRandom;
 
@@ -19,11 +20,10 @@ namespace Konteh.FrontOffice.Api.Tests
         {
             _mockQuestionRepository = A.Fake<IRepository<Question>>();
             _mockExamRepository = A.Fake<IRepository<Exam>>();
+            _mockCandidateRepository = A.Fake<IRepository<Candidate>>();
             _mockRandom = A.Fake<Random>();
 
-            A.CallTo(() => _mockRandom.Next(0, A<int>.Ignored)).ReturnsNextFromSequence(0, 1, 3);
-
-            _handler = new CreateExam.RequestHandler(_mockQuestionRepository, _mockExamRepository, _mockRandom);
+            _handler = new CreateExam.RequestHandler(_mockQuestionRepository, _mockExamRepository, _mockRandom, _mockCandidateRepository);
         }
 
         [Test]
@@ -35,6 +35,7 @@ namespace Konteh.FrontOffice.Api.Tests
 
             A.CallTo(() => _mockRandom.Next(0, A<int>.Ignored)).ReturnsNextFromSequence(0, 1, 2);
 
+            A.CallTo(() => _mockCandidateRepository.Create(A<Candidate>.Ignored)).Invokes((Candidate candidate) => { });
 
             var command = new CreateExam.Command
             {

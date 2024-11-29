@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { ExamNotification } from './models/exam-notification';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExamNotificationsService {
   private hubConnection: signalR.HubConnection;
-  private notificationSubject = new BehaviorSubject<any>(null); // any for test purposes, a DTO will be created later
+  private notificationSubject = new BehaviorSubject<ExamNotification | null>(null);
 
   constructor() {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -30,8 +31,8 @@ export class ExamNotificationsService {
     });
   }
 
-  receiveNotification(): Observable<any> {
-    this.hubConnection.on('ReceiveNotification', (message: any) => {
+  receiveNotification(): Observable<ExamNotification | null> {
+    this.hubConnection.on('ReceiveNotification', (message: ExamNotification) => {
       this.notificationSubject.next(message);
     });
     return this.notificationSubject.asObservable();

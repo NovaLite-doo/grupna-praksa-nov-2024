@@ -52,7 +52,6 @@ export class ExamsOverviewComponent {
   receiveNotifications() {
     this.examNotificationsService.receiveNotification().subscribe(
       (notification: ExamNotification | null) => {
-        console.log(notification);
         if(notification) {
           if(notification.isCompleted) {
             this.updateExam(notification);

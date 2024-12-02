@@ -264,14 +264,14 @@ export class QuestionsClient implements IQuestionsClient {
     }
 }
 
-export interface IWeatherForecastClient {
-    get(): Observable<WeatherForecast[]>;
+export interface IExamClient {
+    getStatistics(): Observable<GetExamStatisticsExamStatisticsResponse>;
 }
 
 @Injectable({
     providedIn: 'root'
 })
-export class WeatherForecastClient implements IWeatherForecastClient {
+export class ExamClient implements IExamClient {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -281,8 +281,8 @@ export class WeatherForecastClient implements IWeatherForecastClient {
         this.baseUrl = baseUrl ?? "https://localhost:7285";
     }
 
-    get(): Observable<WeatherForecast[]> {
-        let url_ = this.baseUrl + "/WeatherForecast";
+    getStatistics(): Observable<GetExamStatisticsExamStatisticsResponse> {
+        let url_ = this.baseUrl + "/exams/statistics";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -294,20 +294,20 @@ export class WeatherForecastClient implements IWeatherForecastClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
+            return this.processGetStatistics(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGet(response_ as any);
+                    return this.processGetStatistics(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<WeatherForecast[]>;
+                    return _observableThrow(e) as any as Observable<GetExamStatisticsExamStatisticsResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<WeatherForecast[]>;
+                return _observableThrow(response_) as any as Observable<GetExamStatisticsExamStatisticsResponse>;
         }));
     }
 
-    protected processGet(response: HttpResponseBase): Observable<WeatherForecast[]> {
+    protected processGetStatistics(response: HttpResponseBase): Observable<GetExamStatisticsExamStatisticsResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -318,14 +318,7 @@ export class WeatherForecastClient implements IWeatherForecastClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(WeatherForecast.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = GetExamStatisticsExamStatisticsResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -826,13 +819,12 @@ export interface ICreateOrUpdateQuestionAnswerRequest {
     isCorrect?: boolean;
 }
 
-export class WeatherForecast implements IWeatherForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
+export class GetExamStatisticsExamStatisticsResponse implements IGetExamStatisticsExamStatisticsResponse {
+    totalExams?: number;
+    above50Percent?: number;
+    below50Percent?: number;
 
-    constructor(data?: IWeatherForecast) {
+    constructor(data?: IGetExamStatisticsExamStatisticsResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -843,41 +835,32 @@ export class WeatherForecast implements IWeatherForecast {
 
     init(_data?: any) {
         if (_data) {
-            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
-            this.temperatureC = _data["temperatureC"];
-            this.temperatureF = _data["temperatureF"];
-            this.summary = _data["summary"];
+            this.totalExams = _data["totalExams"];
+            this.above50Percent = _data["above50Percent"];
+            this.below50Percent = _data["below50Percent"];
         }
     }
 
-    static fromJS(data: any): WeatherForecast {
+    static fromJS(data: any): GetExamStatisticsExamStatisticsResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new WeatherForecast();
+        let result = new GetExamStatisticsExamStatisticsResponse();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? formatDate(this.date) : <any>undefined;
-        data["temperatureC"] = this.temperatureC;
-        data["temperatureF"] = this.temperatureF;
-        data["summary"] = this.summary;
+        data["totalExams"] = this.totalExams;
+        data["above50Percent"] = this.above50Percent;
+        data["below50Percent"] = this.below50Percent;
         return data;
     }
 }
 
-export interface IWeatherForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
-}
-
-function formatDate(d: Date) {
-    return d.getFullYear() + '-' + 
-        (d.getMonth() < 9 ? ('0' + (d.getMonth()+1)) : (d.getMonth()+1)) + '-' +
-        (d.getDate() < 10 ? ('0' + d.getDate()) : d.getDate());
+export interface IGetExamStatisticsExamStatisticsResponse {
+    totalExams?: number;
+    above50Percent?: number;
+    below50Percent?: number;
 }
 
 export interface FileResponse {

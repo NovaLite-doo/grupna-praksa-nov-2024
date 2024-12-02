@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
-
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { QuestionsModule } from './features/questions/questions.module';
@@ -19,6 +18,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { environment } from '../enviroments/enviroment';
 import { GeneralErrorsComponent } from './shared/validation/general-errors.component';
 import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
+import { StatisticsComponent } from './features/exams/statistics/statistics.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts'
+
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -48,7 +50,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   declarations: [
     AppComponent,
     NavigationBarComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +65,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    GeneralErrorsComponent
+    GeneralErrorsComponent,
+    NgxChartsModule  
+
   ],
   providers: [
     provideAnimationsAsync(),

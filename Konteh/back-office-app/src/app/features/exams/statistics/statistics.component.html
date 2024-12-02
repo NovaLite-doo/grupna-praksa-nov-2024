@@ -1,0 +1,31 @@
+<div *ngIf="statistics; else loading" class="statistics-container">
+    <div class="statistics-header">
+      <h3>Exam Statistics</h3>
+      <p>Total Exams: <strong>{{ statistics.totalExams }}</strong></p>
+      <p>Exams Above 50%: <strong>{{ statistics.above50Percent }}</strong></p>
+      <p>Exams Below 50%: <strong>{{ statistics.below50Percent }}</strong></p>
+    </div>
+  
+    <div class="chart-container">
+      <div class="chart">
+        <ngx-charts-pie-chart 
+          [view]="chartView"
+          [results]="chartData"
+          [scheme]="colorScheme"
+          [labels]="true"
+          [doughnut]="true">
+        </ngx-charts-pie-chart>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #loading>
+    <div class="loading-container">
+      <p>Loading statistics...</p>
+    </div>
+  </ng-template>
+  
+  <div *ngIf="errorMessage" class="error">
+    <p>{{ errorMessage }}</p>
+  </div>
+  

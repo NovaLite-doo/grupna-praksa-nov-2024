@@ -27,5 +27,18 @@ namespace Konteh.Infrastructure.Repository
                 .ThenInclude(q => q.Answers)
                 .FirstOrDefaultAsync();
         }
+
+        public override async Task<IEnumerable<Exam>> GetAll()
+        {
+            return await _dbSet
+                .Include(e => e.Questions)
+                    .ThenInclude(eq => eq.Question)
+                    .ThenInclude(q => q.Answers)
+                .Include(e => e.Questions)
+                    .ThenInclude(eq => eq.SubmittedAnswers)
+                .ToListAsync();
+        }
+
+
     }
 }

@@ -5,6 +5,8 @@ import { retryWhen } from 'rxjs';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ExamForm } from './models/exam-form.model';
 import { ExamQuestionForm } from './models/exam-question-form.model';
+import { SubmitDialogComponent } from '../submit-dialog/submit-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-exam-overview',
@@ -15,8 +17,10 @@ export class ExamOverviewComponent {
   exam: IGetExamByIdResponse | null = null;
   currentQuestionIndex: number = 0;
   examFormGroup = new ExamForm();
+  totalTime: number = 200;
+  isExpired: boolean = false;
 
-  constructor(private examClient: ExamClient, private route: ActivatedRoute, private router: Router) { }
+  constructor(private examClient: ExamClient, private route: ActivatedRoute, private router: Router, private dialog: MatDialog ) { }
 
   ngOnInit(): void {
     const examId = Number(this.route.snapshot.paramMap.get('id'));
@@ -78,5 +82,26 @@ export class ExamOverviewComponent {
 
   get totalQuestions(): number {
     return this.exam?.questions?.length ?? 0;
+  }
+
+  onTimerExpired(): void {
+    this.isExpired = true; 
+    this.submitExam();
+    this.openSubmitDialog();
+  }
+
+  openSubmitDialog(): void {
+    const dialogRef = this.dialog.open(SubmitDialogComponent, {
+      width: '300px',
+      data: {
+        timerExpired: this.isExpired
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!this.isExpired && result) {
+        this.submitExam();
+      }
+    });
   }
 }

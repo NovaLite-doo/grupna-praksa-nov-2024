@@ -19,6 +19,9 @@ import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { ExamQuestionComponent } from './exam-question/exam-question.component';
+import { TimerComponent } from './timer/timer.component';
+import { SubmitDialogComponent } from './submit-dialog/submit-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -27,7 +30,10 @@ import { ExamQuestionComponent } from './exam-question/exam-question.component';
     CandidateFormComponent,
     ExamOverviewComponent,
     ThankYouPageComponent,
-    ExamQuestionComponent
+    ExamQuestionComponent,
+    TimerComponent,
+    SubmitDialogComponent,
+  
   ],
   imports: [
     BrowserModule,
@@ -44,6 +50,7 @@ import { ExamQuestionComponent } from './exam-question/exam-question.component';
     FormsModule,
     MatProgressSpinnerModule,
     MatCardModule,
+    MatDialogModule,
     
   ],
   providers: [

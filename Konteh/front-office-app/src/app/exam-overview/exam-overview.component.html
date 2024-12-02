@@ -2,6 +2,8 @@
   <mat-card>
     <h2>Exam</h2>
 
+    <app-timer [totalTime]="totalTime" (timeExpired)="onTimerExpired()"></app-timer>
+
     <div class="question-container">
       <div class="question-text">
         <mat-label>{{ exam.questions![currentQuestionIndex].text }}</mat-label>
@@ -11,14 +13,14 @@
     </div>
 
     <div class="navigation-buttons">
-      <button mat-raised-button *ngIf="currentQuestionIndex > 0" (click)="previousQuestion()" type="button">Previous
+      <button mat-raised-button *ngIf="currentQuestionIndex > 0" (click)="previousQuestion()"  type="button">Previous
         Question</button>
       <button mat-raised-button *ngIf="currentQuestionIndex < totalQuestions - 1" (click)="nextQuestion()" type="button">Next
         Question</button>
     </div>
 
     <div class="submit-button">
-      <button mat-raised-button (click)="submitExam()" type="submit">
+      <button mat-raised-button (click)="openSubmitDialog()" [disabled]="isExpired" type="submit">
         Submit
       </button>
     </div>

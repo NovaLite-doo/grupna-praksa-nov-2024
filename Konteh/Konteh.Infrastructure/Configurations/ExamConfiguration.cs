@@ -11,7 +11,7 @@ namespace Konteh.Infrastructure.Configurations
             builder
                 .HasOne(x => x.Candidate)
                 .WithOne(x => x.Exam)
-                .HasForeignKey<Candidate>(x => x.ExamId);
+                .HasForeignKey<Exam>(x => x.CandidateId);
 
             builder.HasMany(x => x.Questions)
                 .WithOne(x => x.Exam)

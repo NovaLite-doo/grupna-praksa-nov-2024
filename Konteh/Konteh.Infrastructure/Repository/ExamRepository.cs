@@ -31,5 +31,15 @@ namespace Konteh.Infrastructure.Repository
 
             return exams;
         }
+
+        public override async Task<Exam?> Get(int id)
+        {
+            return await _dbSet
+                .Where(e => e.Id == id)
+                .Include(e => e.Questions)
+                .ThenInclude(eq => eq.Question)
+                .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync();
+        }
     }
 }

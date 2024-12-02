@@ -1,0 +1,15 @@
+<form class="answers" [ngSwitch]="questionType" [formGroup]="examQuestion">
+    <mat-radio-group *ngSwitchCase="type.Radiobutton" formControlName="selectedAnswer">
+        <mat-radio-button *ngFor="let answer of answers.controls" [value]="answer.id"
+            [checked]="isAnswerSelected(answer.id)">
+            {{ answer.text }}
+        </mat-radio-button>
+    </mat-radio-group>
+
+    <div *ngSwitchCase="type.Checkbox">
+        <mat-checkbox *ngFor="let answer of answers.controls" [checked]="answer.isSelected.value"
+            (change)="checkBoxAnswerSelected(answer)">{{answer.text}}</mat-checkbox>
+    </div>
+
+    <p *ngSwitchDefault>Unknown question type.</p>
+</form>

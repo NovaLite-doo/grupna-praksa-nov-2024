@@ -31,6 +31,7 @@ builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = 
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IRepository<Candidate>, CandidateRepository>();
 builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
 builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

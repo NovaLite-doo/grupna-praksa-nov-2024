@@ -1,0 +1,31 @@
+<div *ngIf="exam">
+  <mat-card>
+    <h2>Exam</h2>
+
+    <div class="question-container">
+      <div class="question-text">
+        <mat-label>{{ exam.questions![currentQuestionIndex].text }}</mat-label>
+      </div>
+
+      <app-exam-question [examQuestion]="currentQuestion"></app-exam-question>
+    </div>
+
+    <div class="navigation-buttons">
+      <button mat-raised-button *ngIf="currentQuestionIndex > 0" (click)="previousQuestion()" type="button">Previous
+        Question</button>
+      <button mat-raised-button *ngIf="currentQuestionIndex < totalQuestions - 1" (click)="nextQuestion()" type="button">Next
+        Question</button>
+    </div>
+
+    <div class="submit-button">
+      <button mat-raised-button (click)="submitExam()" type="submit">
+        Submit
+      </button>
+    </div>
+  </mat-card>
+</div>
+
+<div *ngIf="!exam">
+  <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+  <p>Loading exam data...</p>
+</div>

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Konteh.Domain;
 using Konteh.Domain.Enumeration;
+using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repository;
 using MediatR;
 
@@ -56,11 +57,13 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             private readonly IRepository<Question> _questionRepository;
             private readonly IRepository<Exam> _examRepository;
             private readonly IRepository<Candidate> _candidateRepository;
+            private readonly IRandom _random;
 
-            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository)
+            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRandom random, IRepository<Candidate> candidateRepository)
             {
                 _questionRepository = questionRepository;
                 _examRepository = examRepository;
+                _random = random;
                 _candidateRepository = candidateRepository;
             }
 
@@ -80,7 +83,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                     YearOfStudy = request.YearOfStudy
                 };
                 _candidateRepository.Create(candidate);
-                //await _candidateRepository.SaveChanges();
 
                 var exam = new Exam
                 {
@@ -90,7 +92,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 foreach (var categoryGroup in groupedByCategory)
                 {
                     var randomQuestions = categoryGroup
-                        .OrderBy(x => random.Next())
+                        .OrderBy(x => _random.NextInt())
                         .Take(NumberOfQuestionsPerCategory)
                         .ToList();
 

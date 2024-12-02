@@ -1,0 +1,74 @@
+﻿{
+  Questions: [
+    {
+      QuestionId: 1,
+      Question: {
+        Id: 1,
+        Text: What is Object-Oriented Programming (OOP)?,
+        Answers: [
+          {
+            Text: A programming paradigm based on the concept of objects,
+            IsCorrect: false,
+            IsDeleted: false
+          },
+          {
+            Text: A type of relational database,
+            IsCorrect: false,
+            IsDeleted: false
+          }
+        ],
+        IsDeleted: false
+      }
+    },
+    {
+      QuestionId: 2,
+      Question: {
+        Id: 2,
+        Text: What is Git?,
+        Answers: [
+          {
+            Text: A version control system,
+            IsCorrect: false,
+            IsDeleted: false
+          },
+          {
+            Text: A programming language,
+            IsCorrect: false,
+            IsDeleted: false
+          }
+        ],
+        Category: GIT,
+        IsDeleted: false
+      }
+    },
+    {
+      QuestionId: 3,
+      Question: {
+        Id: 3,
+        Text: What is SQL?,
+        Answers: [
+          {
+            Text: A language used for managing relational databases,
+            IsCorrect: false,
+            IsDeleted: false
+          },
+          {
+            Text: A markup language for web pages,
+            IsCorrect: false,
+            IsDeleted: false
+          }
+        ],
+        Category: SQL,
+        IsDeleted: false
+      }
+    }
+  ],
+  Candidate: {
+    Name: John,
+    Surname: Doe,
+    Email: student@example.com,
+    Faculty: Engineering,
+    Major: Computer Science,
+    YearOfStudy: Master
+  }
+}

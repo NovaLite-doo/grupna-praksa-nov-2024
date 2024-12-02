@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { ExamsClient, SearchExamsCandidateResponse, SearchExamsExamResponse } from '../../../api/api-reference';
+import { ExamsClient, ExamStatus, SearchExamsCandidateResponse, SearchExamsExamResponse } from '../../../api/api-reference';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ExamNotificationsService } from '../exam-notifications/exam-notifications.service';
-import { ExamNotification } from '../exam-notifications/models/exam-notification';
 
 @Component({
   selector: 'app-exams-overview',
@@ -51,9 +50,10 @@ export class ExamsOverviewComponent {
 
   receiveNotifications() {
     this.examNotificationsService.receiveNotification().subscribe(
-      (notification: ExamNotification | null) => {
+      (notification: SearchExamsExamResponse | null) => {
+        console.log(notification);
         if(notification) {
-          if(notification.isCompleted) {
+          if(notification.status == ExamStatus.Completed) {
             this.updateExam(notification);
           } else {
             this.addExam(notification!);
@@ -63,31 +63,16 @@ export class ExamsOverviewComponent {
     );
   }
 
-  updateExam(notification: ExamNotification) {
+  updateExam(notification: SearchExamsExamResponse) {
     const exam = this.exams.find(x => x.id === notification.id);
 
     if (exam) {
-      exam.isCompleted = true;
-      exam.questionCount = notification.questionCount;
-      exam.correctAnswerCount = notification.correctAnswerCount;
+      exam.status = notification.status;
       exam.score = notification.score;
     }
   }
 
-  addExam(notification: ExamNotification) {
-    const newCandidate = new SearchExamsCandidateResponse();
-    newCandidate.name = notification.candidate?.name;
-    newCandidate.surname = notification.candidate?.surname;
-    newCandidate.email = notification.candidate?.email;
-    newCandidate.faculty = notification.candidate?.faculty;
-    newCandidate.major = notification.candidate?.major;
-    newCandidate.yearOfStudy = notification.candidate?.yearOfStudy;
-
-    const newExam = new SearchExamsExamResponse();
-    newExam.id = notification.id;
-    newExam.isCompleted = false;
-    newExam.candidate = newCandidate;
-
-    this.exams.unshift(newExam);
+  addExam(notification: SearchExamsExamResponse) {
+    this.exams.unshift(notification);
   }
 }

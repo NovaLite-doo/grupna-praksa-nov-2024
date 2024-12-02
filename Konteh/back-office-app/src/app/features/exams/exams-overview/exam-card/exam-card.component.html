@@ -3,8 +3,8 @@
         <div class="exam-card-content">
             <div class="exam-card-section">
                 <div class="status">
-                    <mat-icon *ngIf="exam.isCompleted" class="status-completed">check</mat-icon>
-                    <mat-spinner *ngIf="!exam.isCompleted" class="status-in-progress"></mat-spinner>
+                    <mat-icon *ngIf="isCompleted" class="status-completed">check</mat-icon>
+                    <mat-spinner *ngIf="!isCompleted" class="status-in-progress"></mat-spinner>
                 </div>
             </div>
 
@@ -12,25 +12,12 @@
                 <div class="information">
                     <div class="information-title">Candidate</div>
                     <div class="information-value"><b>Full name:</b> {{ exam.candidate!.name }} {{ exam.candidate!.surname }}</div>
-                    <div class="information-value"><b>Email:</b> {{ exam.candidate!.email }}</div>
                 </div>
             </div>
 
-            <div class="separator"></div>
-
-            <div class="exam-card-section">
-                <div class="information">
-                    <div class="information-title">Education</div>
-                    <div class="information-value"><b>Faculty:</b> {{ exam.candidate?.faculty }}</div>
-                    <div class="information-value"><b>Major:</b> {{ exam.candidate?.major }}</div>
-                    <div class="information-value"><b>Year of study:</b> {{ yearOfStudy }}</div>
-                </div>
-            </div>
-
-            <div *ngIf="exam.isCompleted" class="exam-card-section right">
+            <div *ngIf="isCompleted" class="exam-card-section right">
                 <div class="score">
-                    <div class="score-fraction">{{ exam.correctAnswerCount }}/{{ exam.questionCount }}</div>
-                    <app-pie-score [score]="exam.score!"></app-pie-score>
+                    <div class="score-fraction">{{ exam.score }}</div>
                 </div>
             </div>
         </div>

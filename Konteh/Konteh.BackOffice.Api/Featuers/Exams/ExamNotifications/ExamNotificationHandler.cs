@@ -17,7 +17,21 @@ namespace Konteh.BackOffice.Api.Featuers.Exams.ExamNotifications
         {
             var message = context.Message;
 
-            await _hub.Clients.All.ReceiveNotification(message);
+            var notification = new SearchExams.ExamResponse
+            {
+                Id = message.Id,
+                Status = message.Status,
+                Score = message.Score,
+                Candidate = new SearchExams.CandidateResponse
+                {
+                    Name = message.Candidate.Name,
+                    Surname = message.Candidate.Surname,
+                }
+            };
+
+
+
+            await _hub.Clients.All.ReceiveNotification(notification);
 
             return;
         }

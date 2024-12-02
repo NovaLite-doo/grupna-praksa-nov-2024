@@ -15,6 +15,7 @@ namespace Konteh.Infrastructure.Repository
         {
         }
 
+        public override async Task<Exam?> Get(int id) => await IncludeProperties().FirstOrDefaultAsync(e => e.Id == id);
         public override async Task<IEnumerable<Exam>> GetAll() => await IncludeProperties().ToListAsync();
 
         public override async Task<IList<Exam>> Search(Expression<Func<Exam, bool>> predicate) => await IncludeProperties().Where(predicate).ToListAsync();
@@ -30,16 +31,6 @@ namespace Konteh.Infrastructure.Repository
                         .ThenInclude(x => x.Answers);
 
             return exams;
-        }
-
-        public override async Task<Exam?> Get(int id)
-        {
-            return await _dbSet
-                .Where(e => e.Id == id)
-                .Include(e => e.Questions)
-                .ThenInclude(eq => eq.Question)
-                .ThenInclude(q => q.Answers)
-                .FirstOrDefaultAsync();
         }
     }
 }

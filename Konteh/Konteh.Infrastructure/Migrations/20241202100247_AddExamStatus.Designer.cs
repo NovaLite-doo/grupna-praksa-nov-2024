@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Konteh.BackOffice.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241128081809_ExamQuestionForeignKeyFix")]
-    partial class ExamQuestionForeignKeyFix
+    [Migration("20241202100247_AddExamStatus")]
+    partial class AddExamStatus
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,9 +64,6 @@ namespace Konteh.BackOffice.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ExamId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Faculty")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -88,9 +85,6 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExamId")
-                        .IsUnique();
-
                     b.ToTable("Candidates");
                 });
 
@@ -102,10 +96,16 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CandidateId")
+                        .IsUnique();
 
                     b.ToTable("Exams");
                 });
@@ -185,15 +185,15 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("Konteh.Domain.Candidate", b =>
+            modelBuilder.Entity("Konteh.Domain.Exam", b =>
                 {
-                    b.HasOne("Konteh.Domain.Exam", "Exam")
-                        .WithOne("Candidate")
-                        .HasForeignKey("Konteh.Domain.Candidate", "ExamId")
+                    b.HasOne("Konteh.Domain.Candidate", "Candidate")
+                        .WithOne("Exam")
+                        .HasForeignKey("Konteh.Domain.Exam", "CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Exam");
+                    b.Navigation("Candidate");
                 });
 
             modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
@@ -230,11 +230,13 @@ namespace Konteh.BackOffice.Api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Konteh.Domain.Candidate", b =>
+                {
+                    b.Navigation("Exam");
+                });
+
             modelBuilder.Entity("Konteh.Domain.Exam", b =>
                 {
-                    b.Navigation("Candidate")
-                        .IsRequired();
-
                     b.Navigation("Questions");
                 });
 

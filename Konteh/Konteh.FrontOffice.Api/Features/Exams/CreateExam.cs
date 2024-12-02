@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Konteh.Domain;
 using Konteh.Domain.Enumeration;
+using Konteh.Domain.Events;
 using Konteh.Infrastructure.Repository;
+using MassTransit;
 using MediatR;
 
 namespace Konteh.FrontOffice.Api.Features.Exams
@@ -56,12 +58,14 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             private readonly IRepository<Question> _questionRepository;
             private readonly IRepository<Exam> _examRepository;
             private readonly IRepository<Candidate> _candidateRepository;
+            private readonly IPublishEndpoint _publishEndpoint;
 
-            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository)
+            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository, IPublishEndpoint publishEndpoint)
             {
                 _questionRepository = questionRepository;
                 _examRepository = examRepository;
                 _candidateRepository = candidateRepository;
+                _publishEndpoint = publishEndpoint;
             }
 
             public async Task<int> Handle(Command request, CancellationToken cancellationToken)
@@ -84,7 +88,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 var exam = new Exam
                 {
-                    Candidate = candidate
+                    Candidate = candidate,
+                    Status = ExamStatus.InProgress
                 };
 
                 foreach (var categoryGroup in groupedByCategory)
@@ -102,7 +107,24 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 _examRepository.Create(exam);
                 await _examRepository.SaveChanges();
+
+                SendNotification(exam);
+
                 return exam.Id;
+            }
+
+            private void SendNotification(Exam exam)
+            {
+                _publishEndpoint.Publish(new ExamEvent
+                {
+                    Id = exam.Id,
+                    Status = exam.Status,
+                    Candidate = new ExamEventCandidate
+                    {
+                        Name = exam.Candidate.Name,
+                        Surname = exam.Candidate.Surname
+                    }
+                });
             }
         }
     }

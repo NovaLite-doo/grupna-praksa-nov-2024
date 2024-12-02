@@ -904,10 +904,8 @@ export interface ICreateOrUpdateQuestionAnswerRequest {
 export class SearchExamsExamResponse implements ISearchExamsExamResponse {
     id?: number;
     candidate?: SearchExamsCandidateResponse;
-    questionCount?: number | undefined;
-    correctAnswerCount?: number | undefined;
-    score?: number | undefined;
-    isCompleted?: boolean;
+    score?: string | undefined;
+    status?: ExamStatus;
 
     constructor(data?: ISearchExamsExamResponse) {
         if (data) {
@@ -922,10 +920,8 @@ export class SearchExamsExamResponse implements ISearchExamsExamResponse {
         if (_data) {
             this.id = _data["id"];
             this.candidate = _data["candidate"] ? SearchExamsCandidateResponse.fromJS(_data["candidate"]) : <any>undefined;
-            this.questionCount = _data["questionCount"];
-            this.correctAnswerCount = _data["correctAnswerCount"];
             this.score = _data["score"];
-            this.isCompleted = _data["isCompleted"];
+            this.status = _data["status"];
         }
     }
 
@@ -940,10 +936,8 @@ export class SearchExamsExamResponse implements ISearchExamsExamResponse {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["candidate"] = this.candidate ? this.candidate.toJSON() : <any>undefined;
-        data["questionCount"] = this.questionCount;
-        data["correctAnswerCount"] = this.correctAnswerCount;
         data["score"] = this.score;
-        data["isCompleted"] = this.isCompleted;
+        data["status"] = this.status;
         return data;
     }
 }
@@ -951,19 +945,13 @@ export class SearchExamsExamResponse implements ISearchExamsExamResponse {
 export interface ISearchExamsExamResponse {
     id?: number;
     candidate?: SearchExamsCandidateResponse;
-    questionCount?: number | undefined;
-    correctAnswerCount?: number | undefined;
-    score?: number | undefined;
-    isCompleted?: boolean;
+    score?: string | undefined;
+    status?: ExamStatus;
 }
 
 export class SearchExamsCandidateResponse implements ISearchExamsCandidateResponse {
     name?: string;
     surname?: string;
-    email?: string;
-    faculty?: string;
-    major?: string;
-    yearOfStudy?: YearOfStudy;
 
     constructor(data?: ISearchExamsCandidateResponse) {
         if (data) {
@@ -978,10 +966,6 @@ export class SearchExamsCandidateResponse implements ISearchExamsCandidateRespon
         if (_data) {
             this.name = _data["name"];
             this.surname = _data["surname"];
-            this.email = _data["email"];
-            this.faculty = _data["faculty"];
-            this.major = _data["major"];
-            this.yearOfStudy = _data["yearOfStudy"];
         }
     }
 
@@ -996,10 +980,6 @@ export class SearchExamsCandidateResponse implements ISearchExamsCandidateRespon
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["surname"] = this.surname;
-        data["email"] = this.email;
-        data["faculty"] = this.faculty;
-        data["major"] = this.major;
-        data["yearOfStudy"] = this.yearOfStudy;
         return data;
     }
 }
@@ -1007,18 +987,12 @@ export class SearchExamsCandidateResponse implements ISearchExamsCandidateRespon
 export interface ISearchExamsCandidateResponse {
     name?: string;
     surname?: string;
-    email?: string;
-    faculty?: string;
-    major?: string;
-    yearOfStudy?: YearOfStudy;
 }
 
-export enum YearOfStudy {
-    YearOne = 0,
-    YearTwo = 1,
-    YearThree = 2,
-    YearFour = 3,
-    Master = 4,
+export enum ExamStatus {
+    Pedning = 0,
+    InProgress = 1,
+    Completed = 2,
 }
 
 export class WeatherForecast implements IWeatherForecast {

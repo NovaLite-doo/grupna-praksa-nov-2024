@@ -1,4 +1,7 @@
-﻿namespace Konteh.Domain
+﻿using Konteh.Domain.Enumeration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace Konteh.Domain
 {
     public class Exam
     {
@@ -6,17 +9,12 @@
         public List<ExamQuestion> Questions { get; set; } = [];
         public int CandidateId { get; set; }
         public Candidate Candidate { get; set; } = null!;
-        public bool IsCompleted { get; set; }
+        public ExamStatus Status { get; set; }
 
-        public int GetCorrectAnswerCount()
+        public string GetScore()
         {
-            return Questions.Count(x => x.IsCorrect());
-        }
-
-        public double GetScore()
-        {
-            double score = (double)GetCorrectAnswerCount() / Questions.Count * 100;
-            return Math.Round(score, 2);
+            var correctAnswers = Questions.Count(x => x.IsCorrect());
+            return $"{correctAnswers}/{Questions.Count}";
         }
     }
 }

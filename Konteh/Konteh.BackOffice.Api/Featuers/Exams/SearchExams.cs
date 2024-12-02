@@ -17,20 +17,14 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
         {
             public int Id { get; set; }
             public CandidateResponse Candidate { get; set; } = new CandidateResponse();
-            public int? QuestionCount { get; set; }
-            public int? CorrectAnswerCount { get; set; }
-            public double? Score { get; set; }
-            public bool IsCompleted { get; set; }
+            public string? Score { get; set; }
+            public ExamStatus Status { get; set; }
         }
 
         public class CandidateResponse
         {
             public string Name { get; set; } = string.Empty;
             public string Surname { get; set; } = string.Empty;
-            public string Email { get; set; } = string.Empty;
-            public string Faculty { get; set; } = string.Empty;
-            public string Major { get; set; } = string.Empty;
-            public YearOfStudy YearOfStudy { get; set; }
         }
 
         public class RequestHandler : IRequestHandler<Query, IEnumerable<ExamResponse>>
@@ -48,18 +42,14 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
                     await _examRepository.GetAll() :
                     await Search(request.Search);
 
-                var response = exams.Select(x => MapToResponse(x));
+                var response = exams.Reverse().Select(x => MapToResponse(x));
 
                 return response;
             }
 
             private async Task<IEnumerable<Exam>> Search(string search)
             {
-                search = search.ToLower().Replace(" ", "");
-
-                return await _examRepository.Search(x => 
-                    (x.Candidate.Name + x.Candidate.Surname).ToLower().Contains(search)  
-                );
+                return await _examRepository.Search(x => x.Candidate.Name.Contains(search) || x.Candidate.Surname.Contains(search));
             }
 
             private ExamResponse MapToResponse(Exam exam)
@@ -67,22 +57,16 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
                 var response = new ExamResponse
                 {
                     Id = exam.Id,
-                    IsCompleted = exam.IsCompleted,
+                    Status = exam.Status,
                     Candidate = new CandidateResponse
                     {
                         Name = exam.Candidate.Name,
-                        Surname = exam.Candidate.Surname,
-                        Email = exam.Candidate.Email,
-                        Faculty = exam.Candidate.Faculty,
-                        Major = exam.Candidate.Major,
-                        YearOfStudy = exam.Candidate.YearOfStudy
+                        Surname = exam.Candidate.Surname
                     }
                 };
 
-                if(exam.IsCompleted)
+                if(exam.Status == ExamStatus.Completed)
                 {
-                    response.QuestionCount = exam.Questions.Count;
-                    response.CorrectAnswerCount = exam.GetCorrectAnswerCount();
                     response.Score = exam.GetScore();
                 }
 

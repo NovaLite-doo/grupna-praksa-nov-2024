@@ -32,6 +32,9 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
@@ -43,7 +46,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answers", (string)null);
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("Konteh.Domain.Candidate", b =>
@@ -79,7 +82,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Candidates", (string)null);
+                    b.ToTable("Candidates");
                 });
 
             modelBuilder.Entity("Konteh.Domain.Exam", b =>
@@ -90,9 +93,10 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
                     b.Property<int>("CandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -100,7 +104,7 @@ namespace Konteh.BackOffice.Api.Migrations
                     b.HasIndex("CandidateId")
                         .IsUnique();
 
-                    b.ToTable("Exams", (string)null);
+                    b.ToTable("Exams");
                 });
 
             modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
@@ -123,7 +127,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("ExamQuestions", (string)null);
+                    b.ToTable("ExamQuestions");
                 });
 
             modelBuilder.Entity("Konteh.Domain.ExamQuestionAnswer", b =>
@@ -138,7 +142,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasIndex("ExamQuestionId");
 
-                    b.ToTable("ExamQuestionAnswer", (string)null);
+                    b.ToTable("ExamQuestionAnswer");
                 });
 
             modelBuilder.Entity("Konteh.Domain.Question", b =>
@@ -164,7 +168,7 @@ namespace Konteh.BackOffice.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("Konteh.Domain.Answer", b =>

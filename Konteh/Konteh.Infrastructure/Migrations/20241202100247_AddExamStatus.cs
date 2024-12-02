@@ -10,19 +10,19 @@ namespace Konteh.BackOffice.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsCompleted",
+            migrationBuilder.AddColumn<int>(
+                name: "Status",
                 table: "Exams",
-                type: "bit",
+                type: "int",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsCompleted",
+                name: "Status",
                 table: "Exams");
         }
     }

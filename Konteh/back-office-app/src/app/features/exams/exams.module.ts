@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { PieScoreComponent } from './exams-overview/pie-score/pie-score.component';
 import { ExamCardComponent } from './exams-overview/exam-card/exam-card.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -16,7 +15,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     ExamsOverviewComponent,
-    PieScoreComponent,
     ExamCardComponent
   ],
   imports: [

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { SearchExamsExamResponse, YearOfStudy } from '../../../../api/api-reference';
+import { SearchExamsExamResponse } from '../../../../api/api-reference';
+import { ExamStatus } from '../../../../api/api-reference';
 
 @Component({
   selector: 'app-exam-card',
@@ -9,10 +10,7 @@ import { SearchExamsExamResponse, YearOfStudy } from '../../../../api/api-refere
 export class ExamCardComponent {
   @Input() exam!: SearchExamsExamResponse
 
-  get yearOfStudy(): string | number {
-    if(this.exam.candidate?.yearOfStudy == YearOfStudy.Master) {
-      return 'Master';
-    }
-    return Number(this.exam.candidate?.yearOfStudy) + 1;
+  get isCompleted(): boolean {
+    return this.exam.status == ExamStatus.Completed;
   }
 }

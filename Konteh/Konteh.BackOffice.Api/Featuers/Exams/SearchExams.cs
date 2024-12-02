@@ -49,7 +49,11 @@ namespace Konteh.BackOffice.Api.Featuers.Exams
 
             private async Task<IEnumerable<Exam>> Search(string search)
             {
-                return await _examRepository.Search(x => x.Candidate.Name.Contains(search) || x.Candidate.Surname.Contains(search));
+                search = search.ToLower().Replace(" ", "");
+
+                return await _examRepository.Search(x =>
+                    (x.Candidate.Name + x.Candidate.Surname).ToLower().Contains(search)
+                );
             }
 
             private ExamResponse MapToResponse(Exam exam)

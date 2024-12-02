@@ -7,7 +7,6 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
     [ApiController]
     [Authorize]
     [Route("questions")]
-    [Authorize]
     public class QuestionsController : ControllerBase
     {
         private readonly IMediator _mediator;

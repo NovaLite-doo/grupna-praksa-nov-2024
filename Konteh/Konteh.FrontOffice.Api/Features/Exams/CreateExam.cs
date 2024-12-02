@@ -2,6 +2,7 @@
 using Konteh.Domain;
 using Konteh.Domain.Enumeration;
 using Konteh.Domain.Events;
+using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repository;
 using MassTransit;
 using MediatR;
@@ -59,11 +60,13 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             private readonly IRepository<Exam> _examRepository;
             private readonly IRepository<Candidate> _candidateRepository;
             private readonly IPublishEndpoint _publishEndpoint;
+            private readonly IRandom _random;
 
-            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository, IPublishEndpoint publishEndpoint)
+            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRandom random, IRepository<Candidate> candidateRepository, , IPublishEndpoint publishEndpoint)
             {
                 _questionRepository = questionRepository;
                 _examRepository = examRepository;
+                _random = random;
                 _candidateRepository = candidateRepository;
                 _publishEndpoint = publishEndpoint;
             }
@@ -84,7 +87,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                     YearOfStudy = request.YearOfStudy
                 };
                 _candidateRepository.Create(candidate);
-                //await _candidateRepository.SaveChanges();
 
                 var exam = new Exam
                 {
@@ -95,7 +97,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 foreach (var categoryGroup in groupedByCategory)
                 {
                     var randomQuestions = categoryGroup
-                        .OrderBy(x => random.Next())
+                        .OrderBy(x => _random.NextInt())
                         .Take(NumberOfQuestionsPerCategory)
                         .ToList();
 

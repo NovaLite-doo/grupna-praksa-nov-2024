@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konteh.BackOffice.Api", "Konteh.BackOffice.Api\Konteh.BackOffice.Api.csproj", "{1C1FB680-4944-4B19-92BF-7FCCE7B5F39A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konteh.BackOffice.Api", "Konteh.BackOffice.Api\Konteh.BackOffice.Api.csproj", "{1C1FB680-4944-4B19-92BF-7FCCE7B5F39A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konteh.FrontOffice.Api", "Konteh.FrontOffice.Api\Konteh.FrontOffice.Api.csproj", "{05DD0A32-E87E-401A-8338-EAF4376D0DB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konteh.FrontOffice.Api", "Konteh.FrontOffice.Api\Konteh.FrontOffice.Api.csproj", "{05DD0A32-E87E-401A-8338-EAF4376D0DB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konteh.Domain", "Konteh.Domain\Konteh.Domain.csproj", "{9F8A4FA6-EA3D-4A52-90F7-A16D44D7041F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konteh.Domain", "Konteh.Domain\Konteh.Domain.csproj", "{9F8A4FA6-EA3D-4A52-90F7-A16D44D7041F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konteh.Infrastructure", "Konteh.Infrastructure\Konteh.Infrastructure.csproj", "{ACB5A120-7752-4915-AB5C-42CC84697BD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konteh.Infrastructure", "Konteh.Infrastructure\Konteh.Infrastructure.csproj", "{ACB5A120-7752-4915-AB5C-42CC84697BD1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konteh.FrontOffice.Api.Tests", "Konteh.FrontOffice.Api.Tests\Konteh.FrontOffice.Api.Tests.csproj", "{FF34DF8C-9B1E-471F-BB7E-CEADF23D9A5D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konteh.BackOffice.Api.Tests", "Konteh.BackOffice.Api.Tests\Konteh.BackOffice.Api.Tests.csproj", "{6ED1B212-BB6E-4EC5-A4CC-C8CD7B4132EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konteh.Tests.Infrastructure", "Konteh.Tests.Infrastructure\Konteh.Tests.Infrastructure.csproj", "{9AC9AA33-5A6C-42DC-8EB4-39940F87A00E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +39,18 @@ Global
 		{ACB5A120-7752-4915-AB5C-42CC84697BD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACB5A120-7752-4915-AB5C-42CC84697BD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACB5A120-7752-4915-AB5C-42CC84697BD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF34DF8C-9B1E-471F-BB7E-CEADF23D9A5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF34DF8C-9B1E-471F-BB7E-CEADF23D9A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF34DF8C-9B1E-471F-BB7E-CEADF23D9A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF34DF8C-9B1E-471F-BB7E-CEADF23D9A5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ED1B212-BB6E-4EC5-A4CC-C8CD7B4132EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ED1B212-BB6E-4EC5-A4CC-C8CD7B4132EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ED1B212-BB6E-4EC5-A4CC-C8CD7B4132EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ED1B212-BB6E-4EC5-A4CC-C8CD7B4132EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AC9AA33-5A6C-42DC-8EB4-39940F87A00E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AC9AA33-5A6C-42DC-8EB4-39940F87A00E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AC9AA33-5A6C-42DC-8EB4-39940F87A00E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AC9AA33-5A6C-42DC-8EB4-39940F87A00E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

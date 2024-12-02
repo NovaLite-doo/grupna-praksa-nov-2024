@@ -62,7 +62,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             private readonly IPublishEndpoint _publishEndpoint;
             private readonly IRandom _random;
 
-            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRandom random, IRepository<Candidate> candidateRepository, , IPublishEndpoint publishEndpoint)
+            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRandom random, IRepository<Candidate> candidateRepository, IPublishEndpoint publishEndpoint)
             {
                 _questionRepository = questionRepository;
                 _examRepository = examRepository;

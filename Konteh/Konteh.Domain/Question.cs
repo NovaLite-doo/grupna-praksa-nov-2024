@@ -1,9 +1,8 @@
 ﻿using Konteh.Domain.Enumeration;
-using System.Net;
 
 namespace Konteh.Domain
 {
-    public class Question
+    public abstract class Question
     {
         public int Id { get; set; }
         public string Text { get; set; } = string.Empty;
@@ -21,7 +20,7 @@ namespace Konteh.Domain
             foreach (var answer in Answers)
             {
                 var updatedAnswer = updatedQuestion.Answers.SingleOrDefault(x => x.Id == answer.Id);
-                if(updatedAnswer != null)
+                if (updatedAnswer != null)
                 {
                     answer.Edit(updatedAnswer);
                 }
@@ -33,5 +32,7 @@ namespace Konteh.Domain
 
             Answers.AddRange(newAnswers);
         }
+
+        public abstract bool IsCorrect(IEnumerable<int> submittedAnswerIds);
     }
 }

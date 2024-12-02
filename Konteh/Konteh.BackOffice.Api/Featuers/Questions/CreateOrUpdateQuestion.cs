@@ -1,9 +1,9 @@
-﻿using Konteh.Domain.Enumeration;
+﻿using FluentValidation;
 using Konteh.Domain;
+using Konteh.Domain.Enumeration;
+using Konteh.Infrastructure.ExceptionHandling;
 using Konteh.Infrastructure.Repository;
 using MediatR;
-using FluentValidation;
-using Konteh.Infrastructure.ExceptionHandling;
 
 namespace Konteh.BackOffice.Api.Featuers.Questions
 {
@@ -66,10 +66,10 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
             public async Task<Unit> Handle(QuestionRequest request, CancellationToken cancellationToken)
             {
-                if (request.Id == null) 
+                if (request.Id == null)
                 {
                     Create(request);
-                } 
+                }
                 else
                 {
                     await Edit(request, cancellationToken);
@@ -82,17 +82,29 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
 
             private void Create(QuestionRequest request)
             {
-                var question = new Question
-                {
-                    Text = request.Text,
-                    Category = request.Category,
-                    Type = request.Type,
-                    Answers = request.Answers.Select(x => new Answer
+                Question question = request.Type == QuestionType.Checkbox ?
+                    new CheckboxQuestion
                     {
-                        Text = x.Text,
-                        IsCorrect = x.IsCorrect
-                    }).ToList()
-                };
+                        Text = request.Text,
+                        Category = request.Category,
+                        Type = request.Type,
+                        Answers = request.Answers.Select(x => new Answer
+                        {
+                            Text = x.Text,
+                            IsCorrect = x.IsCorrect
+                        }).ToList()
+                    } :
+                    new RadioButtonQuestion
+                    {
+                        Text = request.Text,
+                        Category = request.Category,
+                        Type = request.Type,
+                        Answers = request.Answers.Select(x => new Answer
+                        {
+                            Text = x.Text,
+                            IsCorrect = x.IsCorrect
+                        }).ToList()
+                    };
 
                 _questionRepository.Create(question);
             }
@@ -102,7 +114,18 @@ namespace Konteh.BackOffice.Api.Featuers.Questions
                 var question = await _questionRepository.Get(request.Id!.Value);
                 if (question == null || question.IsDeleted) throw new EntityNotFoundException();
 
-                var updatedQuestion = new Question
+                Question updatedQuestion = request.Type == QuestionType.Checkbox ? new CheckboxQuestion
+                {
+                    Text = request.Text,
+                    Category = request.Category,
+                    Type = request.Type,
+                    Answers = request.Answers.Where(x => x.Id != null).Select(x => new Answer
+                    {
+                        Id = x.Id!.Value,
+                        Text = x.Text,
+                        IsCorrect = x.IsCorrect
+                    }).ToList()
+                } : new RadioButtonQuestion
                 {
                     Text = request.Text,
                     Category = request.Category,

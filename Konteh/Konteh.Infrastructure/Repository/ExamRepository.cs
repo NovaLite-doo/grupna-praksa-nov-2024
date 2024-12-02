@@ -9,23 +9,23 @@ namespace Konteh.Infrastructure.Repository
         public ExamRepository(AppDbContext dbContext) : base(dbContext)
         {
         }
-        public override async Task<IList<Exam>> Search(Expression<Func<Exam, bool>> predicate)
-        {
-            return await _dbSet
-                .Where(predicate)
-                .Include(e => e.Candidate)
-                .Include(e => e.Questions)
-                .ToListAsync();
-        }
 
-        public override async Task<Exam?> Get(int id)
+        public override async Task<Exam?> Get(int id) => await IncludeProperties().FirstOrDefaultAsync(e => e.Id == id);
+        public override async Task<IEnumerable<Exam>> GetAll() => await IncludeProperties().OrderByDescending(x => x.DateTimeStarted).ToListAsync();
+
+        public override async Task<IList<Exam>> Search(Expression<Func<Exam, bool>> predicate) => await IncludeProperties().Where(predicate).OrderByDescending(x => x.DateTimeStarted).ToListAsync();
+
+        private IQueryable<Exam> IncludeProperties()
         {
-            return await _dbSet
-                .Where(e => e.Id == id)
-                .Include(e => e.Questions)
-                .ThenInclude(eq => eq.Question)
-                .ThenInclude(q => q.Answers)
-                .FirstOrDefaultAsync();
+            var exams = _dbSet
+                .Include(x => x.Candidate)
+                .Include(x => x.Questions)
+                    .ThenInclude(x => x.SubmittedAnswers)
+                .Include(x => x.Questions)
+                    .ThenInclude(x => x.Question)
+                        .ThenInclude(x => x.Answers);
+
+            return exams;
         }
     }
 }

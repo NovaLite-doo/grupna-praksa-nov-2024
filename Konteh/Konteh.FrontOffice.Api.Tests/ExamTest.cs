@@ -5,6 +5,7 @@ using Konteh.FrontOffice.Api.Features.Exams;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repository;
 using Konteh.Tests.Infrastructure;
+using MassTransit;
 
 namespace Konteh.FrontOffice.Api.Tests
 {
@@ -16,6 +17,7 @@ namespace Konteh.FrontOffice.Api.Tests
         private IRepository<Candidate> _mockCandidateRepository;
         private CreateExam.RequestHandler _handler;
         private IRandom _mockRandom;
+        private IPublishEndpoint _publishEndpoint;
 
         [SetUp]
         public void Setup()
@@ -24,8 +26,9 @@ namespace Konteh.FrontOffice.Api.Tests
             _mockExamRepository = A.Fake<IRepository<Exam>>();
             _mockCandidateRepository = A.Fake<IRepository<Candidate>>();
             _mockRandom = A.Fake<IRandom>();
+            _publishEndpoint = A.Fake<IPublishEndpoint>();
 
-            _handler = new CreateExam.RequestHandler(_mockQuestionRepository, _mockExamRepository, _mockRandom, _mockCandidateRepository);
+        _handler = new CreateExam.RequestHandler(_mockQuestionRepository, _mockExamRepository, _mockRandom, _mockCandidateRepository, _publishEndpoint);
         }
 
         [Test]

@@ -1,0 +1,82 @@
+.exam-card {
+    width: 100%;
+}
+
+.exam-card-content {
+    display: flex;
+    padding: 1rem;
+    height: 6rem;
+}
+
+.exam-card-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.separator {
+    display: flex;
+    width: 1px;
+    background-color: black;
+    margin-inline: 1.5rem;
+}
+
+.status {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.status-in-progress {
+    margin-right: 3rem;
+}
+
+.mat-mdc-progress-spinner { 
+    --mdc-circular-progress-active-indicator-color: #f5df4d;
+ }
+
+.status-completed { 
+    transform: scale(5.0);
+    color: green;
+    margin-left: 2rem;
+    margin-right: 5.75rem;
+}
+
+.information {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.information-title {
+    font-family: Roboto, Arial;
+    font-size: 1.5rem;
+    color: black;
+    margin-bottom: 0.5rem;
+}
+
+.information-value {
+    font-family: Roboto, Arial;
+    font-size: 1rem;
+    color: black;
+}
+
+.right {
+    margin-left: auto;
+}
+
+.score {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.score-fraction {
+    font-family: Roboto, Arial;
+    font-size: 1.5rem;
+    color: black;
+    margin-bottom: 0.5rem;
+    margin-right: 1rem;
+}

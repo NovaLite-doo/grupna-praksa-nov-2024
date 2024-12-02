@@ -1,0 +1,26 @@
+<div class="exams-overview">
+    <p class="page-title">
+        Exams
+    </p>
+
+    <div class="exams">
+        <mat-form-field appearance="outline">
+            <mat-label>Search</mat-label>
+            <input type="search" matInput [formControl]="searchFormControl" placeholder="Search exams" />
+        </mat-form-field>
+
+        <div *ngIf="exams.length > 0" class="exams-list">
+            <div *ngFor="let exam of exams">
+                <app-exam-card [exam]="exam"></app-exam-card>
+            </div>
+        </div>
+
+        <div *ngIf="exams.length === 0">
+            <div class="no-exams">
+                <div class="no-exams-message">
+                    There are no exams available.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

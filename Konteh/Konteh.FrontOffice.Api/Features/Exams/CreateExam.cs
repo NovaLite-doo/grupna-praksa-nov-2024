@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using Konteh.Domain;
 using Konteh.Domain.Enumeration;
+using Konteh.Domain.Events;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repository;
+using MassTransit;
 using MediatR;
 
 namespace Konteh.FrontOffice.Api.Features.Exams
@@ -57,14 +59,16 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             private readonly IRepository<Question> _questionRepository;
             private readonly IRepository<Exam> _examRepository;
             private readonly IRepository<Candidate> _candidateRepository;
+            private readonly IPublishEndpoint _publishEndpoint;
             private readonly IRandom _random;
 
-            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRandom random, IRepository<Candidate> candidateRepository)
+            public RequestHandler(IRepository<Question> questionRepository, IRepository<Exam> examRepository, IRandom random, IRepository<Candidate> candidateRepository, IPublishEndpoint publishEndpoint)
             {
                 _questionRepository = questionRepository;
                 _examRepository = examRepository;
                 _random = random;
                 _candidateRepository = candidateRepository;
+                _publishEndpoint = publishEndpoint;
             }
 
             public async Task<int> Handle(Command request, CancellationToken cancellationToken)
@@ -86,7 +90,9 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 var exam = new Exam
                 {
-                    Candidate = candidate
+                    Candidate = candidate,
+                    Status = ExamStatus.InProgress,
+                    DateTimeStarted = DateTime.Now
                 };
 
                 foreach (var categoryGroup in groupedByCategory)
@@ -104,7 +110,21 @@ namespace Konteh.FrontOffice.Api.Features.Exams
 
                 _examRepository.Create(exam);
                 await _examRepository.SaveChanges();
+
+                SendNotification(exam);
+
                 return exam.Id;
+            }
+
+            private void SendNotification(Exam exam)
+            {
+                _publishEndpoint.Publish(new ExamEvent
+                {
+                    Id = exam.Id,
+                    Status = exam.Status,
+                    CandidateName = $"{exam.Candidate.Name} {exam.Candidate.Surname}",
+                    Score = $"0/{exam.Questions.Count}"
+                });
             }
         }
     }

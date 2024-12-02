@@ -2,6 +2,7 @@
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Konteh.Domain.Enumeration;
 
 namespace Konteh.FrontOffice.Api.Features.Exams
 {
@@ -10,12 +11,10 @@ namespace Konteh.FrontOffice.Api.Features.Exams
     public class ExamController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ExamController(IMediator mediator, IPublishEndpoint publishEndpoint)
+        public ExamController(IMediator mediator)
         {
             _mediator = mediator;
-            _publishEndpoint = publishEndpoint;
         }
 
         [HttpPost]
@@ -51,17 +50,6 @@ namespace Konteh.FrontOffice.Api.Features.Exams
             await _mediator.Send(command);
 
             return Ok();
-        }
-
-
-        // temporary endpoint
-        [HttpGet()]
-        public void Notify()
-        {
-            _publishEndpoint.Publish(new ExamEvent
-            {
-                ExamId = 0
-            });
         }
     }
 }

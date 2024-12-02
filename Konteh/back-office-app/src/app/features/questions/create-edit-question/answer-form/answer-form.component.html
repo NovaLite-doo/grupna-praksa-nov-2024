@@ -11,7 +11,7 @@
             <mat-label>Text</mat-label>
             <input matInput formControlName="text" placeholder="Enter question text">
         </mat-form-field>
-        <mat-error *ngIf="hasErrors('text')">{{getErrors('text')}}</mat-error>
+        <mat-error *ngIf="hasErrors('text')">{{ getErrors('text') }}</mat-error>
     
         <mat-checkbox formControlName="isCorrect" labelPosition="before" class="answer-is-correct">Is correct:</mat-checkbox>
     </div>

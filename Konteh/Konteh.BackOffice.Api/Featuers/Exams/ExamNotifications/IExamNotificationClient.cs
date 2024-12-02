@@ -4,6 +4,6 @@ namespace Konteh.BackOffice.Api.Featuers.Exams.ExamNotifications
 {
     public interface IExamNotificationClient
     {
-        Task ReceiveNotification(ExamEvent examEvent);
+        Task ReceiveNotification(SearchExams.ExamResponse exam);
     }
 }

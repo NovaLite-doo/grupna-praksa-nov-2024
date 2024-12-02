@@ -14,6 +14,12 @@ const routes: Routes = [
     loadChildren: () => import('./features/questions/questions.module').then(m => m.QuestionsModule),
     canActivate: [MaslGuard]
   }
+  ,
+  {
+    path: 'exams',
+    loadChildren: () => import('./features/exams/exams.module').then(m => m.ExamsModule),
+    canActivate: [MaslGuard]
+  }
 ]
 
 

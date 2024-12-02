@@ -7,6 +7,10 @@
   <button mat-button (click)="logout()" *ngIf="isLoggedIn()">Sign out</button>
 
   <div *ngIf="isLoggedIn()">
+    <a mat-button [routerLink]="['/exams']" routerLinkActive="active">Exams</a>
+  </div>
+
+  <div *ngIf="isLoggedIn()">
     <a mat-button [routerLink]="['/questions']" routerLinkActive="active">Questions</a>
   </div>
 </mat-toolbar> 

@@ -5,8 +5,8 @@ namespace Konteh.Domain.Events
     public class ExamEvent
     {
         public int Id { get; set; }
-        public ExamEventCandidate Candidate { get; set; } = new ExamEventCandidate();
-        public string? Score { get; set; }
+        public string CandidateName { get; set; } = string.Empty;
+        public string Score { get; set; } = string.Empty;
         public ExamStatus Status { get; set; }
     }
 }

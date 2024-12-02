@@ -10,6 +10,8 @@ namespace Konteh.Domain
         public int CandidateId { get; set; }
         public Candidate Candidate { get; set; } = null!;
         public ExamStatus Status { get; set; }
+        public DateTime DateTimeStarted { get; set; }
+        public DateTime? DateTimeFinished { get; set; }
 
         public string GetScore()
         {

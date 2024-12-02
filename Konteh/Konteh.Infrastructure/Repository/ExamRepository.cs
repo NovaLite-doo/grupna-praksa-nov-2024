@@ -1,11 +1,6 @@
 ﻿using Konteh.Domain;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Konteh.Infrastructure.Repository
 {
@@ -16,9 +11,9 @@ namespace Konteh.Infrastructure.Repository
         }
 
         public override async Task<Exam?> Get(int id) => await IncludeProperties().FirstOrDefaultAsync(e => e.Id == id);
-        public override async Task<IEnumerable<Exam>> GetAll() => await IncludeProperties().ToListAsync();
+        public override async Task<IEnumerable<Exam>> GetAll() => await IncludeProperties().OrderByDescending(x => x.DateTimeStarted).ToListAsync();
 
-        public override async Task<IList<Exam>> Search(Expression<Func<Exam, bool>> predicate) => await IncludeProperties().Where(predicate).ToListAsync();
+        public override async Task<IList<Exam>> Search(Expression<Func<Exam, bool>> predicate) => await IncludeProperties().Where(predicate).OrderByDescending(x => x.DateTimeStarted).ToListAsync();
 
         private IQueryable<Exam> IncludeProperties()
         {

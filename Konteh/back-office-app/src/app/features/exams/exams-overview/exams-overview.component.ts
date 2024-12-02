@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ExamsClient, ExamStatus, SearchExamsCandidateResponse, SearchExamsExamResponse } from '../../../api/api-reference';
+import { ExamsClient, ExamStatus, SearchExamsExamResponse } from '../../../api/api-reference';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ExamNotificationsService } from '../exam-notifications/exam-notifications.service';
@@ -16,14 +16,22 @@ export class ExamsOverviewComponent {
   searchFormControl: FormControl = new FormControl('');
 
   constructor(
-    private examsClient: ExamsClient, 
+    private examsClient: ExamsClient,
     private examNotificationsService: ExamNotificationsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadExams();
 
-    this.searchExams();
+    this.searchFormControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      )
+      .subscribe(searchText => {
+        this.search = searchText ? searchText : null;
+        this.loadExams();
+      })
 
     this.receiveNotifications();
   }
@@ -36,24 +44,11 @@ export class ExamsOverviewComponent {
     );
   }
 
-  searchExams(): void {
-    this.searchFormControl.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged()
-      )
-      .subscribe(searchText => {
-        this.search = searchText ? searchText : null;
-        this.loadExams();
-      })
-  }
-
   receiveNotifications() {
-    this.examNotificationsService.receiveNotification().subscribe(
+    this.examNotificationsService.notificationSubject$.subscribe(
       (notification: SearchExamsExamResponse | null) => {
-        console.log(notification);
-        if(notification) {
-          if(notification.status == ExamStatus.Completed) {
+        if (notification) {
+          if (notification.status == ExamStatus.Completed) {
             this.updateExam(notification);
           } else {
             this.addExam(notification!);

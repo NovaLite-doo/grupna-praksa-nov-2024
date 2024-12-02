@@ -13,8 +13,8 @@
         {
             var correctAnswers = Question.Answers.Where(x => x.IsCorrect);
 
-            return correctAnswers.Count() == SubmittedAnswers.Count 
-                && !correctAnswers.Any(x => !SubmittedAnswers.Contains(x));
+            return correctAnswers.Count() == SubmittedAnswers.Count
+                && correctAnswers.All(SubmittedAnswers.Contains);
         }
     }
 }

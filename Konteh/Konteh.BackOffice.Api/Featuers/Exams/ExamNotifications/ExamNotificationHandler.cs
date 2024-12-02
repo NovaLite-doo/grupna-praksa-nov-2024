@@ -22,14 +22,8 @@ namespace Konteh.BackOffice.Api.Featuers.Exams.ExamNotifications
                 Id = message.Id,
                 Status = message.Status,
                 Score = message.Score,
-                Candidate = new SearchExams.CandidateResponse
-                {
-                    Name = message.Candidate.Name,
-                    Surname = message.Candidate.Surname,
-                }
+                CandidateName = message.CandidateName
             };
-
-
 
             await _hub.Clients.All.ReceiveNotification(notification);
 

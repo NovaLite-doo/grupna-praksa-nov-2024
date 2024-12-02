@@ -11,7 +11,7 @@ export class AppComponent {
 
   constructor(private examNotifier: ExamNotificationsService) {}
 
-  ngOnInit(): void {
-    this.examNotifier.startConnection().subscribe();
+  async ngOnInit(): Promise<void> {
+    await this.examNotifier.startConnection();
   }
 }

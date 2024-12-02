@@ -45,6 +45,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 }
 
                 exam.Status = ExamStatus.Completed;
+                exam.DateTimeFinished = DateTime.Now;
 
                 await _examRepository.SaveChanges();
 
@@ -59,6 +60,7 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 {
                     Id = exam.Id,
                     Status = exam.Status,
+                    CandidateName = $"{exam.Candidate.Name} {exam.Candidate.Surname}",
                     Score = exam.GetScore()
                 });
             }

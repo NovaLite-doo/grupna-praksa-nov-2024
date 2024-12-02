@@ -91,7 +91,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 var exam = new Exam
                 {
                     Candidate = candidate,
-                    Status = ExamStatus.InProgress
+                    Status = ExamStatus.InProgress,
+                    DateTimeStarted = DateTime.Now
                 };
 
                 foreach (var categoryGroup in groupedByCategory)
@@ -121,11 +122,8 @@ namespace Konteh.FrontOffice.Api.Features.Exams
                 {
                     Id = exam.Id,
                     Status = exam.Status,
-                    Candidate = new ExamEventCandidate
-                    {
-                        Name = exam.Candidate.Name,
-                        Surname = exam.Candidate.Surname
-                    }
+                    CandidateName = $"{exam.Candidate.Name} {exam.Candidate.Surname}",
+                    Score = $"0/{exam.Questions.Count}"
                 });
             }
         }

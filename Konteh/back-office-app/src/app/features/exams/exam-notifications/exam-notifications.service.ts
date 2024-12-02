@@ -9,6 +9,7 @@ import { SearchExamsExamResponse } from '../../../api/api-reference';
 export class ExamNotificationsService {
   private hubConnection: signalR.HubConnection;
   private notificationSubject = new BehaviorSubject<SearchExamsExamResponse | null>(null);
+  public notificationSubject$ = this.notificationSubject.asObservable();
 
   constructor() {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -16,25 +17,11 @@ export class ExamNotificationsService {
       .build();
   }
 
-  startConnection(): Observable<void> {
-    return new Observable<void>((observer) => {
-      this.hubConnection
-        .start()
-        .then(() => {
-          observer.next();
-          observer.complete();
-        })
-        .catch((error) => {
-          observer.error(error);
-          setTimeout(this.startConnection, 5000);
-        });
-    });
-  }
-
-  receiveNotification(): Observable<SearchExamsExamResponse | null> {
+  async startConnection() {
+    await this.hubConnection.start();
+    
     this.hubConnection.on('ReceiveNotification', (message: SearchExamsExamResponse) => {
       this.notificationSubject.next(message);
     });
-    return this.notificationSubject.asObservable();
   }
 }

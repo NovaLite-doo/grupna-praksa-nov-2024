@@ -22,6 +22,7 @@ import { ExamQuestionComponent } from './exam-question/exam-question.component';
 import { TimerComponent } from './timer/timer.component';
 import { SubmitDialogComponent } from './submit-dialog/submit-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { GeneralErrorsComponent } from './shared/validation/general-errors.component';
 
 
 @NgModule({
@@ -32,8 +33,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     ThankYouPageComponent,
     ExamQuestionComponent,
     TimerComponent,
-    SubmitDialogComponent,
-  
+    SubmitDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +51,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatProgressSpinnerModule,
     MatCardModule,
     MatDialogModule,
-    
+    GeneralErrorsComponent
   ],
   providers: [
     provideAnimationsAsync()

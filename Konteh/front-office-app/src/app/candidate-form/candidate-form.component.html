@@ -37,6 +37,8 @@
       </mat-select>
     </mat-form-field>
 
+    <app-general-errors [form]="candidateForm"></app-general-errors>
+
     <button mat-raised-button color="primary" type="submit" [disabled]="candidateForm.invalid">Submit</button>
   </form>
 </div>

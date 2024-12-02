@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CreateExamCommand, ExamClient, YearOfStudy } from '../api/api-reference';
+import { FORM_FIELD_ERROR_KEY, setServerSideValidationError } from '../shared/validation/validation';
 
 @Component({
   selector: 'app-candidate-form',
@@ -42,11 +43,14 @@ export class CandidateFormComponent {
       yearOfStudy: Number(candidateData.yearOfStudy),
     });
 
-    this.examClient.generateExam(examCommand).subscribe(response => {
-      const examId = response;
-      if (examId) {
-        this.router.navigate(['/exam-overview', examId]);
-      }
+    this.examClient.generateExam(examCommand).subscribe({
+      next: response => {
+        const examId = response;
+        if (examId) {
+          this.router.navigate(['/exam-overview', examId]);
+        }
+      },
+      error: errors => setServerSideValidationError(errors, this.candidateForm)
     });
   }
 
@@ -54,5 +58,18 @@ export class CandidateFormComponent {
     return Object.keys(YearOfStudy)
       .filter(key => isNaN(Number(key)))
       .map(key => key.replace(/([A-Z])/g, ' $1').trim());
+  }
+
+  hasErrors = (formControlName: string) => {
+    const errors = this.candidateForm?.get(formControlName)?.errors;
+    return errors && errors[FORM_FIELD_ERROR_KEY];
+  }
+
+  getErrors = (formControlName: string) => {
+    const errors = this.candidateForm?.get(formControlName)?.errors;
+    if (!errors) {
+      return null;
+    }
+    return errors[FORM_FIELD_ERROR_KEY];
   }
 }

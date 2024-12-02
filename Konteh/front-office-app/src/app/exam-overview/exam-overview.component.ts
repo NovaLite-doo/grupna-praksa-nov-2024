@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { ExamClient, IGetExamByIdResponse, SubmitExamCommand, SubmitExamExamQuestionDto } from '../api/api-reference';
 import { ActivatedRoute, Router } from '@angular/router';
-import { retryWhen } from 'rxjs';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray } from '@angular/forms';
 import { ExamForm } from './models/exam-form.model';
 import { ExamQuestionForm } from './models/exam-question-form.model';
 import { SubmitDialogComponent } from '../submit-dialog/submit-dialog.component';
@@ -17,7 +16,7 @@ export class ExamOverviewComponent {
   exam: IGetExamByIdResponse | null = null;
   currentQuestionIndex: number = 0;
   examFormGroup = new ExamForm();
-  totalTime: number = 200;
+  totalTime: number = 120;
   isExpired: boolean = false;
 
   constructor(private examClient: ExamClient, private route: ActivatedRoute, private router: Router, private dialog: MatDialog ) { }
@@ -46,7 +45,7 @@ export class ExamOverviewComponent {
       examId: this.exam!.id,
       examQuestions: this.examFormGroup.questions.value.map(x => new SubmitExamExamQuestionDto({
         id: x.id,
-        submittedAnswers: x.selectedAnswer !== undefined && x.selectedAnswer !== null ? [x.selectedAnswer] : x.answers.filter((a: any) => a.isSelected).map((a: any) => a.id)
+        submittedAnswerIds: x.selectedAnswer !== undefined && x.selectedAnswer !== null ? [x.selectedAnswer] : x.answers.filter((a: any) => a.isSelected).map((a: any) => a.id)
       }))
     });
 

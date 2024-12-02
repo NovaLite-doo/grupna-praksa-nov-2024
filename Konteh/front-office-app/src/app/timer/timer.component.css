@@ -10,8 +10,11 @@ button {
 .timer {
   font-size: 18px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: right; 
+  align-items: center;    
+  margin-right: 20px;
+  position: relative;     
+  top: -50px;             
 }
 
 mat-icon {

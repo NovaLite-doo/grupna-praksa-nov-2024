@@ -1,7 +1,10 @@
+using FluentValidation;
 using Konteh.Domain;
 using Konteh.Infrastructure;
+using Konteh.Infrastructure.ExceptionHandling;
 using Konteh.Infrastructure.Options;
 using Konteh.Infrastructure.Repository;
+using Konteh.Infrastructure.Validation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -34,7 +37,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IRepository<Candidate>, CandidateRepository>();
 builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
 builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddExceptionHandler<ExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.Configure<RabbitMqOptions>(
     builder.Configuration.GetSection(RabbitMqOptions.RabbitMq));
@@ -67,6 +78,8 @@ app.UseOpenApi();
 app.UseSwaggerUi();
 
 app.UseCors(MyAllowSpecificOrigins);
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

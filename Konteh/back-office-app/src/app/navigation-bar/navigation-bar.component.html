@@ -1,12 +1,17 @@
 <mat-toolbar color="primary">
+  <img src="/assets/novalogo.jpg" alt="Logo" style="height: 40px; margin-right: 10px;" />
   <span>NovaLite</span>
 
   <div class="spacer"></div> 
 
-  <button mat-button (click)="login()" *ngIf="!isLoggedIn()">Sign in</button>
-  <button mat-button (click)="logout()" *ngIf="isLoggedIn()">Sign out</button>
-
   <div *ngIf="isLoggedIn()">
     <a mat-button [routerLink]="['/questions']" routerLinkActive="active">Questions</a>
+    <a mat-button>Statistics</a>
   </div>
+
+  <button mat-button (click)="login()" *ngIf="!isLoggedIn()">Sign in</button>
+  <button mat-button (click)="logout()" *ngIf="isLoggedIn()" class="logout-btn">
+    Sign out
+    <mat-icon>account_circle</mat-icon> 
+  </button>
 </mat-toolbar> 

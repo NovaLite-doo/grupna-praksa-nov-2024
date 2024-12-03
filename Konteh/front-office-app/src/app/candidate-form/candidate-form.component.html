@@ -14,9 +14,13 @@
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Email </mat-label>
+      <mat-label>Email</mat-label>
       <input matInput id="email" formControlName="email" type="email">
+      <mat-error *ngIf="hasErrors('email')">
+        {{ getErrors('email') }}
+      </mat-error>
     </mat-form-field>
+    
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Faculty </mat-label>

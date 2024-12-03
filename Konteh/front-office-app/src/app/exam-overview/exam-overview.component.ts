@@ -42,7 +42,7 @@ export class ExamOverviewComponent {
       examId: this.exam!.id,
       examQuestions: this.examFormGroup.questions.value.map(x => new SubmitExamExamQuestionDto({
         id: x.id,
-        submittedAnswers: x.selectedAnswer !== undefined && x.selectedAnswer !== null ? [x.selectedAnswer] : x.answers.filter((a: any) => a.isSelected).map((a: any) => a.id)
+        submittedAnswerIds: x.selectedAnswer !== undefined && x.selectedAnswer !== null ? [x.selectedAnswer] : x.answers.filter((a: any) => a.isSelected).map((a: any) => a.id)
       }))
     });
 
